@@ -1,5 +1,5 @@
-import Trash from "@/components/general/trash";
-import { ForkFeature } from "@/data_types/ref_forks/ref_forks";
+import { ForkFeature } from "@/app/data_types/ref_forks/ref_forks";
+import Trash from "@/components/app/trash";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 

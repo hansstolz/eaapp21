@@ -1,4 +1,4 @@
-import { RefArticle } from "@/data_types/ref_forks/ref_forks";
+import { RefArticle } from "@/app/data_types/ref_forks/ref_forks";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 
@@ -17,7 +17,7 @@ export default function RefArticlesColumns() {
         footer: (props) => props.column.id,
       },
     ],
-    []
+    [],
   );
 
   return columns;
