@@ -1,0 +1,1981 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  previewFeatures = ["views" ] 
+
+}
+
+datasource db {
+  provider = "mysql"
+  
+}
+
+model ea_articles {
+  uid_article        Int      @id @default(autoincrement()) @db.UnsignedInt
+  active             Int?     @default(1) @db.TinyInt
+  for_what           String?  @db.Text
+  order_no           Int?     @default(0)
+  uid_ref_fork       Int?     @default(0)
+  price_categ3_rel   String?  @db.VarChar(50)
+  articlecharacter   String?  @db.VarChar(250)
+  memo               String?  @db.Text
+  price_netto_categ3 Float    @default(0.00) @db.Float
+  file_name          String?  @db.VarChar(100)
+  article_no_rel     String?  @db.VarChar(50)
+  cost_price         Float    @default(0.00) @db.Float
+  user_group         String?  @db.VarChar(50)
+  cust_categ_2       Int?     @default(0)
+  core_item          Int?     @default(0)
+  price_categ1_rel   String?  @db.VarChar(50)
+  picture_show       Bytes?   @db.Blob
+  supplied           Int?     @default(0)
+  currancy           String?  @db.VarChar(50)
+  price_netto_categ2 Float    @default(0.00) @db.Float
+  article_group      String?  @db.VarChar(50)
+  articledescription String?  @db.Text
+  print_check        Int?     @default(0)
+  article_no         Int?     @default(0)
+  price_categ2_rel   String?  @db.VarChar(50)
+  url                String?  @db.VarChar(100)
+  price_netto_categ1 Float    @default(0.00) @db.Float
+  cust_categ_1       Int?     @default(0)
+  cust_categ_3       Int?     @default(0)
+  articlecode        String?  @db.VarChar(50)
+  category_article   String?  @db.VarChar(50)
+  storage_location2  String?  @db.VarChar(100)
+  selforder_only     String?  @db.VarChar(50)
+  storage_location1  String?  @db.VarChar(100)
+  manufacturer       String?  @db.VarChar(150)
+  company_article_no String?  @db.VarChar(50)
+  quantity           Int?     @default(0)
+  unit               Float    @default(0.00) @db.Float
+  cal_cost_price_sum Float    @default(0.00) @db.Float
+  created_at         DateTime @default(now()) @db.Timestamp(0)
+  updated_at         DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([user_group], map: "articles_user_group")
+  @@fulltext([articlecode, category_article, article_group, articlecharacter, company_article_no], map: "ft_articles")
+}
+
+model ea_articles_category {
+  uid_articles_category Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group            String?   @db.VarChar(50)
+  articles_category     String?   @db.VarChar(100)
+  created_at            DateTime? @db.DateTime(0)
+  updated_at            DateTime? @db.DateTime(0)
+}
+
+model ea_articles_ref_forks {
+  uid_article_ref_forks Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group            String?   @db.VarChar(50)
+  articlecharacter      String?   @db.VarChar(200)
+  articlecode           String?   @db.VarChar(100)
+  check_ref_fork        Int?      @default(0)
+  article_no            Int?      @default(0)
+  uid_article           Int       @db.UnsignedInt
+  uid_ref_fork          Int       @db.UnsignedInt
+  created_at            DateTime? @db.DateTime(0)
+  updated_at            DateTime? @db.DateTime(0)
+
+  @@index([uid_article], map: "arrefo1")
+  @@index([uid_ref_fork], map: "arrefo2")
+  @@fulltext([articlecode], map: "ft_ref_forks_articles")
+}
+
+model ea_articles_supplied {
+  uid_article_supplied Int       @id @default(autoincrement()) @db.UnsignedInt
+  articlediscription   String?   @db.Text
+  article_category     String?   @db.VarChar(50)
+  purchase_no          Int?      @default(0)
+  article_group        String?   @db.VarChar(50)
+  user_group           String?   @db.VarChar(50)
+  company_article_no   String?   @db.VarChar(50)
+  company_no           Int?      @default(0)
+  info                 String?   @db.Text
+  articlecharacter     String?   @db.VarChar(150)
+  cost_price           Float     @default(0.00) @db.Float
+  articlecode          String?   @db.VarChar(50)
+  article_no           Int?      @default(0)
+  date_supplied        DateTime? @db.DateTime(0)
+  quantity             Float     @default(0.00) @db.Float
+  quantity_supplied    Float     @default(0.00) @db.Float
+  units_supplied       Float     @default(0.00) @db.Float
+  units                Float     @default(0.00) @db.Float
+  quantity_open        Float     @default(0.00) @db.Float
+  uid_purchase         Int       @db.UnsignedInt
+  uid_company          Int       @db.UnsignedInt
+  created_at           DateTime? @db.DateTime(0)
+  updated_at           DateTime? @db.DateTime(0)
+}
+
+model ea_clients {
+  uid_client        Int       @id @default(autoincrement()) @db.UnsignedInt
+  email             String?   @db.VarChar(100)
+  last_name         String?   @db.VarChar(100)
+  fork_no           Int?      @default(0)
+  job_title         String?   @db.VarChar(50)
+  fon               String?   @db.VarChar(50)
+  notes             String?   @db.Text
+  first_name        String?   @db.VarChar(50)
+  zip               String?   @db.VarChar(20)
+  city              String?   @db.VarChar(50)
+  fax               String?   @db.VarChar(50)
+  customer_no       Int?      @default(0)
+  weight            String?   @db.VarChar(20)
+  user_group        String?   @db.VarChar(50)
+  customerclient_no String?   @db.VarChar(50)
+  height            String?   @db.VarChar(20)
+  streetaddress     String?   @db.VarChar(50)
+  company_no        Int?      @default(0)
+  uid_fork          Int       @db.UnsignedInt
+  uid_customer      Int       @db.UnsignedInt
+  created_at        DateTime? @db.DateTime(0)
+  updated_at        DateTime? @db.DateTime(0)
+
+  @@index([uid_fork], map: "cl1")
+  @@index([uid_customer], map: "cl3")
+}
+
+model ea_companies {
+  uid_company         Int      @id @default(autoincrement()) @db.UnsignedInt
+  bank_name           String?  @db.VarChar(50)
+  country             String?  @db.VarChar(50)
+  street_address      String?  @db.VarChar(50)
+  fax                 String?  @db.VarChar(50)
+  mobile              String?  @db.VarChar(50)
+  company_no          Int?     @default(0)
+  notes               String?  @db.Text
+  email               String?  @db.VarChar(100)
+  first_name          String?  @db.VarChar(50)
+  company_no_rel      String?  @db.VarChar(50)
+  bank_payment        String?  @db.VarChar(50)
+  bank_account        String?  @db.VarChar(50)
+  zip_postal_code     String?  @db.VarChar(20)
+  category_company    String?  @db.VarChar(50)
+  user_group          String?  @db.VarChar(50)
+  cal_address         String?  @db.Text
+  city                String?  @db.VarChar(50)
+  company_customer_no String?  @db.VarChar(50)
+  bank_id             String?  @db.VarChar(50)
+  company             String?  @db.VarChar(100)
+  internet            String?  @db.VarChar(100)
+  cal_name_list       String?  @db.VarChar(150)
+  fon                 String?  @db.VarChar(50)
+  last_name           String?  @db.VarChar(100)
+  mail_salut          String?  @db.Text
+  uid_mail            Int?     @default(0)
+  cal_email_find      String?  @db.VarChar(100)
+  created_at          DateTime @db.DateTime(0)
+  updated_at          DateTime @db.DateTime(0)
+
+  @@index([user_group], map: "companies_user_group")
+  @@fulltext([first_name, last_name, city, street_address, zip_postal_code, company], map: "FullText")
+  @@fulltext([cal_address], map: "ft_cal_name_list")
+  @@fulltext([last_name, first_name, company, street_address, zip_postal_code, city, email], map: "ft_companies")
+}
+
+model ea_compr_in {
+  uid_compr_in   Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group     String?   @db.VarChar(50)
+  value_compr_in String?   @db.VarChar(150)
+  created_at     DateTime? @db.DateTime(0)
+  updated_at     DateTime? @db.DateTime(0)
+}
+
+model ea_compr_out {
+  uid_compr_out   Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group      String?   @db.VarChar(50)
+  value_compr_out String?   @db.VarChar(150)
+  created_at      DateTime? @db.DateTime(0)
+  updated_at      DateTime? @db.DateTime(0)
+}
+
+model ea_contacts {
+  uid_contact            Int       @id @default(autoincrement()) @db.UnsignedInt
+  height                 String?   @db.VarChar(50)
+  fax                    String?   @db.VarChar(50)
+  first_name             String?   @db.VarChar(50)
+  fon                    String?   @db.VarChar(50)
+  streetaddress          String?   @db.VarChar(50)
+  last_name              String?   @db.VarChar(100)
+  customer_no            Int?      @default(0)
+  user_group             String?   @db.VarChar(50)
+  job_title              String?   @db.VarChar(50)
+  city                   String?   @db.VarChar(50)
+  email                  String?   @db.VarChar(100)
+  company_no             Int?      @default(0)
+  cal_last_first_name    String?   @db.VarChar(100)
+  fork_no                Int?      @default(0)
+  notes                  String?   @db.Text
+  zip                    String?   @db.VarChar(20)
+  weight                 String?   @db.VarChar(50)
+  customerclient_no      String?   @db.VarChar(100)
+  check_customer_address Int?      @default(0)
+  uid_customer           Int       @db.UnsignedInt
+  uid_company            Int       @db.UnsignedInt
+  created_at             DateTime  @default(now()) @db.DateTime(0)
+  updated_at             DateTime? @default(now()) @db.DateTime(0)
+
+  @@index([uid_customer], map: "con1")
+  @@index([uid_company], map: "con2")
+}
+
+model ea_credit {
+  uid_credit                     Int       @id @default(autoincrement()) @db.UnsignedInt
+  article_creditnote_int         Int?      @default(0)
+  creditnote_date                DateTime? @db.DateTime(0)
+  creditnote_no                  Int?      @default(0)
+  price_creditenote_total        Float     @default(0.00) @db.Float
+  price_creditnote_subtotal      Float     @default(0.00) @db.Float
+  price_creditnote_subtotal_cat2 Float     @default(0.00) @db.Float
+  price_creditnote_total_cat2    Float     @default(0.00) @db.Float
+  price_creditnote_valuetax      Float     @default(0.00) @db.Float
+  price_creditnote_valuetax_cat2 Float     @default(0.00) @db.Float
+  printstatus_creditnote         String?   @db.Text
+  worker_creditnote              String?   @db.VarChar(50)
+  worker_creditnote_no           Int?      @default(0)
+  user_group                     String?   @db.VarChar(50)
+  uid_order                      Int       @db.UnsignedInt
+  created_at                     DateTime? @db.DateTime(0)
+  updated_at                     DateTime? @db.DateTime(0)
+
+  @@index([uid_order], map: "credit1")
+}
+
+model ea_customer {
+  uid_customer           Int       @id @default(autoincrement()) @db.UnsignedInt
+  region                 String?   @db.VarChar(50)
+  customer_no            Int?      @default(0)
+  mobile                 String?   @db.VarChar(50)
+  cal_address            String?   @db.VarChar(200)
+  fax                    String?   @db.VarChar(50)
+  customer_no_rel        String?   @db.VarChar(100)
+  order_no               Int?      @default(0)
+  fork_no                Int?      @default(0)
+  check_export_ups       Int?      @default(0)
+  city                   String?   @db.VarChar(50)
+  company                String?   @db.VarChar(100)
+  email                  String?   @db.VarChar(150)
+  zip_postal_code        String?   @db.VarChar(20)
+  weight                 String?   @db.VarChar(53)
+  height                 String?   @db.VarChar(53)
+  user_group             String?   @db.VarChar(50)
+  cal_name_list          String?   @db.VarChar(100)
+  first_name             String?   @db.VarChar(50)
+  bank_name              String?   @db.VarChar(50)
+  birthday               DateTime? @db.DateTime(0)
+  country                String?   @db.VarChar(50)
+  memo                   String?   @db.Text
+  mailing                String?   @db.VarChar(50)
+  last_name              String?   @db.VarChar(50)
+  internet               String?   @db.VarChar(100)
+  fork_setup             String?   @db.VarChar(50)
+  bank_account           String?   @db.VarChar(50)
+  bank_payment           String?   @db.VarChar(50)
+  phonelist              String?   @db.VarChar(50)
+  fon                    String?   @db.VarChar(50)
+  street_address         String?   @db.VarChar(100)
+  bank_id                String?   @db.VarChar(20)
+  bike_no                Int?      @default(0)
+  customerclient_no      String?   @db.VarChar(50)
+  mail_salut             String?   @db.Text
+  customer_category_no   Int?      @default(0)
+  category_customer      String?   @db.VarChar(50)
+  mail_no                Int?      @default(0)
+  delivery_address       String?   @db.Text
+  customer_cannondale_no String?   @db.VarChar(100)
+  vat_no                 String?   @db.VarChar(50)
+  uid_mail               Int?      @default(0)
+  check_email_int        Int?      @default(0)
+  cal_email_find         String?   @db.VarChar(100)
+  cal_name_vl            String?   @db.VarChar(200)
+  created_at             DateTime? @db.DateTime(0)
+  updated_at             DateTime? @db.DateTime(0)
+  no_vat                 Int?      @default(0)
+  ftsearch               String?   @db.VarChar(150)
+
+  @@fulltext([first_name, last_name, city, street_address, zip_postal_code, company], map: "FullText")
+  @@fulltext([zip_postal_code, email, city, category_customer, fon, street_address, ftsearch], map: "customer_ft")
+}
+
+model ea_customer_category {
+  uid_customer_category   Int       @id @default(autoincrement()) @db.UnsignedInt
+  customer_category_value String?   @db.VarChar(100)
+  user_group              String?   @db.VarChar(50)
+  customer_category_rel   String?   @db.VarChar(50)
+  customer_category_no    Int?      @default(0)
+  created_at              DateTime? @db.DateTime(0)
+  updated_at              DateTime? @db.DateTime(0)
+}
+
+model ea_customer_payment {
+  uid_customer_payment   Int       @id @default(autoincrement()) @db.UnsignedInt
+  customer_payment_value String?   @db.VarChar(100)
+  check_default          Int?      @default(0)
+  user_group             String?   @db.VarChar(50)
+  created_at             DateTime? @db.DateTime(0)
+  updated_at             DateTime? @db.DateTime(0)
+}
+
+model ea_diagnosis {
+  uid_diagnosis             Int       @id @default(autoincrement()) @db.UnsignedInt
+  worker_diagnosis_no       Int?      @default(0)
+  check_air                 String?   @db.VarChar(60)
+  check_cartridge           String?   @db.VarChar(60)
+  check_dial                String?   @db.VarChar(60)
+  check_headset             String?   @db.VarChar(60)
+  check_shockboot           String?   @db.VarChar(60)
+  check_telescope           String?   @db.VarChar(60)
+  customer_height           String?   @db.VarChar(50)
+  customer_weight           String?   @db.VarChar(50)
+  diagnosis_no              Int?      @default(0)
+  fork_invoice_date         DateTime? @db.DateTime(0)
+  fork_setting              String?   @db.VarChar(150)
+  fork_use                  String?   @db.VarChar(150)
+  notes_diagnosis_extern    String?   @db.Text
+  notes_intern              String?   @db.Text
+  notes_warranty_extern     String?   @db.Text
+  printstatus_diagnosis     String?   @db.Text
+  warranty_request          String?   @db.VarChar(50)
+  work_diagnosis_time_end   DateTime? @db.DateTime(0)
+  work_diagnosis_time_start DateTime? @db.DateTime(0)
+  worker_diagnosis          String?   @db.VarChar(50)
+  work_diagnosis_date       DateTime? @db.DateTime(0)
+  user_group                String?   @db.VarChar(50)
+  uid_order                 Int       @db.UnsignedInt
+  created_at                DateTime? @db.DateTime(0)
+  updated_at                DateTime? @default(now()) @db.DateTime(0)
+  diagnosis_date            DateTime? @db.DateTime(0)
+  check_extras              String?   @db.VarChar(300)
+
+  @@index([uid_order], map: "diagnosis1")
+}
+
+model ea_documents {
+  uid_document Int       @id @default(autoincrement())
+  order_no     Int?
+  doc_date     DateTime? @db.DateTime(0)
+  customer     String?   @db.VarChar(100)
+  doc_type     String?   @db.VarChar(45)
+  user         String?   @db.VarChar(45)
+  printed      DateTime? @db.DateTime(0)
+  fork         String?   @db.VarChar(100)
+  fork_no      Int?
+  user_group   String?   @db.VarChar(12)
+  doc_name     String?   @db.VarChar(45)
+  sent_by      String?   @db.VarChar(10)
+
+  @@index([fork_no], map: "doc_fork_no")
+  @@index([order_no], map: "doc_order_no")
+  @@index([user_group], map: "doc_user_group")
+  @@fulltext([customer, doc_type, fork, doc_name], map: "ft_document")
+}
+
+model ea_forks {
+  uid_fork           Int       @id @default(autoincrement()) @db.UnsignedInt
+  pics_amount_calc   Int?      @default(0)
+  client_name        String?   @db.Text
+  customer           String?   @db.VarChar(100)
+  cartridge          String?   @db.VarChar(50)
+  setting            String?   @db.VarChar(100)
+  user_group         String?   @db.VarChar(50)
+  url                String?   @db.VarChar(100)
+  bike               String?   @db.VarChar(50)
+  customer_no        Int?      @default(0)
+  year_construction  Int?      @default(0)
+  rel_forks_clients  Int?      @default(0)
+  fork_no            Int?      @default(0)
+  fork_id            String?   @db.VarChar(150)
+  fork_model         String?   @db.VarChar(100)
+  customer_name      String?   @db.Text
+  brakemount         String?   @db.VarChar(50)
+  picture_show       Bytes?    @db.Blob
+  cannondale_sn      String?   @db.VarChar(50)
+  colour             String?   @db.VarChar(50)
+  order_no           String?   @db.VarChar(50)
+  wheelsize          String?   @db.VarChar(150)
+  category_fork      String?   @db.VarChar(50)
+  orders_amount_calc Int?      @default(0)
+  order_no_rel       String?   @db.VarChar(150)
+  picture            Bytes?    @db.Blob
+  use_               String?   @db.VarChar(100)
+  file_name          String?   @db.VarChar(100)
+  memo               String?   @db.Text
+  model_             String?   @db.VarChar(50)
+  uid_client         Int       @db.UnsignedInt
+  uid_customer       Int       @db.UnsignedInt
+  uid_ref_fork       Int       @db.UnsignedInt
+  created_at         DateTime? @db.DateTime(0)
+  updated_at         DateTime? @db.DateTime(0)
+
+  @@index([uid_client], map: "fo1")
+  @@index([uid_customer], map: "fo2")
+  @@index([uid_ref_fork], map: "fo3")
+  @@index([customer_no], map: "fo_customer_no")
+  @@index([fork_no], map: "fo_fork_no")
+  @@index([user_group], map: "forks_user_group")
+  @@fulltext([category_fork, customer_name, client_name, fork_model], map: "forks_ft")
+}
+
+model ea_forks_category {
+  uid_forks_category Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group         String?   @db.VarChar(50)
+  category           String?   @db.VarChar(100)
+  created_at         DateTime? @db.DateTime(0)
+  updated_at         DateTime? @db.DateTime(0)
+
+  @@index([user_group], map: "fo_cat_user_group")
+}
+
+model ea_forks_color {
+  uid_forks_color   Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group        String?   @db.VarChar(50)
+  forks_color_value String?   @db.VarChar(50)
+  created_at        DateTime? @db.DateTime(0)
+  updated_at        DateTime? @db.DateTime(0)
+
+  @@index([user_group], map: "fo_co_user_group")
+}
+
+model ea_forks_parts {
+  uid_forks_part     Int       @id @default(autoincrement()) @db.UnsignedInt
+  check_sort         Int?      @default(0)
+  forks_part_notes   String?   @db.Text
+  category_fork      String?   @db.VarChar(50)
+  forks_part_name    String?   @db.VarChar(100)
+  forks_part_quality String?   @db.Text
+  check_selection    Int?      @default(0)
+  uid_ref_fork       Int       @db.UnsignedInt
+  uid_fork           Int       @db.UnsignedInt
+  created_at         DateTime? @db.DateTime(0)
+  updated_at         DateTime? @db.DateTime(0)
+
+  @@index([uid_fork], map: "uid_fork")
+  @@index([uid_ref_fork], map: "uid_ref_fork")
+}
+
+model ea_forks_settings {
+  uid_forks_setting  Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group         String?   @db.VarChar(50)
+  forks_setting_text String?   @db.VarChar(50)
+  created_at         DateTime? @db.DateTime(0)
+  updated_at         DateTime? @db.DateTime(0)
+}
+
+model ea_forks_use {
+  uid_forks_use     Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group        String?   @db.VarChar(50)
+  forks_use_text    String?   @db.VarChar(50)
+  forks_use_cration String?   @db.VarChar(100)
+  created_at        DateTime? @db.DateTime(0)
+  updated_at        DateTime? @db.DateTime(0)
+}
+
+model ea_forms_items {
+  uid_forms_item           Int       @id @default(autoincrement()) @db.UnsignedInt
+  warranty_text            String?   @db.VarChar(50)
+  payment_text             String?   @db.VarChar(50)
+  customerno_text          String?   @db.VarChar(50)
+  foryourcustomer_text     String?   @db.VarChar(200)
+  user_print_language      String?   @db.VarChar(50)
+  user_group               String?   @db.VarChar(50)
+  units_text               String?   @db.VarChar(50)
+  commission_text          String?   @db.VarChar(50)
+  valuetax_text            String?   @db.VarChar(50)
+  preinvoice_text          String?   @db.VarChar(50)
+  total_text               String?   @db.VarChar(50)
+  worksheet_text           String?   @db.VarChar(50)
+  value_tax_id_text        String?   @db.VarChar(50)
+  check_default            Int?      @default(0)
+  alternative_costest_text String?   @db.VarChar(50)
+  creditnote_text          String?   @db.VarChar(50)
+  note_text                String?   @db.VarChar(50)
+  our_article_no           String?   @db.VarChar(50)
+  price_text               String?   @db.VarChar(50)
+  delivery_note            String?   @db.VarChar(50)
+  costestimateno_text      String?   @db.VarChar(50)
+  diagnosis_text           String?   @db.VarChar(50)
+  fiscal_office_text       String?   @db.VarChar(50)
+  fork_text                String?   @db.VarChar(50)
+  no_text                  String?   @db.VarChar(50)
+  invoice_text             String?   @db.VarChar(50)
+  date_text                String?   @db.VarChar(50)
+  forkno_text              String?   @db.VarChar(50)
+  your_article_no          String?   @db.VarChar(50)
+  invoice_total            String?   @db.VarChar(50)
+  outstanding_money        String?   @db.VarChar(50)
+  payments_total           String?   @db.VarChar(50)
+  tax_id_text              String?   @db.VarChar(50)
+  user_text                String?   @db.VarChar(50)
+  creditnoteno_text        String?   @db.VarChar(50)
+  currency_text            String?   @db.VarChar(50)
+  worksheetno_text         String?   @db.VarChar(50)
+  reminder_text            String?   @db.VarChar(50)
+  singleprice_text         String?   @db.VarChar(50)
+  freightforward_text      String?   @db.VarChar(50)
+  forkcolor_text           String?   @db.VarChar(50)
+  warrantyno_text          String?   @db.VarChar(50)
+  amount_text              String?   @db.VarChar(50)
+  costestimate_text        String?   @db.VarChar(50)
+  selforder                String?   @db.VarChar(50)
+  remindercategory_text    String?   @db.VarChar(50)
+  articlecharacter_text    String?   @db.VarChar(50)
+  page_text                String?   @db.VarChar(50)
+  vat_no_text              String?   @db.VarChar(50)
+  created_at               DateTime? @default(now()) @db.DateTime(0)
+  updated_at               DateTime? @default(now()) @db.DateTime(0)
+}
+
+model ea_i18n {
+  messagesid       Int       @id @default(autoincrement()) @db.UnsignedInt
+  message_marker   String?   @db.VarChar(50)
+  message_value    String?   @db.Text
+  message_key      String?   @db.VarChar(150)
+  message_language String?   @db.VarChar(5)
+  created_at       DateTime? @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+}
+
+model ea_language {
+  uid_language   Int       @id @default(autoincrement()) @db.UnsignedInt
+  language_value String?   @db.VarChar(50)
+  created_at     DateTime? @db.DateTime(0)
+  updated_at     DateTime? @db.DateTime(0)
+}
+
+model ea_mails {
+  uid_mail                    Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group                  String?   @db.VarChar(50)
+  mail_date                   DateTime? @db.DateTime(0)
+  subject                     String?   @db.Text
+  customer                    String?   @db.Text
+  subject_yes_no              Int?      @default(0)
+  company                     String?   @db.Text
+  message_text                String?   @db.Text
+  sender                      String?   @db.Text
+  mail_no                     Int?      @default(0)
+  email_address               String?   @db.VarChar(100)
+  company_no                  Int?      @default(0)
+  customer_no                 Int?      @default(0)
+  salutation                  String?   @db.Text
+  text_area_test              String?   @db.Text
+  fax_no                      String?   @db.VarChar(50)
+  address                     String?   @db.Text
+  mail_status                 String?   @db.Text
+  serialmail_subject_txt      String?   @db.Text
+  sender_email_address        String?   @db.VarChar(100)
+  check_serialmail_int        Int?      @default(0)
+  serialmail_status           String?   @db.Text
+  serialmail_subject_htm      String?   @db.Text
+  serialmail_message_text_htm String?   @db.Text
+  serialmail_message_text_txt String?   @db.Text
+  uid_company                 Int       @db.UnsignedInt
+  uid_customer                Int       @db.UnsignedInt
+  created_at                  DateTime? @db.DateTime(0)
+  updated_at                  DateTime? @db.DateTime(0)
+
+  @@index([user_group], map: "mails_user_group")
+  @@index([uid_company], map: "uid_company")
+  @@index([uid_customer], map: "uid_customer")
+  @@fulltext([customer, company, subject], map: "ft_mail")
+}
+
+model ea_orders {
+  uid_order                      Int       @id @default(autoincrement()) @db.UnsignedInt
+  bank_account                   String?   @db.VarChar(50)
+  bank_id                        String?   @db.VarChar(50)
+  bank_name                      String?   @db.VarChar(50)
+  bank_payment                   String?   @db.VarChar(50)
+  cal_amount_price_categ3        Float     @default(0.00) @db.Float
+  cal_outstanding_money          Float     @default(0.00) @db.Float
+  check_extras                   String?   @db.Text
+  customer_address               String?   @db.VarChar(200)
+  customer_address_alt           String?   @db.VarChar(200)
+  costestimates_numbers          String?   @db.VarChar(200)
+  customer_category_no           Int?      @default(0)
+  customer_client_height         String?   @db.VarChar(50)
+  customer_client_name           String?   @db.VarChar(150)
+  customer_client_weight         String?   @db.VarChar(50)
+  customer_email                 String?   @db.VarChar(100)
+  customer_fon                   String?   @db.VarChar(50)
+  customer_name                  String?   @db.Text
+  customer_no                    Int?      @default(0)
+  date_modifikation              DateTime? @db.DateTime(0)
+  dealers_client_form            Int?      @default(0)
+  fork_color                     String?   @db.VarChar(50)
+  fork_freight_forwarder         String?   @db.VarChar(50)
+  fork_freight_no                String?   @db.VarChar(50)
+  fork_in_carrier                String?   @db.VarChar(50)
+  fork_in_date                   DateTime? @db.DateTime(0)
+  fork_invoice_no                String?   @db.VarChar(100)
+  fork_model                     String?   @db.VarChar(150)
+  fork_no                        Int?      @default(0)
+  fork_pickup_time               DateTime? @db.DateTime(0)
+  fork_shipped_date              DateTime? @db.DateTime(0)
+  invoice_date                   DateTime? @db.DateTime(0)
+  invoice_no                     Int?      @default(0)
+  notes_costestimate_extern      String?   @db.Text
+  notes_intern                   String?   @db.Text
+  notes_invoice_extern           String?   @db.Text
+  order_modifikation             String?   @db.VarChar(100)
+  order_no                       Int?      @default(0)
+  order_status                   String?   @db.VarChar(50)
+  price_categ1_subtotal          Float     @default(0.00) @db.Float
+  price_categ1_total             Float     @default(0.00) @db.Float
+  price_categ1_valuetax          Float     @default(0.00) @db.Float
+  price_categ2_subtotal          Float     @default(0.00) @db.Float
+  price_categ2_total             Float     @default(0.00) @db.Float
+  price_categ2_valuetax          Float     @default(0.00) @db.Float
+  price_categ3_freight_subtotal  Float     @default(0.00) @db.Float
+  price_categ3_labor_subtotal    Float     @default(0.00) @db.Float
+  price_categ3_material_subtotal Float     @default(0.00) @db.Float
+  price_categ3_subtotal          Float     @default(0.00) @db.Float
+  price_categ3_total             Float     @default(0.00) @db.Float
+  price_categ3_valuetax          Float     @default(0.00) @db.Float
+  price_outstanding_money        Float     @default(0.00) @db.Float
+  price_payments_total           Float     @default(0.00) @db.Float
+  number                         String?   @default("") @db.VarChar(50)
+  printstatus_articlesales       String?   @db.VarChar(200)
+  printstatus_costestimate       String?   @db.Text
+  printstatus_invoice            String?   @db.Text
+  reason_air                     Int?      @default(0)
+  reason_oil                     Int?      @default(0)
+  reason_other                   Int?      @default(0)
+  reason_telescope               Int?      @default(0)
+  reminder_date                  DateTime? @db.DateTime(0)
+  reminder_level                 Int?      @default(0)
+  sold_units_reserved            Int?      @default(0)
+  text_payments                  String?   @db.Text
+  user_print_language            String?   @db.VarChar(50)
+  value_tax                      Float     @default(0.00) @db.Float
+  vat_no_customer                String?   @db.VarChar(50)
+  worker_invoice                 String?   @db.VarChar(50)
+  worker_invoice_no              Int?      @default(0)
+  user_group                     String?   @db.VarChar(50)
+  uid_ref_fork                   Int       @db.UnsignedInt
+  uid_customer                   Int       @db.UnsignedInt
+  uid_client                     Int       @db.UnsignedInt
+  uid_fork                       Int       @db.UnsignedInt
+  created_at                     DateTime? @db.DateTime(0)
+  updated_at                     DateTime? @db.DateTime(0)
+  wheelsize                      String?   @db.VarChar(20)
+  value_tax2                     Float?    @default(0.00) @db.Float
+  no_vat                         Int?      @default(0)
+  ea_orderscol                   String?   @db.VarChar(45)
+  ftsearch                       String?   @db.VarChar(200)
+  diagnosis_no                   Int?      @default(0)
+  worksheet_no                   Int?      @default(0)
+
+  @@index([customer_no], map: "norders_customer_no")
+  @@index([order_status], map: "norders_order_status")
+  @@index([uid_client], map: "norders_uid_client1")
+  @@index([uid_customer], map: "norders_uid_customer1")
+  @@index([uid_fork], map: "norders_uid_fork1")
+  @@index([uid_ref_fork], map: "norders_uid_ref_fork1")
+  @@index([user_group], map: "norders_user_group")
+  @@fulltext([fork_model, ftsearch, customer_client_name], map: "index6")
+  @@fulltext([customer_address], map: "index7")
+}
+
+model ea_orders_costestimates {
+  uid_costestimates              Int       @id @default(autoincrement()) @db.UnsignedInt
+  worker_costestimate            String?   @db.VarChar(50)
+  worker_costestimate_no         Int?      @default(0)
+  price_costestimate_total       Float     @default(0.00) @db.Float
+  printstatus_costestimate       String?   @db.Text
+  price_costestimate_subtotal    Float     @default(0.00) @db.Float
+  costestimate_date              DateTime? @db.DateTime(0)
+  text_consult_costestimate      String?   @db.Text
+  notes_costestimate_extern      String?   @db.Text
+  price_costestimate_valuetax    Float     @default(0.00) @db.Float
+  costestimate_confirm_check     Int?      @default(0)
+  costestimate_no                Int?      @default(1)
+  uid_order                      Int       @db.UnsignedInt
+  created_at                     DateTime? @db.DateTime(0)
+  updated_at                     DateTime? @db.DateTime(0)
+  confirmed_when                 DateTime? @db.DateTime(0)
+  confirmed_how                  Int?
+  confirmed_by                   String?   @db.VarChar(45)
+  price_categ1_subtotal          Float?    @db.Float
+  price_categ1_total             Float?    @db.Float
+  price_categ1_valuetax          Float?    @db.Float
+  price_categ2_subtotal          Float?    @db.Float
+  price_categ2_total             Float?    @db.Float
+  price_categ2_valuetax          Float?    @db.Float
+  price_categ3_freight_subtotal  Float?    @db.Float
+  price_categ3_labor_subtotal    Float?    @db.Float
+  price_categ3_material_subtotal Float?    @db.Float
+  price_categ3_subtotal          Float?    @db.Float
+  price_categ3_total             Float?    @db.Float
+  price_categ3_valuetax          Float?    @db.Float
+  price_outstanding_money        Float?    @db.Float
+  price_payments_total           Float?    @db.Float
+  customer_category_no           Int?      @default(0)
+  user_group                     String?   @db.VarChar(45)
+
+  @@index([uid_order], map: "costest2")
+}
+
+model ea_orders_old {
+  uid_order                      Int       @id @default(autoincrement()) @db.UnsignedInt
+  cart_comp_ship_2               String?   @db.VarChar(50)
+  label_text5_warranty           String?   @db.VarChar(50)
+  steeringinner_si24_1           Float     @default(0.00) @db.Float
+  wa_comments                    String?   @db.Text
+  customer_no                    Int?      @default(0)
+  fork_setting                   String?   @db.VarChar(50)
+  steeringinner_si13_1           Float     @default(0.00) @db.Float
+  worker_costestimate            String?   @db.VarChar(50)
+  print_                         String?   @db.VarChar(50)
+  notes_diagnosis_extern         String?   @db.Text
+  check_shockboot                String?   @db.VarChar(50)
+  warranty_date                  DateTime? @db.DateTime(0)
+  costestimate_no_rel            String?   @db.VarChar(50)
+  worker_costestimate_no         Int?      @default(0)
+  fork_invoice_date              DateTime? @db.DateTime(0)
+  text4_costestimate             String?   @db.Text
+  worksheet_no                   Int?      @default(0)
+  customer_client_weight         String?   @db.VarChar(50)
+  fork_freight_forwarder         String?   @db.VarChar(50)
+  fork_invoice_no                String?   @db.VarChar(100)
+  price_categ1_subtotal          Float     @default(0.00) @db.Float
+  notes_intern_worksheet         String?   @db.Text
+  reason_oil                     Int?      @default(0)
+  calc_or3                       Float     @default(0.00) @db.Float
+  work_warranty_date             DateTime? @db.DateTime(0)
+  reason_telescope               Int?      @default(0)
+  label_text2_invoice            String?   @db.VarChar(50)
+  creditnote_no                  Int?      @default(0)
+  diagnosis_date                 DateTime? @db.DateTime(0)
+  steeringinner_si13_2           Float     @default(0.00) @db.Float
+  notes_intern                   String?   @db.Text
+  text4_no_costestimate          Int?      @default(0)
+  outerraces_1_out               Float     @default(0.00) @db.Float
+  text3_worksheet                String?   @db.Text
+  text1_no_costestimate          Int?      @default(0)
+  cs_coilspring                  String?   @db.VarChar(50)
+  fork_use                       String?   @db.VarChar(50)
+  cart_reb_ship_2                String?   @db.VarChar(50)
+  reason_air                     Int?      @default(0)
+  outerraces_1_in                Float     @default(0.00) @db.Float
+  text1_no_warranty              Int?      @default(0)
+  customer_no_rel                String?   @db.VarChar(100)
+  price_outstanding_money        Float     @default(0.00) @db.Float
+  text2_no_creditnote            Int?      @default(0)
+  worker_warranty_no             Int?      @default(0)
+  check_cartridge                String?   @db.VarChar(50)
+  user_group                     String?   @db.VarChar(50)
+  text3_no_diagnosis             Int?      @default(0)
+  customer_height                String?   @db.VarChar(50)
+  price_costestimate_total       Float     @default(0.00) @db.Float
+  fork_no_rel                    String?   @db.VarChar(100)
+  warranty_no                    Int?      @default(0)
+  warranty_reason                String?   @db.Text
+  price_categ3_labor_subtotal    Float     @default(0.00) @db.Float
+  worker_diagnosis_no            Int?      @default(0)
+  innerraces_1_in                Float     @default(0.00) @db.Float
+  notes_warranty_extern          String?   @db.Text
+  customer_address               String?   @db.VarChar(200)
+  wa_failure_secondary           String?   @db.Text
+  label_text3_creditnote         String?   @db.VarChar(50)
+  worker_creditnote_no           Int?      @default(0)
+  customer_name                  String?   @db.Text
+  printstatus_costestimate       String?   @db.Text
+  worker_worksheet_no            Int?      @default(0)
+  creditenote_no_rel             String?   @db.VarChar(50)
+  text_consult_worksheet         String?   @db.Text
+  innerraces_3_in                Float     @default(0.00) @db.Float
+  customer_category_no           Int?      @default(0)
+  cart_reb_measure_2             String?   @db.VarChar(50)
+  cart_comp_measure_1            String?   @db.VarChar(50)
+  calc_nl24                      Float     @default(0.00) @db.Float
+  wa_mfg_day                     Int?      @default(0)
+  customer_address_alt           String?   @db.VarChar(150)
+  wa_failure_primary             String?   @db.Text
+  cal_amount_price_categ3        Float     @default(0.00) @db.Float
+  fork_in_carrier                String?   @db.VarChar(50)
+  calc_or1                       Float     @default(0.00) @db.Float
+  steeringouter_so13_1           Float     @default(0.00) @db.Float
+  price_costestimate_subtotal    Float     @default(0.00) @db.Float
+  text1_no_diagnosis             Int?      @default(0)
+  worksheet_date                 DateTime? @db.DateTime(0)
+  invoice_no_rel                 String?   @db.VarChar(50)
+  text2_invoice                  String?   @db.Text
+  label_text4_invoice            String?   @db.VarChar(50)
+  printstatus_diagnosis          String?   @db.Text
+  calc_so24                      Float     @default(0.00) @db.Float
+  label_text2_creditnote         String?   @db.VarChar(50)
+  text3_invoice                  String?   @db.Text
+  steeringouter_so24_3           Float     @default(0.00) @db.Float
+  label_text3_warranty           String?   @db.VarChar(50)
+  text3_creditnote               String?   @db.Text
+  bank_id                        String?   @db.VarChar(50)
+  label_text3_invoice            String?   @db.VarChar(50)
+  dealers_client_form            Int?      @default(0)
+  ov_oilviscosity                String?   @db.VarChar(50)
+  customer_email                 String?   @db.VarChar(100)
+  fork_pickup_time               DateTime? @db.DateTime(0)
+  check_telescope                String?   @db.VarChar(50)
+  invoice_no                     Int?      @default(0)
+  text5_costestimate             String?   @db.Text
+  label_text5_costestimate       String?   @db.VarChar(50)
+  text3_costestimate             String?   @db.Text
+  label_text1_creditnote         String?   @db.VarChar(50)
+  worker_invoice_no              Int?      @default(0)
+  text2_diagnosis                String?   @db.Text
+  ns_negspring                   String?   @db.VarChar(50)
+  diagnosis_no_rel               String?   @db.VarChar(50)
+  customer_weight                String?   @db.VarChar(50)
+  work_warranty_time_end         DateTime? @db.DateTime(0)
+  warranty_reason_text_no        Int?      @default(0)
+  text1_warranty                 String?   @db.Text
+  cart_comp_ship_3               String?   @db.VarChar(50)
+  costestimate_date              DateTime? @db.DateTime(0)
+  price_creditnote_valuetax      Float     @default(0.00) @db.Float
+  price_categ2_subtotal          Float     @default(0.00) @db.Float
+  printstatus_worksheet          String?   @db.Text
+  text4_creditnote               String?   @db.Text
+  steeringinner_si24_3           Float     @default(0.00) @db.Float
+  label_text4_costestimate       String?   @db.VarChar(50)
+  text_consult_warranty          String?   @db.Text
+  invoice_date                   DateTime? @db.DateTime(0)
+  innerraces_2_in                Float     @default(0.00) @db.Float
+  cart_reb_measure_4             String?   @db.VarChar(50)
+  cart_comp_measure_4            String?   @db.VarChar(50)
+  text3_no_costestimate          Int?      @default(0)
+  label_text1_costestimate       String?   @db.VarChar(50)
+  cart_comp_ship_4               String?   @db.VarChar(50)
+  cart_reb_ship_1                String?   @db.VarChar(50)
+  label_text1_warranty           String?   @db.VarChar(50)
+  label_text1_invoice            String?   @db.VarChar(50)
+  text2_creditnote               String?   @db.Text
+  fork_shipped_date              DateTime? @db.DateTime(0)
+  text2_no_worksheet             Int?      @default(0)
+  reminder_date                  DateTime? @db.DateTime(0)
+  check_dial                     String?   @db.VarChar(50)
+  text3_diagnosis                String?   @db.Text
+  text_consult_invoice           String?   @db.Text
+  calc_si24                      Float     @default(0.00) @db.Float
+  text2_no_costestimate          Int?      @default(0)
+  steeringinner_si24_2           Float     @default(0.00) @db.Float
+  innerraces_1_out               Float     @default(0.00) @db.Float
+  work_diagnosis_time_start      DateTime? @db.DateTime(0)
+  reason_other                   Int?      @default(0)
+  outerraces_2_out               Float     @default(0.00) @db.Float
+  text5_creditnote               String?   @db.Text
+  text4_no_invoice               Int?      @default(0)
+  calc_or2                       Float     @default(0.00) @db.Float
+  price_categ3_subtotal          Float     @default(0.00) @db.Float
+  text_payments                  String?   @db.Text
+  cal_outstanding_money          Float     @default(0.00) @db.Float
+  article_warranty_int           Int?      @default(0)
+  sold_units_reserved            Int?      @default(0)
+  fork_cannondale_sn             String?   @db.VarChar(50)
+  text5_no_warranty              Int?      @default(0)
+  text5_no_invoice               Int?      @default(0)
+  price_categ1_valuetax          Float     @default(0.00) @db.Float
+  fork_color                     String?   @db.VarChar(50)
+  price_categ2_total             Float     @default(0.00) @db.Float
+  printstatus_articlesales       String?   @db.VarChar(200)
+  cart_reb_measure_3             String?   @db.VarChar(50)
+  fork_bike                      String?   @db.VarChar(50)
+  text3_no_invoice               Int?      @default(0)
+  label_text4_creditnote         String?   @db.VarChar(50)
+  text4_warranty                 String?   @db.Text
+  price_payments_total           Float     @default(0.00) @db.Float
+  text2_no_warranty              Int?      @default(0)
+  notes_invoice_extern           String?   @db.Text
+  calc_nl13                      Float     @default(0.00) @db.Float
+  text2_no_diagnosis             Int?      @default(0)
+  text3_no_creditnote            Int?      @default(0)
+  text_consult_costestimate      String?   @db.Text
+  customer_client_height         String?   @db.VarChar(50)
+  text1_no_worksheet             Int?      @default(0)
+  warranty_request               String?   @db.VarChar(50)
+  wa_id_cartridge                String?   @db.VarChar(50)
+  printstatus_warranty           String?   @db.VarChar(200)
+  creditnote_date                DateTime? @db.DateTime(0)
+  outerraces_3_in                Float     @default(0.00) @db.Float
+  cart_reb_ship_4                String?   @db.VarChar(50)
+  steeringouter_so13_2           Float     @default(0.00) @db.Float
+  fork_in_date                   DateTime? @db.DateTime(0)
+  value_tax                      Float     @default(0.00) @db.Float
+  warranty_no_rel                String?   @db.VarChar(50)
+  diagnosis_no                   Int?      @default(0)
+  calc_si13                      Float     @default(0.00) @db.Float
+  order_no                       Int?      @default(0)
+  wa_mfg_month                   Int?      @default(0)
+  ap_airpreasure                 String?   @db.VarChar(50)
+  reminder_level                 Int?      @default(0)
+  fork_freight_no                String?   @db.VarChar(50)
+  order_status                   String?   @db.VarChar(50)
+  work_worksheet_date            DateTime? @db.DateTime(0)
+  text1_worksheet                String?   @db.Text
+  text2_costestimate             String?   @db.Text
+  notes_costestimate_extern      String?   @db.Text
+  price_categ3_material_subtotal Float     @default(0.00) @db.Float
+  order_modifikation             String?   @db.VarChar(100)
+  price_categ2_valuetax          Float     @default(0.00) @db.Float
+  innerraces_4_in                Float     @default(0.00) @db.Float
+  outerraces_2_in                Float     @default(0.00) @db.Float
+  check_air                      String?   @db.VarChar(50)
+  text_consult_diagnosis         String?   @db.Text
+  text2_worksheet                String?   @db.Text
+  date_modifikation              DateTime? @db.DateTime(0)
+  worker_invoice                 String?   @db.VarChar(50)
+  worker_worksheet               String?   @db.VarChar(50)
+  article_creditnote_int         Int?      @default(0)
+  notes_worksheet_extern         String?   @db.Text
+  text1_invoice                  String?   @db.Text
+  worker_diagnosis               String?   @db.VarChar(50)
+  check_extras                   String?   @db.Text
+  worksheet_no_rel               String?   @db.VarChar(50)
+  steeringouter_so24_2           Float     @default(0.00) @db.Float
+  price_categ3_total             Float     @default(0.00) @db.Float
+  worker_creditnote              String?   @db.VarChar(50)
+  bank_payment                   String?   @db.VarChar(50)
+  bank_name                      String?   @db.VarChar(50)
+  label_text4_warranty           String?   @db.VarChar(50)
+  text1_no_creditnote            Int?      @default(0)
+  cart_reb_ship_3                String?   @db.VarChar(50)
+  text4_invoice                  String?   @db.Text
+  wa_fork_model                  String?   @db.VarChar(50)
+  label_text5_creditnote         String?   @db.VarChar(50)
+  work_worksheet_time_start      DateTime? @db.DateTime(0)
+  steeringouter_so24_1           Float     @default(0.00) @db.Float
+  price_costestimate_valuetax    Float     @default(0.00) @db.Float
+  check_headset                  String?   @db.VarChar(50)
+  text4_no_creditnote            Int?      @default(0)
+  text5_warranty                 String?   @db.Text
+  worker_warranty                String?   @db.VarChar(50)
+  work_diagnosis_time_end        DateTime? @db.DateTime(0)
+  innerraces_2_out               Float     @default(0.00) @db.Float
+  work_worksheet_time_end        DateTime? @db.DateTime(0)
+  outerraces_4_in                Float     @default(0.00) @db.Float
+  price_creditnote_subtotal      Float     @default(0.00) @db.Float
+  customer_fax                   String?   @db.VarChar(50)
+  text5_no_costestimate          Int?      @default(0)
+  warranty_invoice_date          DateTime? @db.DateTime(0)
+  fork_no                        Int?      @default(0)
+  price_creditenote_total        Float     @default(0.00) @db.Float
+  text1_no_invoice               Int?      @default(0)
+  wa_mfg_year                    Int?      @default(0)
+  work_diagnosis_date            DateTime? @db.DateTime(0)
+  warranty_invoice_no            Int?      @default(0)
+  text2_warranty                 String?   @db.Text
+  cart_comp_ship_1               String?   @db.VarChar(50)
+  customer_fon                   String?   @db.VarChar(50)
+  text3_warranty                 String?   @db.Text
+  printstatus_invoice            String?   @db.Text
+  outerraces_3_out               Float     @default(0.00) @db.Float
+  label_text3_costestimate       String?   @db.VarChar(50)
+  user_print_language            String?   @db.VarChar(50)
+  cart_reb_measure_1             String?   @db.VarChar(50)
+  text5_no_creditnote            Int?      @default(0)
+  label_text5_invoice            String?   @db.VarChar(50)
+  printstatus_creditnote         String?   @db.Text
+  innerraces_4_out               Float     @default(0.00) @db.Float
+  label_text2_warranty           String?   @db.VarChar(50)
+  steeringinner_si13_3           Float     @default(0.00) @db.Float
+  price_categ3_valuetax          Float     @default(0.00) @db.Float
+  customer_client_name           String?   @db.VarChar(150)
+  price_categ3_freight_subtotal  Float     @default(0.00) @db.Float
+  text5_invoice                  String?   @db.Text
+  order_no_rel                   String?   @db.VarChar(100)
+  steeringouter_so13_3           Float     @default(0.00) @db.Float
+  cart_comp_measure_2            String?   @db.VarChar(50)
+  text4_no_warranty              Int?      @default(0)
+  bank_account                   String?   @db.VarChar(50)
+  costestimate_confirm_check     Int?      @default(0)
+  text1_creditnote               String?   @db.Text
+  text3_no_worksheet             Int?      @default(0)
+  text3_no_warranty              Int?      @default(0)
+  text1_diagnosis                String?   @db.Text
+  costestimate_no                Int?      @default(0)
+  text1_costestimate             String?   @db.Text
+  outerraces_4_out               Float     @default(0.00) @db.Float
+  text2_no_invoice               Int?      @default(0)
+  fork_model                     String?   @db.VarChar(50)
+  calc_so13                      Float     @default(0.00) @db.Float
+  price_categ1_total             Float     @default(0.00) @db.Float
+  innerraces_3_out               Float     @default(0.00) @db.Float
+  label_text2_costestimate       String?   @db.VarChar(50)
+  work_warranty_time_start       DateTime? @db.DateTime(0)
+  calc_or4                       Float     @default(0.00) @db.Float
+  cart_comp_measure_3            String?   @db.VarChar(50)
+  alexsys_no                     String?   @db.VarChar(100)
+  customer_cannondale_no         String?   @db.VarChar(100)
+  price_creditnote_subtotal_cat2 Float     @default(0.00) @db.Float
+  price_creditnote_valuetax_cat2 Float     @default(0.00) @db.Float
+  price_creditnote_total_cat2    Float     @default(0.00) @db.Float
+  vat_no_customer                String?   @db.VarChar(50)
+  cal_warranty_request_find_int  Int?      @default(0)
+  uid_ref_fork                   Int       @db.UnsignedInt
+  uid_customer                   Int       @db.UnsignedInt
+  uid_client                     Int       @db.UnsignedInt
+  uid_fork                       Int       @db.UnsignedInt
+  created_at                     DateTime? @db.DateTime(0)
+  updated_at                     DateTime? @db.DateTime(0)
+
+  @@index([customer_no], map: "orders_customer_no")
+  @@index([user_group], map: "orders_user_group")
+  @@index([warranty_no], map: "orders_warranty_no")
+  @@index([uid_client], map: "uid_client1")
+  @@index([uid_customer], map: "uid_customer1")
+  @@index([uid_fork], map: "uid_fork1")
+  @@index([uid_ref_fork], map: "uid_ref_fork1")
+  @@fulltext([fork_model, warranty_request, customer_address], map: "ft_orders")
+}
+
+model ea_orders_positions {
+  uid_orders_position          Int       @id @default(autoincrement()) @db.UnsignedInt
+  article_creditnote_int       Int?      @default(0)
+  articlecharacter             String?   @db.VarChar(250)
+  cal_value_tax                Float     @default(0.00) @db.Float
+  fork_no_rel                  String?   @db.VarChar(50)
+  currency                     String?   @db.VarChar(50)
+  order_no                     Int?      @default(0)
+  article_warranty_int         Int?      @default(0)
+  amount_price_categ3_labor    Float     @default(0.00) @db.Float
+  cal_price                    Float     @default(0.00) @db.Float
+  price_single_categ2          Float     @default(0.00) @db.Float
+  amount_price_categ1          Float     @default(0.00) @db.Float
+  customer_category_no         Int?      @default(0)
+  amount_price_categ3_freight  Float     @default(0.00) @db.Float
+  user_print_language          String?   @db.VarChar(50)
+  article_group                String?   @db.VarChar(50)
+  price_single_categ3          Float     @default(0.00) @db.Float
+  articlediscription           String?   @db.Text
+  amount_price_categ3_material Float     @default(0.00) @db.Float
+  article_no_rel               String?   @db.VarChar(50)
+  cal_price_categ3             Float     @default(0.00) @db.Float
+  customer_no                  Int?      @default(0)
+  cal_price_categ2             Float     @default(0.00) @db.Float
+  articlecode                  String?   @db.VarChar(50)
+  cal_price_categ1             Float     @default(0.00) @db.Float
+  article_no                   Int?      @default(0)
+  customer_no_rel              String?   @db.VarChar(50)
+  fork_no                      Int?      @default(0)
+  user_group                   String?   @db.VarChar(50)
+  order_no_rel                 String?   @db.VarChar(50)
+  amount_price_categ2          Float     @default(0.00) @db.Float
+  price_single_categ1          Float     @default(0.00) @db.Float
+  amount_price_categ3          Float     @default(0.00) @db.Float
+  quantity                     Float     @default(0.00) @db.Float
+  units                        Float     @default(0.00) @db.Float
+  uid_article                  Int       @db.UnsignedInt
+  uid_customer                 Int       @db.UnsignedInt
+  uid_ref_fork                 Int       @db.UnsignedInt
+  uid_order                    Int       @db.UnsignedInt
+  created_at                   DateTime? @db.DateTime(0)
+  updated_at                   DateTime? @db.DateTime(0)
+  uid_costestimates            Int?
+  cal_value_tax2               Float?    @db.Float
+
+  @@index([uid_article], map: "op1")
+  @@index([uid_customer], map: "op2")
+  @@index([uid_ref_fork], map: "op3")
+  @@index([uid_order], map: "op4")
+  @@index([uid_costestimates], map: "op5")
+  @@index([user_group], map: "orpo_user_group")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model ea_orders_temp {
+  uid_order                      Int       @default(0) @db.UnsignedInt
+  bank_account                   String?   @db.VarChar(50)
+  bank_id                        String?   @db.VarChar(50)
+  bank_name                      String?   @db.VarChar(50)
+  bank_payment                   String?   @db.VarChar(50)
+  cal_amount_price_categ3        Float     @default(0.00) @db.Float
+  cal_outstanding_money          Float     @default(0.00) @db.Float
+  check_extras                   String?   @db.Text
+  customer_address               String?   @db.VarChar(200)
+  customer_address_alt           String?   @db.VarChar(200)
+  costestimates_numbers          String?   @db.VarChar(200)
+  customer_category_no           Int?      @default(0)
+  customer_client_height         String?   @db.VarChar(50)
+  customer_client_name           String?   @db.VarChar(150)
+  customer_client_weight         String?   @db.VarChar(50)
+  customer_email                 String?   @db.VarChar(100)
+  customer_fon                   String?   @db.VarChar(50)
+  customer_name                  String?   @db.Text
+  customer_no                    Int?      @default(0)
+  date_modifikation              DateTime? @db.DateTime(0)
+  dealers_client_form            Int?      @default(0)
+  fork_color                     String?   @db.VarChar(50)
+  fork_freight_forwarder         String?   @db.VarChar(50)
+  fork_freight_no                String?   @db.VarChar(50)
+  fork_in_carrier                String?   @db.VarChar(50)
+  fork_in_date                   DateTime? @db.DateTime(0)
+  fork_invoice_no                String?   @db.VarChar(100)
+  fork_model                     String?   @db.VarChar(150)
+  fork_no                        Int?      @default(0)
+  fork_pickup_time               DateTime? @db.DateTime(0)
+  fork_shipped_date              DateTime? @db.DateTime(0)
+  invoice_date                   DateTime? @db.DateTime(0)
+  invoice_no                     Int?      @default(0)
+  notes_costestimate_extern      String?   @db.Text
+  notes_intern                   String?   @db.Text
+  notes_invoice_extern           String?   @db.Text
+  order_modifikation             String?   @db.VarChar(100)
+  order_no                       Int?      @default(0)
+  order_status                   String?   @db.VarChar(50)
+  price_categ1_subtotal          Float     @default(0.00) @db.Float
+  price_categ1_total             Float     @default(0.00) @db.Float
+  price_categ1_valuetax          Float     @default(0.00) @db.Float
+  price_categ2_subtotal          Float     @default(0.00) @db.Float
+  price_categ2_total             Float     @default(0.00) @db.Float
+  price_categ2_valuetax          Float     @default(0.00) @db.Float
+  price_categ3_freight_subtotal  Float     @default(0.00) @db.Float
+  price_categ3_labor_subtotal    Float     @default(0.00) @db.Float
+  price_categ3_material_subtotal Float     @default(0.00) @db.Float
+  price_categ3_subtotal          Float     @default(0.00) @db.Float
+  price_categ3_total             Float     @default(0.00) @db.Float
+  price_categ3_valuetax          Float     @default(0.00) @db.Float
+  price_outstanding_money        Float     @default(0.00) @db.Float
+  price_payments_total           Float     @default(0.00) @db.Float
+  print_                         String?   @db.VarChar(50)
+  printstatus_articlesales       String?   @db.VarChar(200)
+  printstatus_costestimate       String?   @db.Text
+  printstatus_invoice            String?   @db.Text
+  reason_air                     Int?      @default(0)
+  reason_oil                     Int?      @default(0)
+  reason_other                   Int?      @default(0)
+  reason_telescope               Int?      @default(0)
+  reminder_date                  DateTime? @db.DateTime(0)
+  reminder_level                 Int?      @default(0)
+  sold_units_reserved            Int?      @default(0)
+  text_payments                  String?   @db.Text
+  user_print_language            String?   @db.VarChar(50)
+  value_tax                      Float     @default(0.00) @db.Float
+  vat_no_customer                String?   @db.VarChar(50)
+  worker_invoice                 String?   @db.VarChar(50)
+  worker_invoice_no              Int?      @default(0)
+  user_group                     String?   @db.VarChar(50)
+  uid_ref_fork                   Int       @db.UnsignedInt
+  uid_customer                   Int       @db.UnsignedInt
+  uid_client                     Int       @db.UnsignedInt
+  uid_fork                       Int       @db.UnsignedInt
+  created_at                     DateTime? @db.DateTime(0)
+  updated_at                     DateTime? @db.DateTime(0)
+  wheelsize                      String?   @db.VarChar(20)
+  value_tax2                     Float?    @default(0.00) @db.Float
+  no_vat                         Int?      @default(0)
+
+  @@ignore
+}
+
+model ea_orders_texts {
+  uid_orders_texts  Int      @id @default(autoincrement()) @db.UnsignedInt
+  type              Int?     @default(0)
+  text_no           Int?     @default(0)
+  text              String?  @db.Text
+  uid_order         Int      @db.UnsignedInt
+  created_at        DateTime @db.DateTime(0)
+  updated_at        DateTime @db.DateTime(0)
+  uid_costestimates Int?
+
+  @@index([uid_order], map: "ot1")
+  @@index([uid_costestimates], map: "ot2")
+}
+
+model ea_payments {
+  uid_payment         Int       @id @default(autoincrement()) @db.UnsignedInt
+  payment_amount      Float     @default(0.00) @db.Float
+  payment_user        String?   @db.VarChar(100)
+  payment_currency    String?   @db.VarChar(50)
+  payment_note        String?   @db.VarChar(200)
+  payment_date        DateTime? @db.DateTime(0)
+  user_print_language String?   @db.VarChar(50)
+  user_group          String?   @db.VarChar(50)
+  uid_order           Int       @db.UnsignedInt
+  created_at          DateTime? @db.DateTime(0)
+  updated_at          DateTime? @db.DateTime(0)
+
+  @@index([uid_order], map: "pay1")
+}
+
+model ea_purchase_positions {
+  uid_purchase_position Int       @id @default(autoincrement()) @db.UnsignedInt
+  articlecharacter      String?   @db.VarChar(150)
+  company_no            Int?      @default(0)
+  cost_price_new        Float     @default(0.00) @db.Float
+  articlecode           String?   @db.VarChar(50)
+  supplied              Int?      @default(0)
+  cost_price_old        Float     @default(0.00) @db.Float
+  company_article_no    String?   @db.VarChar(50)
+  user_group            String?   @db.VarChar(50)
+  date_supplied         DateTime? @db.DateTime(0)
+  info                  String?   @db.Text
+  article_category      String?   @db.VarChar(50)
+  articlediscription    String?   @db.Text
+  article_no            Int?      @default(0)
+  purchase_no           Int?      @default(0)
+  article_group         String?   @db.VarChar(50)
+  quantity              Float     @default(0.00) @db.Float
+  quantity_supplied     Float     @default(0.00) @db.Float
+  units                 Float     @default(0.00) @db.Float
+  units_supplied        Float     @default(0.00) @db.Float
+  quantity_open         Float     @default(0.00) @db.Float
+  storage_location2     String?   @db.Text
+  storage_location1     String?   @db.Text
+  user_print_language   String?   @db.VarChar(50)
+  uid_purchase          Int       @db.UnsignedInt
+  uid_company           Int       @db.UnsignedInt
+  created_at            DateTime? @db.DateTime(0)
+  updated_at            DateTime? @db.DateTime(0)
+
+  @@index([user_group], map: "pupo_user_group")
+}
+
+model ea_purchases {
+  uid_purchase        Int       @id @default(autoincrement()) @db.UnsignedInt
+  address_partner     String?   @db.VarChar(50)
+  company_fon         String?   @db.VarChar(50)
+  supplier            Int?      @default(0)
+  text_footer         String?   @db.Text
+  company_fax         String?   @db.VarChar(50)
+  purchase_date       DateTime? @db.DateTime(0)
+  freight_forw        String?   @db.VarChar(50)
+  company_name        String?   @db.VarChar(50)
+  purchase_no         Int?      @default(0)
+  company_email       String?   @db.VarChar(50)
+  text_header         String?   @db.Text
+  company_customer_no String?   @db.VarChar(50)
+  text_header_no      Int?      @default(0)
+  text_footer_no      Int?      @default(0)
+  user_group          String?   @db.VarChar(50)
+  company_address     String?   @db.Text
+  purchase_status     String?   @db.Text
+  company_no          Int?      @default(0)
+  user_print_language String?   @db.VarChar(50)
+  uid_company         Int       @db.UnsignedInt
+  created_at          DateTime? @db.DateTime(0)
+  updated_at          DateTime? @db.DateTime(0)
+
+  @@index([user_group], map: "purchase_user_group")
+  @@fulltext([company_name], map: "ft_purchases")
+}
+
+model ea_rebound_in {
+  uid_rebound_in   Int       @id @default(autoincrement()) @db.UnsignedInt
+  value_rebound_in String?   @db.VarChar(150)
+  user_group       String?   @db.VarChar(50)
+  created_at       DateTime? @db.DateTime(0)
+  updated_at       DateTime? @db.DateTime(0)
+}
+
+model ea_rebound_out {
+  uid_rebound_out   Int       @id @default(autoincrement()) @db.UnsignedInt
+  value_rebound_out String?   @db.VarChar(150)
+  user_group        String?   @db.VarChar(50)
+  created_at        DateTime? @db.DateTime(0)
+  updated_at        DateTime? @db.DateTime(0)
+}
+
+model ea_ref_forks {
+  uid_ref_fork      Int       @id @default(autoincrement()) @db.UnsignedInt
+  year_construction String?   @db.VarChar(50)
+  fork_model        String?   @db.VarChar(100)
+  damper            String?   @db.VarChar(100)
+  damper_elements   String?   @db.VarChar(50)
+  cartridge         String?   @db.VarChar(100)
+  weight_lbs        Float     @default(0.00) @db.Float
+  notes             String?   @db.Text
+  travel            String?   @db.VarChar(50)
+  color             String?   @db.VarChar(50)
+  cannondale_sn     String?   @db.VarChar(50)
+  category_fork     String?   @db.VarChar(50)
+  lockout           String?   @db.VarChar(50)
+  weight_kg         Float     @default(0.00) @db.Float
+  breakmount        String?   @db.VarChar(100)
+  created_at        DateTime? @db.DateTime(0)
+  updated_at        DateTime? @db.DateTime(0)
+}
+
+model ea_ref_forks_parts {
+  ref_forks_part_name String?  @db.Text
+  uid_ref_forks_part  Int      @id @default(autoincrement())
+  created_at          DateTime @db.DateTime(0)
+  updated_at          DateTime @db.DateTime(0)
+}
+
+model ea_ref_parts {
+  uid_ref_part        Int       @id @default(autoincrement()) @db.UnsignedInt
+  ref_part_qualitiy   String?   @db.Text
+  check_sort          Int?      @default(0)
+  ref_part_notes      String?   @db.Text
+  category_fork       String?   @db.VarChar(50)
+  ref_part_name       String?   @db.VarChar(100)
+  check_selection     Float     @default(0.00) @db.Float
+  check_character_int Int?      @default(0)
+  uid_ref_fork        Int       @db.UnsignedInt
+  created_at          DateTime? @db.DateTime(0)
+  updated_at          DateTime? @db.DateTime(0)
+
+  @@index([uid_ref_fork], map: "refp")
+}
+
+model ea_serial_no {
+  uid_serial_no                Int       @id @default(autoincrement()) @db.UnsignedInt
+  purchase_no                  Int?      @default(0)
+  order_no                     Int?      @default(0)
+  customer_no                  Int?      @default(0)
+  worksheet_no                 Int?      @default(0)
+  invoice_no                   Int?      @default(0)
+  warranty_no                  Int?      @default(0)
+  company_no                   Int?      @default(0)
+  fork_no                      Int?      @default(0)
+  warranties_date_from         DateTime? @db.DateTime(0)
+  warranty_invoice_no          Int?      @default(0)
+  article_no                   Int?      @default(0)
+  costestimate_no              Int?      @default(0)
+  warranties_invoice_no_to     Int?      @default(0)
+  warranties_no_to             Int?      @default(0)
+  creditnote_no                Int?      @default(0)
+  warranties_invoice_date_to   DateTime? @db.DateTime(0)
+  warranties_invoice_date_from DateTime? @db.DateTime(0)
+  warranties_date_to           DateTime? @db.DateTime(0)
+  user_group                   String?   @db.VarChar(50)
+  diagnosis_no                 Int?      @default(0)
+  warranties_no_from           Int?      @default(0)
+  warranties_invoice_no_from   Int?      @default(0)
+  created_at                   DateTime? @db.DateTime(0)
+  updated_at                   DateTime? @db.DateTime(0)
+}
+
+model ea_service {
+  uid_service         Int       @id @default(autoincrement()) @db.UnsignedInt
+  printers            String?   @db.VarChar(200)
+  fieldcolor_active   String?   @db.VarChar(50)
+  fieldcolor_inactive String?   @db.VarChar(50)
+  image_logo_4        Bytes?    @db.Blob
+  user_print_language String?   @db.VarChar(50)
+  user_group          String?   @db.VarChar(50)
+  image_logo_3        Bytes?    @db.Blob
+  image_logo_5        Bytes?    @db.Blob
+  latest_update       DateTime? @db.DateTime(0)
+  image_logo_1        Bytes?    @db.Blob
+  core_item           Int?      @default(0)
+  image_logo_2        Bytes?    @db.Blob
+  uid_text            Int       @db.UnsignedInt
+  created_at          DateTime? @db.DateTime(0)
+  updated_at          DateTime? @db.DateTime(0)
+}
+
+model ea_settings {
+  uid_setting               Int       @id @default(autoincrement()) @db.UnsignedInt
+  customerno_text           String?   @db.VarChar(50)
+  logo_2                    Bytes?    @db.Blob
+  your_article_no           String?   @db.VarChar(50)
+  mail_sender_address       String?   @db.VarChar(100)
+  forkno_text               String?   @db.VarChar(50)
+  tax_id                    String?   @db.VarChar(50)
+  pdf_folder_path           String?   @db.VarChar(200)
+  freightforward_text       String?   @db.VarChar(50)
+  reminder_text             String?   @db.VarChar(50)
+  logo_printform            Bytes?    @db.Blob
+  costestimate_text         String?   @db.VarChar(50)
+  mail_fax_password         String?   @db.VarChar(50)
+  valuetax_text             String?   @db.VarChar(50)
+  hint                      String?   @db.Text
+  invoice_total             String?   @db.VarChar(50)
+  height_unit_default       String?   @db.VarChar(50)
+  foryourcustomer_text      String?   @db.VarChar(50)
+  worksheet_text            String?   @db.VarChar(50)
+  user_print_language       String?   @db.VarChar(50)
+  costestimateno_text       String?   @db.VarChar(50)
+  address_header            String?   @db.VarChar(200)
+  fork_text                 String?   @db.VarChar(50)
+  alternative_costest_text  String?   @db.VarChar(50)
+  warranty_export_file_path String?   @db.Text
+  creditnoteno_text         String?   @db.VarChar(50)
+  tgs_communication         String?   @db.VarChar(200)
+  singleprice_text          String?   @db.VarChar(50)
+  fiscal_office_text        String?   @db.VarChar(50)
+  bank_id                   String?   @db.VarChar(20)
+  total_text                String?   @db.VarChar(50)
+  tgs_address               String?   @db.VarChar(200)
+  date_text                 String?   @db.VarChar(50)
+  warranty_text             String?   @db.VarChar(50)
+  payment_text              String?   @db.VarChar(50)
+  footer_lists              String?   @db.Text
+  regards_                  String?   @db.Text
+  nb13                      Float     @default(0.00) @db.Float
+  outstanding_money         String?   @db.VarChar(50)
+  user_group                String?   @db.VarChar(50)
+  forkcolor_text            String?   @db.VarChar(50)
+  nb24                      Float     @default(0.00) @db.Float
+  units_text                String?   @db.VarChar(50)
+  fiscal_office             String?   @db.VarChar(100)
+  bank_account              String?   @db.VarChar(50)
+  commission_text           String?   @db.VarChar(50)
+  page_text                 String?   @db.VarChar(50)
+  innvoice_text             String?   @db.VarChar(50)
+  footer_mails              String?   @db.Text
+  preinvoice_text           String?   @db.VarChar(50)
+  logo_solution             Bytes?    @db.Blob
+  no_text                   String?   @db.VarChar(50)
+  payments_total            String?   @db.VarChar(50)
+  value_tax_default         Float     @default(0.00) @db.Float
+  sender                    String?   @db.Text
+  price_text                String?   @db.VarChar(50)
+  tax_id_text               String?   @db.VarChar(50)
+  weight_unit_default       String?   @db.VarChar(50)
+  creditnote_text           String?   @db.VarChar(50)
+  value_tax_id              String?   @db.VarChar(50)
+  worksheetno_text          String?   @db.VarChar(50)
+  warrantyno_text           String?   @db.VarChar(50)
+  selforder                 String?   @db.VarChar(50)
+  our_article_no            String?   @db.VarChar(50)
+  value_tax_id_text         String?   @db.VarChar(50)
+  ammount_text              String?   @db.VarChar(50)
+  remindercategory_text     String?   @db.VarChar(50)
+  bank_name                 String?   @db.VarChar(50)
+  logo_3                    Bytes?    @db.Blob
+  currency_text             String?   @db.VarChar(50)
+  mail_fax_address          String?   @db.VarChar(100)
+  articlecharacter_text     String?   @db.VarChar(50)
+  address_warranty          String?   @db.Text
+  logo_1                    Bytes?    @db.Blob
+  diagnosis_text            String?   @db.VarChar(50)
+  email_signature           String?   @db.Text
+  created_at                DateTime? @db.DateTime(0)
+  updated_at                DateTime? @db.DateTime(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model ea_settings_temp {
+  uid_setting               Int       @default(0) @db.UnsignedInt
+  customerno_text           String?   @db.VarChar(50)
+  logo_2                    Bytes?    @db.Blob
+  your_article_no           String?   @db.VarChar(50)
+  mail_sender_address       String?   @db.VarChar(100)
+  forkno_text               String?   @db.VarChar(50)
+  tax_id                    String?   @db.VarChar(50)
+  pdf_folder_path           String?   @db.VarChar(200)
+  freightforward_text       String?   @db.VarChar(50)
+  reminder_text             String?   @db.VarChar(50)
+  logo_printform            Bytes?    @db.Blob
+  costestimate_text         String?   @db.VarChar(50)
+  mail_fax_password         String?   @db.VarChar(50)
+  valuetax_text             String?   @db.VarChar(50)
+  hint                      String?   @db.Text
+  invoice_total             String?   @db.VarChar(50)
+  height_unit_default       String?   @db.VarChar(50)
+  foryourcustomer_text      String?   @db.VarChar(50)
+  worksheet_text            String?   @db.VarChar(50)
+  user_print_language       String?   @db.VarChar(50)
+  costestimateno_text       String?   @db.VarChar(50)
+  address_header            String?   @db.VarChar(200)
+  fork_text                 String?   @db.VarChar(50)
+  alternative_costest_text  String?   @db.VarChar(50)
+  warranty_export_file_path String?   @db.Text
+  creditnoteno_text         String?   @db.VarChar(50)
+  tgs_communication         String?   @db.VarChar(200)
+  singleprice_text          String?   @db.VarChar(50)
+  fiscal_office_text        String?   @db.VarChar(50)
+  bank_id                   String?   @db.VarChar(20)
+  total_text                String?   @db.VarChar(50)
+  tgs_address               String?   @db.VarChar(200)
+  date_text                 String?   @db.VarChar(50)
+  warranty_text             String?   @db.VarChar(50)
+  payment_text              String?   @db.VarChar(50)
+  footer_lists              String?   @db.Text
+  regards_                  String?   @db.Text
+  nb13                      Float     @default(0.00) @db.Float
+  outstanding_money         String?   @db.VarChar(50)
+  user_group                String?   @db.VarChar(50)
+  forkcolor_text            String?   @db.VarChar(50)
+  nb24                      Float     @default(0.00) @db.Float
+  units_text                String?   @db.VarChar(50)
+  fiscal_office             String?   @db.VarChar(100)
+  bank_account              String?   @db.VarChar(50)
+  commission_text           String?   @db.VarChar(50)
+  page_text                 String?   @db.VarChar(50)
+  innvoice_text             String?   @db.VarChar(50)
+  footer_mails              String?   @db.Text
+  preinvoice_text           String?   @db.VarChar(50)
+  logo_solution             Bytes?    @db.Blob
+  no_text                   String?   @db.VarChar(50)
+  payments_total            String?   @db.VarChar(50)
+  value_tax_default         Float     @default(0.00) @db.Float
+  sender                    String?   @db.Text
+  price_text                String?   @db.VarChar(50)
+  tax_id_text               String?   @db.VarChar(50)
+  weight_unit_default       String?   @db.VarChar(50)
+  creditnote_text           String?   @db.VarChar(50)
+  value_tax_id              String?   @db.VarChar(50)
+  worksheetno_text          String?   @db.VarChar(50)
+  warrantyno_text           String?   @db.VarChar(50)
+  selforder                 String?   @db.VarChar(50)
+  our_article_no            String?   @db.VarChar(50)
+  value_tax_id_text         String?   @db.VarChar(50)
+  ammount_text              String?   @db.VarChar(50)
+  remindercategory_text     String?   @db.VarChar(50)
+  bank_name                 String?   @db.VarChar(50)
+  logo_3                    Bytes?    @db.Blob
+  currency_text             String?   @db.VarChar(50)
+  mail_fax_address          String?   @db.VarChar(100)
+  articlecharacter_text     String?   @db.VarChar(50)
+  address_warranty          String?   @db.Text
+  logo_1                    Bytes?    @db.Blob
+  diagnosis_text            String?   @db.VarChar(50)
+  email_signature           String?   @db.Text
+  created_at                DateTime? @db.DateTime(0)
+  updated_at                DateTime? @db.DateTime(0)
+
+  @@ignore
+}
+
+model ea_storage_location {
+  uid_storage_location Int       @id @default(autoincrement()) @db.UnsignedInt
+  storage_location     String?   @db.Text
+  user_group           String?   @db.VarChar(50)
+  created_at           DateTime? @db.DateTime(0)
+  updated_at           DateTime? @db.DateTime(0)
+}
+
+model ea_tech_notes {
+  uid_tech_note Int       @id @default(autoincrement()) @db.UnsignedInt
+  document      Bytes?    @db.Blob
+  uid_ref_fork  Int?      @default(0)
+  doc_name      String?   @db.VarChar(50)
+  uid_fork      Int?      @default(0)
+  url           String?   @db.VarChar(100)
+  uid_article   Int?      @default(0)
+  created_at    DateTime? @db.DateTime(0)
+  updated_at    DateTime? @db.DateTime(0)
+}
+
+model ea_texts {
+  uid_text    Int       @id @default(autoincrement()) @db.UnsignedInt
+  text_value  String?   @db.Text
+  user_group  String?   @db.VarChar(50)
+  text_code   String?   @db.VarChar(100)
+  text_no     Int?      @default(0)
+  text_no_new Int?      @default(0)
+  seq_no      Float     @default(0.00) @db.Float
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+}
+
+model ea_user {
+  uid_user      Int       @id @default(autoincrement()) @db.UnsignedInt
+  mail_work     String?   @db.VarChar(50)
+  country       String?   @db.VarChar(50)
+  jobday_first  DateTime? @db.DateTime(0)
+  user_name     String?   @db.VarChar(50)
+  user_rights   String?   @db.VarChar(50)
+  user_password String?   @db.VarChar(50)
+  user_group    String?   @db.VarChar(50)
+  notes         String?   @db.Text
+  salutation    String?   @db.VarChar(50)
+  suid_user     String?   @db.VarChar(100)
+  mail_home     String?   @db.VarChar(50)
+  name          String?   @db.VarChar(100)
+  firstname     String?   @db.VarChar(100)
+  titel         String?   @db.VarChar(50)
+  company_name  String?   @db.VarChar(100)
+  street_no     String?   @db.VarChar(100)
+  postal_zip    String?   @db.VarChar(20)
+  city          String?   @db.VarChar(100)
+  created_at    DateTime  @default(now()) @db.DateTime(0)
+  updated_at    DateTime  @default(now()) @db.DateTime(0)
+}
+
+model ea_user_groups {
+  uid_user_group Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group     String?   @db.VarChar(50)
+  user_group_no  Int?      @default(0)
+  created_at     DateTime? @db.DateTime(0)
+  updated_at     DateTime? @db.DateTime(0)
+}
+
+model ea_value_air {
+  uid_value_air Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group    String?   @db.VarChar(50)
+  value_air     String?   @db.VarChar(100)
+  created_at    DateTime? @db.DateTime(0)
+  updated_at    DateTime? @db.DateTime(0)
+}
+
+model ea_value_ap {
+  uid_value_ap Int       @id @default(autoincrement()) @db.UnsignedInt
+  value_ap     String?   @db.VarChar(100)
+  user_group   String?   @db.VarChar(50)
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+}
+
+model ea_value_car {
+  uid_value_car Int       @id @default(autoincrement()) @db.UnsignedInt
+  value_car     String?   @db.VarChar(100)
+  user_group    String?   @db.VarChar(50)
+  created_at    DateTime? @db.DateTime(0)
+  updated_at    DateTime? @db.DateTime(0)
+}
+
+model ea_value_cs {
+  uid_value_cs Int       @id @default(autoincrement()) @db.UnsignedInt
+  value_cs     String?   @db.VarChar(100)
+  user_group   String?   @db.VarChar(50)
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+}
+
+model ea_value_di {
+  uid_value_di Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group   String?   @db.VarChar(50)
+  value_di     String?   @db.VarChar(100)
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+}
+
+model ea_value_hs {
+  uid_value_hs Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group   String?   @db.VarChar(50)
+  value_hs     String?   @db.VarChar(100)
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+}
+
+model ea_value_ns {
+  uid_value_ns Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group   String?   @db.VarChar(50)
+  value_ns     String?   @db.VarChar(100)
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+}
+
+model ea_value_ov {
+  uid_value_ov Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group   String?   @db.VarChar(50)
+  value_ov     String?   @db.VarChar(100)
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+}
+
+model ea_value_sb {
+  uid_value_sb Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group   String?   @db.VarChar(50)
+  value_sb     String?   @db.VarChar(100)
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+}
+
+model ea_value_tax {
+  uid_value_tax Int       @id @default(autoincrement()) @db.UnsignedInt
+  value_tax     Float     @default(0.00) @db.Float
+  user_group    String?   @db.VarChar(50)
+  created_at    DateTime? @db.DateTime(0)
+  updated_at    DateTime? @db.DateTime(0)
+  value_tax2    Float?    @db.Float
+}
+
+model ea_value_ts {
+  uid_value_ts Int       @id @default(autoincrement()) @db.UnsignedInt
+  value_ts     String?   @db.VarChar(100)
+  user_group   String?   @db.VarChar(50)
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+}
+
+model ea_value_wa_failure {
+  uid_value_wa_failure Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_group           String?   @db.VarChar(50)
+  modification_date    DateTime? @db.DateTime(0)
+  creation_uid         String?   @db.VarChar(100)
+  modification_uid     String?   @db.VarChar(100)
+  creation_date        DateTime? @db.DateTime(0)
+  failure_value        String?   @db.Text
+  created_at           DateTime? @db.DateTime(0)
+  updated_at           DateTime? @db.DateTime(0)
+}
+
+model ea_value_wa_forks {
+  uid_value_wa_fork Int       @id @default(autoincrement()) @db.UnsignedInt
+  creation_date     DateTime? @db.DateTime(0)
+  fork_model        String?   @db.VarChar(150)
+  creation_uid      String?   @db.VarChar(100)
+  user_group        String?   @db.VarChar(50)
+  modification_date DateTime? @db.DateTime(0)
+  modification_uid  String?   @db.VarChar(100)
+  created_at        DateTime? @db.DateTime(0)
+  updated_at        DateTime? @db.DateTime(0)
+}
+
+model ea_value_ws {
+  uid_value_ws Int       @id @default(autoincrement()) @db.UnsignedInt
+  value_ws     String?   @db.VarChar(100)
+  user_group   String?   @db.VarChar(50)
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+
+  @@index([user_group], map: "ws_user_group")
+}
+
+model ea_values {
+  uid_value  Int       @id @default(autoincrement())
+  type       String?   @db.VarChar(45)
+  value      String?   @db.VarChar(100)
+  value_two  String?   @db.VarChar(100)
+  user_group String?   @db.VarChar(50)
+  created_at DateTime? @default(now()) @db.DateTime(0)
+  updated_at DateTime? @default(now()) @db.DateTime(0)
+
+  @@index([type, user_group], map: "type_ug")
+}
+
+model ea_warranty {
+  uid_warranty                  Int       @id @default(autoincrement()) @db.UnsignedInt
+  article_warranty_int          Int?      @default(0)
+  cal_warranty_request_find_int Int?      @default(0)
+  printstatus_warranty          String?   @db.VarChar(200)
+  text_consult_warranty         String?   @db.Text
+  wa_comments                   String?   @db.Text
+  wa_failure_primary            String?   @db.Text
+  wa_failure_secondary          String?   @db.Text
+  wa_fork_model                 String?   @db.VarChar(50)
+  wa_id_cartridge               String?   @db.VarChar(50)
+  wa_mfg_day                    Int?      @default(0)
+  wa_mfg_month                  Int?      @default(0)
+  wa_mfg_year                   Int?      @default(0)
+  warranty_date                 DateTime? @db.DateTime(0)
+  warranty_invoice_date         DateTime? @db.DateTime(0)
+  warranty_invoice_no           Int?      @default(0)
+  warranty_no                   Int?      @default(0)
+  warranty_reason               String?   @db.Text
+  warranty_reason_text_no       Int?      @default(0)
+  work_warranty_date            DateTime? @db.DateTime(0)
+  work_warranty_time_end        DateTime? @db.DateTime(0)
+  work_warranty_time_start      DateTime? @db.DateTime(0)
+  worker_warranty               String?   @db.VarChar(50)
+  worker_warranty_no            Int?      @default(0)
+  user_group                    String?   @db.VarChar(50)
+  uid_order                     Int       @db.UnsignedInt
+  created_at                    DateTime? @db.DateTime(0)
+  updated_at                    DateTime? @db.DateTime(0)
+  warranty_request              String?   @db.VarChar(45)
+  google_doc                    Int?      @default(0)
+
+  @@index([uid_order], map: "warranty1")
+  @@index([warranty_invoice_no], map: "warranty_no")
+}
+
+model ea_warranty_invoices {
+  uid_warranty_invoice    Int       @id @default(autoincrement()) @db.UnsignedInt
+  warranty_invoice_no     Int?      @default(0)
+  warranty_invoice_status String?   @db.VarChar(200)
+  warranty_invoice_date   DateTime? @db.DateTime(0)
+  payment_date            DateTime? @db.DateTime(0)
+  total_payment_warranty  Float     @default(0.00) @db.Float
+  sum_value_tax_warranty  Float     @default(0.00) @db.Float
+  user_group              String?   @db.VarChar(50)
+  warranty_invoice_text   String?   @db.Text
+  total_price_warranty    Float     @default(0.00) @db.Float
+  open_price_warranty     Float     @default(0.00) @db.Float
+  sum_price_warranty      Float     @default(0.00) @db.Float
+  address_warranty        String?   @db.VarChar(200)
+  value_tax_warranty      Float     @default(0.00) @db.Float
+  created_at              DateTime? @db.DateTime(0)
+  updated_at              DateTime? @db.DateTime(0)
+  sum_labor               Float?    @db.Float
+  sum_material            Float?    @db.Float
+  sum_freight             Float?    @db.Float
+
+  @@index([warranty_invoice_date], map: "warrannty_invoice_date")
+  @@index([warranty_invoice_no], map: "warranty_no")
+}
+
+model ea_worksheet {
+  uid_worksheet             Int       @id @default(autoincrement()) @db.UnsignedInt
+  ap_airpreasure            String?   @db.VarChar(50)
+  calc_or1                  Float     @default(0.00) @db.Float
+  calc_or2                  Float     @default(0.00) @db.Float
+  calc_or3                  Float     @default(0.00) @db.Float
+  calc_or4                  Float     @default(0.00) @db.Float
+  calc_nl13                 Float     @default(0.00) @db.Float
+  calc_nl24                 Float     @default(0.00) @db.Float
+  calc_si13                 Float     @default(0.00) @db.Float
+  calc_si24                 Float     @default(0.00) @db.Float
+  calc_so13                 Float     @default(0.00) @db.Float
+  calc_so24                 Float     @default(0.00) @db.Float
+  cart_comp_measure_1       String?   @db.VarChar(50)
+  cart_comp_measure_2       String?   @db.VarChar(50)
+  cart_comp_measure_3       String?   @db.VarChar(50)
+  cart_comp_measure_4       String?   @db.VarChar(50)
+  cart_comp_ship_1          String?   @db.VarChar(50)
+  cart_comp_ship_2          String?   @db.VarChar(50)
+  cart_comp_ship_3          String?   @db.VarChar(50)
+  cart_comp_ship_4          String?   @db.VarChar(50)
+  cart_reb_measure_1        String?   @db.VarChar(50)
+  cart_reb_measure_2        String?   @db.VarChar(50)
+  cart_reb_measure_3        String?   @db.VarChar(50)
+  cart_reb_measure_4        String?   @db.VarChar(50)
+  cart_reb_ship_1           String?   @db.VarChar(50)
+  cart_reb_ship_2           String?   @db.VarChar(50)
+  cart_reb_ship_3           String?   @db.VarChar(50)
+  cart_reb_ship_4           String?   @db.VarChar(50)
+  cs_coilspring             String?   @db.VarChar(50)
+  innerraces_1_in           Float     @default(0.00) @db.Float
+  innerraces_1_out          Float     @default(0.00) @db.Float
+  innerraces_2_in           Float     @default(0.00) @db.Float
+  innerraces_2_out          Float     @default(0.00) @db.Float
+  innerraces_3_in           Float     @default(0.00) @db.Float
+  innerraces_3_out          Float     @default(0.00) @db.Float
+  innerraces_4_in           Float     @default(0.00) @db.Float
+  innerraces_4_out          Float     @default(0.00) @db.Float
+  ns_negspring              String?   @db.VarChar(50)
+  outerraces_1_out          Float     @default(0.00) @db.Float
+  outerraces_2_out          Float     @default(0.00) @db.Float
+  outerraces_3_out          Float     @default(0.00) @db.Float
+  outerraces_4_out          Float     @default(0.00) @db.Float
+  ov_oilviscosity           String?   @db.VarChar(50)
+  printstatus_worksheet     String?   @db.Text
+  steeringinner_si13_1      Float     @default(0.00) @db.Float
+  steeringinner_si13_2      Float     @default(0.00) @db.Float
+  steeringinner_si13_3      Float     @default(0.00) @db.Float
+  steeringinner_si24_1      Float     @default(0.00) @db.Float
+  steeringinner_si24_2      Float     @default(0.00) @db.Float
+  steeringinner_si24_3      Float     @default(0.00) @db.Float
+  steeringouter_so13_1      Float     @default(0.00) @db.Float
+  steeringouter_so13_2      Float     @default(0.00) @db.Float
+  steeringouter_so13_3      Float     @default(0.00) @db.Float
+  steeringouter_so24_1      Float     @default(0.00) @db.Float
+  steeringouter_so24_2      Float     @default(0.00) @db.Float
+  steeringouter_so24_3      Float     @default(0.00) @db.Float
+  text_consult_worksheet    String?   @db.Text
+  work_worksheet_time_end   DateTime? @db.DateTime(0)
+  work_worksheet_time_start DateTime? @db.DateTime(0)
+  worker_worksheet          String?   @db.VarChar(50)
+  work_worksheet_date       DateTime? @db.DateTime(0)
+  worksheet_date            DateTime? @db.DateTime(0)
+  worker_worksheet_no       Int?      @default(0)
+  worksheet_no              Int?      @default(0)
+  outerraces_1_in           Float     @default(0.00) @db.Float
+  outerraces_2_in           Float     @default(0.00) @db.Float
+  outerraces_3_in           Float     @default(0.00) @db.Float
+  outerraces_4_in           Float     @default(0.00) @db.Float
+  user_group                String?   @db.VarChar(50)
+  uid_order                 Int       @db.UnsignedInt
+  created_at                DateTime? @db.DateTime(0)
+  updated_at                DateTime? @db.DateTime(0)
+  notes_worksheet_extern    String?   @db.TinyText
+  notes_intern_worksheet    String?   @db.MediumText
+
+  @@index([uid_order], map: "worksheet1")
+}
+
+model fluent {
+  id         Int       @id @default(0) @db.UnsignedInt
+  name       String    @db.VarChar(255)
+  batch      Int
+  created_at DateTime? @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+}
+
+model posts {
+  id      Int    @id @default(autoincrement()) @db.UnsignedInt
+  content String @db.VarChar(255)
+}
+
+model tokens {
+  id      Int    @id @default(autoincrement()) @db.UnsignedInt
+  token   String @db.VarChar(255)
+  user_id Int    @db.UnsignedInt
+  users   users  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "_fluent_fk_tokens.user_id-users.id")
+
+  @@index([user_id], map: "_fluent_fk_tokens.user_id-users.id")
+}
+
+model users {
+  id       Int      @id @default(autoincrement()) @db.UnsignedInt
+  name     String   @db.VarChar(255)
+  email    String   @db.VarChar(255)
+  password String   @db.VarChar(255)
+  role     Int      @default(1)
+  tokens   tokens[]
+}
+
+view ea_forms_items_overview {
+  uid_forms_item      Int    @unique
+  user_group          String
+  user_print_language String
+}
+
+view ea_mails_overview {
+  uid_mail    Int       @unique
+  mail_date   DateTime?
+  user_group  String
+  customer    String?
+  subject     String?
+  mail_status String?
+  company     String?
+}
+
+view ea_articles_overview {
+  uid_article        Int     @unique
+  user_group         String
+  article_no         Int
+  articlecode        String
+  articlecharacter   String?
+  article_group      String?
+  company_article_no String?
+  category_article   String
+  quantity           Int
+  cost_price         Float
+  price_netto_categ1 Float
+  price_netto_categ2 Float
+  active             Int
+}
+
+view ea_companies_overview {
+  uid_company         Int     @unique
+  email               String?
+  zip_postal_code     String?
+  city                String?
+  company_customer_no String?
+  company             String?
+  street_address      String?
+  user_group          String
+}
+
+view ea_ordersnew_overview {
+  uid_order             Int       @unique
+  number                String?
+  invoice_no            Int?
+  user_group            String?
+  fork_model            String?
+  fork_no               Int?
+  warranty_no           Int?
+  warranty_request      String?
+  created_at            DateTime
+  customer_address      String?
+  customer_no           Int?
+  worksheet_no          Int?
+  diagnosis_no          Int?
+  order_status          String?
+  fork_in_date          DateTime?
+  customer_client_name  String?
+  costestimates_numbers String?
+  ftsearch              String?
+}
+
+
+view ea_warranty_overview {
+  uid_order             Int       @unique
+  
+  user_group            String?
+  fork_no               Int?
+  fork_model            String?
+  warranty_no           Int?
+  warranty_date         DateTime?
+  warranty_reason       String?
+  warranty_invoice_date DateTime?
+  customer_address      String?
+
+  customer_no           Int?
+  warranty_invoice_no   Int?
+}
