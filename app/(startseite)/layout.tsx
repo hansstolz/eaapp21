@@ -3,6 +3,7 @@ import "../globals.css";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import DashboardShell from "../dashboard-shell";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -22,7 +23,9 @@ export default function StartseiteLayout({
       className={cn("h-full antialiased", "font-sans", inter.variable)}
     >
       <body className="min-h-full">
-        <DashboardShell>{children}</DashboardShell>
+        <TooltipProvider>
+          <DashboardShell>{children}</DashboardShell>
+        </TooltipProvider>
       </body>
     </html>
   );
