@@ -1,11 +1,5 @@
 import { create } from "zustand";
-import {
-  create_value,
-  delete_value,
-  get_value_by_type,
-  update_value,
-} from "@/app/api/values/crud";
-import { EaValues } from "@/data_types/user/ea_values";
+import { EaValues } from "@/app/data_types/user/ea_values";
 import { toast } from "sonner";
 
 type Mode = "create" | "edit" | null;
@@ -38,7 +32,14 @@ export const useValueStore = create<ValueStore>((set, get) => ({
   loadValues: async (type) => {
     const currentType = type ?? get().selectedType;
     if (!currentType) return;
-    const values = await get_value_by_type(currentType);
+    const response = await fetch(
+      `/values/get_values/${encodeURIComponent(currentType)}`,
+    );
+    if (!response.ok) {
+      toast.error("Failed to load values");
+      return;
+    }
+    const values = (await response.json()) as EaValues[];
     set({ values, selectedType: currentType });
   },
 
@@ -69,24 +70,33 @@ export const useValueStore = create<ValueStore>((set, get) => ({
   },
 
   deleteValue: async (uid) => {
-    const result = await delete_value(uid);
-    if (result.status === 200) {
+    const response = await fetch(`/values/delete_values/${uid}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
       const updatedValues = get().values.filter(
         (item) => item.uid_value !== uid
       );
       set({ values: updatedValues });
-      toast.success("Form deleted successfully");
+      toast.success("Value deleted successfully");
     } else {
-      toast.error("Error deleting form");
+      toast.error("Error deleting value");
     }
   },
 
   submitData: async (data) => {
     const mode = get().mode;
-    const res =
-      mode === "create" ? await create_value(data) : await update_value(data);
+    const response = await fetch(
+      mode === "create" ? "/values/create_values" : "/values/update_values",
+      {
+        method: mode === "create" ? "POST" : "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      },
+    );
+    const res = response.ok ? ((await response.json()) as EaValues) : null;
 
-    if (res.uid_value) {
+    if (res?.uid_value) {
       toast.success("Values updated successfully");
       get().closeDialog();
       await get().loadValues();

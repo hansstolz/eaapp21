@@ -1,8 +1,7 @@
-import { CellContext, ColumnDef } from "@tanstack/react-table";
+import { EaValues } from "@/app/data_types/user/ea_values";
+import Trash from "@/components/app/trash";
+import { ColumnDef } from "@tanstack/react-table";
 import React, { useMemo } from "react";
-import { EaValues } from "@/data_types/user/ea_values";
-import { Trash2 } from "lucide-react";
-import Trash from "@/components/general/trash";
 
 export default function ValueColumns() {
   const columns = useMemo<ColumnDef<EaValues>[]>(
