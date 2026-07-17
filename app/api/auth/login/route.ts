@@ -3,9 +3,8 @@ import {
   AUTH_COOKIE_NAME,
   AUTH_TOKEN_TTL_SECONDS,
   createAuthToken,
-  isValidLogin,
 } from "@/lib/auth";
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { prisma } from "@/lib/prisma";
 
 function getSafeRedirectPath(value: FormDataEntryValue | null): string {
   if (
@@ -21,14 +20,27 @@ function getSafeRedirectPath(value: FormDataEntryValue | null): string {
 
 export async function POST(request: Request) {
   const formData = await request.formData();
-  const email = String(formData.get("email") ?? "").trim();
+  const identifier = String(formData.get("identifier") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const nextPath = getSafeRedirectPath(formData.get("next"));
   const baseUrl = new URL(request.url);
-  const login = useAuthStore.getState().login;
 
   try {
-    if (!isValidLogin(email, password)) {
+    const user = await prisma.ea_user.findFirst({
+      where: {
+        OR: [{ user_name: identifier }, { mail_work: identifier }],
+      },
+      select: {
+        uid_user: true,
+        user_name: true,
+        mail_work: true,
+        user_password: true,
+        user_group: true,
+        user_rights: true,
+      },
+    });
+
+    if (!user || user.user_password !== password) {
       const loginUrl = new URL("/login", baseUrl);
       loginUrl.searchParams.set("error", "invalid");
       loginUrl.searchParams.set("next", nextPath);
@@ -36,9 +48,14 @@ export async function POST(request: Request) {
       return NextResponse.redirect(loginUrl, 303);
     }
 
-    const token = await createAuthToken(email);
+    const token = await createAuthToken({
+      uid: user.uid_user,
+      username: user.user_name ?? identifier,
+      email: user.mail_work ?? "",
+      userGroup: user.user_group ?? "",
+      userRights: user.user_rights ?? "User",
+    });
     const response = NextResponse.redirect(new URL(nextPath, baseUrl), 303);
-    login(email);
 
     response.cookies.set({
       name: AUTH_COOKIE_NAME,

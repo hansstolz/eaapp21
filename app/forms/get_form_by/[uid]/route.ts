@@ -10,14 +10,12 @@ export async function GET(
   if (!session) return errorResponse("Nicht authentifiziert.", 401);
 
   const uid = parsePositiveId((await params).uid);
+  if (!uid) return errorResponse("Ungültige Formular-ID.", 400);
 
-  if (!uid) return errorResponse("Ungültige Benutzer-ID.", 400);
-
-  const user = await prisma.ea_user.findFirst({
-    where: { uid_user: uid, user_group: session.userGroup },
+  const form = await prisma.ea_forms_items.findFirst({
+    where: { uid_forms_item: uid, user_group: session.userGroup },
   });
+  if (!form) return errorResponse("Formular nicht gefunden.", 404);
 
-  if (!user) return errorResponse("Benutzer nicht gefunden.", 404);
-
-  return Response.json(user);
+  return Response.json(form);
 }

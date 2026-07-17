@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import DashboardShell from "../dashboard-shell";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { getAuthSession } from "@/lib/auth-session";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -12,11 +13,13 @@ export const metadata: Metadata = {
   description: "Geschuetzte EA App",
 };
 
-export default function StartseiteLayout({
+export default async function StartseiteLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getAuthSession();
+
   return (
     <html
       lang="de"
@@ -24,7 +27,7 @@ export default function StartseiteLayout({
     >
       <body className="min-h-full">
         <TooltipProvider>
-          <DashboardShell>{children}</DashboardShell>
+          <DashboardShell session={session}>{children}</DashboardShell>
         </TooltipProvider>
       </body>
     </html>

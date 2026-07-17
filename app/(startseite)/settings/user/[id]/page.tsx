@@ -3,8 +3,10 @@ import { UserRights } from "@/app/data_types/user/rights";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Detail from "./detail";
+import { getAuthSession } from "@/lib/auth-session";
+import { redirect } from "next/navigation";
 
-function newUser(): EaUser {
+function newUser(userGroup: string): EaUser {
   return {
     uid_user: 0,
     mail_work: "",
@@ -12,7 +14,7 @@ function newUser(): EaUser {
     user_name: "",
     user_rights: UserRights.user,
     user_password: "",
-    user_group: "",
+    user_group: userGroup,
     notes: "",
     salutation: "",
     suid_user: "",
@@ -34,14 +36,19 @@ export default async function Page({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const session = await getAuthSession();
+  if (!session) redirect("/login");
+
   const id = Number((await params).id);
 
   if (!Number.isInteger(id) || id < 0) notFound();
 
   const data =
     id === 0
-      ? newUser()
-      : await prisma.ea_user.findUnique({ where: { uid_user: id } });
+      ? newUser(session.userGroup)
+      : await prisma.ea_user.findFirst({
+          where: { uid_user: id, user_group: session.userGroup },
+        });
 
   if (!data) notFound();
 

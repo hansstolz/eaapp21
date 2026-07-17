@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   BadgeCent,
   ClipboardList,
@@ -28,11 +28,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
-import { AUTH_COOKIE_NAME, verifyAuthToken } from "@/lib/auth";
+import type { AuthTokenPayload } from "@/lib/auth";
 import { fromSlug, toSlug } from "@/lib/slug";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
-import { useAuthStore } from "@/lib/stores/auth-store";
 
 const menuItems = [
   { label: "Orders", icon: ClipboardList },
@@ -62,6 +61,14 @@ const menuItems = [
   { label: "Reference Fork", icon: Share2 },
 ];
 
+function canSeeMenu(item: (typeof menuItems)[number], userRights: string) {
+  const rights = userRights.toLowerCase();
+  if (rights === "root" || rights === "administrator" || rights === "admin") {
+    return true;
+  }
+  return item.label !== "Settings";
+}
+
 const getHref = (label: string) => `/${encodeURIComponent(toSlug(label))}`;
 const getSubHref = (label: string, submenu: string) =>
   `/${encodeURIComponent(toSlug(label))}/${encodeURIComponent(
@@ -70,13 +77,15 @@ const getSubHref = (label: string, submenu: string) =>
 
 export default function DashboardShell({
   children,
+  session,
 }: {
   children: React.ReactNode;
+  session: AuthTokenPayload | null;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
-  const user = useAuthStore((state) => state.user);
-  const logout = useAuthStore((state) => state.logout);
+  const visibleMenuItems = menuItems.filter((item) =>
+    canSeeMenu(item, session?.userRights ?? ""),
+  );
   const decodedPath = pathname ? decodeURIComponent(pathname) : "";
   const segments = decodedPath
     .split("/")
@@ -84,7 +93,9 @@ export default function DashboardShell({
     .map((segment) => fromSlug(segment));
   const activeLabel = segments[0] || "Orders";
   const activeSubmenu = segments[1];
-  const hasActiveLabel = menuItems.some((item) => item.label === activeLabel);
+  const hasActiveLabel = visibleMenuItems.some(
+    (item) => item.label === activeLabel,
+  );
   const headerTitle = hasActiveLabel ? activeLabel : "Orders";
   const headerSubtitle = activeSubmenu
     ? `${headerTitle} \u00b7 ${activeSubmenu}`
@@ -113,7 +124,7 @@ export default function DashboardShell({
               key={activeLabel}
               className="space-y-2"
             >
-              {menuItems.map((item) => {
+              {visibleMenuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeLabel === item.label;
 
@@ -182,15 +193,16 @@ export default function DashboardShell({
               })}
             </Accordion>
           </nav>
-          {user ? (
+          {session ? (
             <div className="p-4 border-t border-primary-foreground/20">
               <div className="flex items-center gap-3 px-4 py-2">
                 <div className="size-12 rounded-full bg-primary-foreground/20 flex items-center justify-center">
                   <Users className="size-5" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm">{user.username}</p>
-                  <p className="text-xs opacity-70">{user.userGroup}</p>
+                  <p className="text-sm">{session.username}</p>
+                  <p className="text-xs opacity-70">{session.userGroup}</p>
+                  <p className="text-xs opacity-70">{session.userRights}</p>
                   <p className="text-xs opacity-70">Version 2.0</p>
                 </div>
               </div>
@@ -211,20 +223,17 @@ export default function DashboardShell({
               </div>
             </div>
             <div className="flex flex-wrap items-center justify-end gap-2">
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  logout();
-                  document.cookie =
-                    "user_group=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-                  router.replace("/login");
-                }}
-                className="flex items-center gap-2"
-                size={"sm"}
-              >
-                <LogOut className="size-4" />
-                Logout
-              </Button>
+              <form action="/api/auth/logout" method="post">
+                <Button
+                  variant="destructive"
+                  type="submit"
+                  className="flex items-center gap-2"
+                  size="sm"
+                >
+                  <LogOut className="size-4" />
+                  Logout
+                </Button>
+              </form>
             </div>
           </header>
 

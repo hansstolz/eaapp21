@@ -11,7 +11,7 @@ type LoginPageProps = {
 
 function getErrorMessage(error: string | undefined): string | null {
   if (error === "invalid") {
-    return "E-Mail-Adresse oder Passwort ist falsch.";
+    return "Benutzername/E-Mail oder Passwort ist falsch.";
   }
 
   if (error === "config") {
@@ -47,7 +47,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div className="mb-6">
           <h1 className="text-2xl font-semibold">Login</h1>
           <p className="mt-2 text-sm leading-6 text-zinc-600">
-            Melde dich mit E-Mail-Adresse und Passwort an.
+            Melde dich mit Benutzername oder E-Mail-Adresse und Passwort an.
           </p>
         </div>
 
@@ -62,13 +62,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
           <label className="block">
             <span className="text-sm font-medium text-zinc-700">
-              E-Mail-Adresse
+              Benutzername oder E-Mail-Adresse
             </span>
             <input
               className="mt-1 h-11 w-full rounded-md border border-zinc-300 px-3 text-base outline-none transition focus:border-zinc-900"
-              name="email"
-              type="email"
-              autoComplete="email"
+              name="identifier"
+              type="text"
+              autoComplete="username"
               required
             />
           </label>

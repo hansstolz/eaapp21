@@ -1,7 +1,6 @@
-import Trash from "@/components/general/trash";
-import { EaFormOverview } from "@/data_types/forms/ea_forms";
+import { EaFormOverview } from "@/app/data_types/forms/ea_forms";
+import Trash from "@/components/app/trash";
 import { ColumnDef } from "@tanstack/react-table";
-import { Trash2 } from "lucide-react";
 
 export default function FormColumns() {
   const columns: ColumnDef<EaFormOverview>[] = [

@@ -10,7 +10,10 @@ type JwtHeader = {
 
 export type AuthTokenPayload = {
   sub: string;
+  username: string;
   email: string;
+  userGroup: string;
+  userRights: string;
   iat: number;
   exp: number;
 };
@@ -56,29 +59,21 @@ function getJwtSecret(): string {
   return secret;
 }
 
-export function getLoginCredentials(): { email: string; password: string } {
-  const email = process.env.AUTH_EMAIL;
-  const password = process.env.AUTH_PASSWORD;
-
-  if (!email || !password) {
-    throw new Error("AUTH_EMAIL and AUTH_PASSWORD must be configured.");
-  }
-
-  return { email, password };
-}
-
-export function isValidLogin(email: string, password: string): boolean {
-  const credentials = getLoginCredentials();
-
-  return email === credentials.email && password === credentials.password;
-}
-
-export async function createAuthToken(email: string): Promise<string> {
+export async function createAuthToken(user: {
+  uid: number;
+  username: string;
+  email: string;
+  userGroup: string;
+  userRights: string;
+}): Promise<string> {
   const now = Math.floor(Date.now() / 1000);
   const header: JwtHeader = { alg: "HS256", typ: "JWT" };
   const payload: AuthTokenPayload = {
-    sub: email,
-    email,
+    sub: String(user.uid),
+    username: user.username,
+    email: user.email,
+    userGroup: user.userGroup,
+    userRights: user.userRights,
     iat: now,
     exp: now + AUTH_TOKEN_TTL_SECONDS,
   };
@@ -134,6 +129,9 @@ export async function verifyAuthToken(
 
     if (
       typeof payload.email !== "string" ||
+      typeof payload.username !== "string" ||
+      typeof payload.userGroup !== "string" ||
+      typeof payload.userRights !== "string" ||
       typeof payload.sub !== "string" ||
       typeof payload.exp !== "number" ||
       payload.exp <= Math.floor(Date.now() / 1000)
