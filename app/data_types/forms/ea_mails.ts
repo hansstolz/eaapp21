@@ -1,0 +1,23 @@
+export type EaMails = {
+  uid_mail: number;
+  user_group: string | null;
+  mail_date: Date | null;
+  subject: string | null;
+  customer: string | null;
+  subject_yes_no: number | null;
+  company: string | null;
+  message_text: string | null;
+  sender: string | null;
+  mail_no: number | null;
+  email_address: string | null;
+  company_no: number | null;
+  customer_no: number | null;
+  text_area_test: string | null;
+  address: string | null;
+  mail_status: string | null;
+  sender_email_address: string | null;
+  uid_company: number | null;
+  uid_customer: number | null;
+  created_at: Date | null;
+  updated_at: Date | null;
+};

@@ -1,0 +1,22 @@
+export type EaClients = {
+  uid_client: number;
+  email: string | null;
+  last_name: string | null;
+  fork_no: number | null;
+  job_title: string | null;
+  fon: string | null;
+  notes: string | null;
+  first_name: string | null;
+  zip: string | null;
+  city: string | null;
+  fax: string | null;
+  customer_no: number | null;
+  weight: string | null;
+  user_group: string | null;
+  customerclient_no: string | null;
+  height: string | null;
+  streetaddress: string | null;
+  company_no: number | null;
+  uid_fork: number;
+  uid_customer: number;
+};

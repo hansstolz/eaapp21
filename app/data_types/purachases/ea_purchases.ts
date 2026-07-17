@@ -1,0 +1,25 @@
+export type EaPurchases = {
+  uid_company: number;
+  company_no: number | null;
+  user_group: string | null;
+  company_customer_no: string | null;
+  created_at: Date | null;
+  updated_at: Date | null;
+  uid_purchase: number;
+  address_partner: string | null;
+  company_fon: string | null;
+  supplier: number | null;
+  text_footer: string | null;
+  company_fax: string | null;
+  purchase_date: Date | null;
+  freight_forw: string | null;
+  company_name: string | null;
+  purchase_no: number | null;
+  company_email: string | null;
+  text_header: string | null;
+  text_header_no: number | null;
+  text_footer_no: number | null;
+  company_address: string | null;
+  purchase_status: string | null;
+  user_print_language: string | null;
+};

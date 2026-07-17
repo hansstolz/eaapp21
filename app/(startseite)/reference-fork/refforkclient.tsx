@@ -8,19 +8,23 @@ import {
   RefArticle,
 } from "@/app/data_types/ref_forks/ref_forks";
 import ForkFeatureDialog from "@/app/dialogs/refforks/forkfeature_dialog";
+import RefforkDialog from "@/app/dialogs/refforks/reffork_dialog";
+import { AlertDialog } from "@/app/dialogs/general/alert_dialog";
 import Section from "@/components/app/Section";
 import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Row } from "@tanstack/react-table";
 import React, { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type RefforkClientProps = {
   refForks: EaRefForks[];
 };
 
-const openCreateRefFork = () => {};
-const deleteForkFeatureAction = () => {};
+type DeleteRequest =
+  | { type: "refFork"; item: EaRefForks }
+  | { type: "forkFeature"; item: ForkFeature };
 
 async function getRelatedData(uidRefFork: number, signal?: AbortSignal) {
   const [featuresResponse, articlesResponse] = await Promise.all([
@@ -47,6 +51,11 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
   const [selectedRefFork, setSelectedRefFork] = useState(
     null as EaRefForks | null,
   );
+  const [refForkRows, setRefForkRows] = useState(refForks);
+  const [refForkDialogMode, setRefForkDialogMode] = useState<"create" | "edit">(
+    "create",
+  );
+  const [isRefForkDialogOpen, setIsRefForkDialogOpen] = useState(false);
 
   const [forkFeatures, setForkFeatures] = useState([] as ForkFeature[]);
   const [refArticles, setRefArticles] = useState([] as RefArticle[]);
@@ -59,6 +68,8 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
   >("create");
   const [isForkFeatureDialogOpen, setIsForkFeatureDialogOpen] =
     useState(false);
+  const [deleteRequest, setDeleteRequest] = useState<DeleteRequest | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const refreshRelatedData = useCallback(async (uidRefFork: number) => {
     setIsLoadingRelatedData(true);
@@ -78,6 +89,17 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
     } finally {
       setIsLoadingRelatedData(false);
     }
+  }, []);
+
+  const refreshRefForks = useCallback(async (selectedRefForkId: number) => {
+    const response = await fetch("/ref_forks/all_ref_forks");
+    if (!response.ok) throw new Error("Reference Forks could not be loaded");
+
+    const rows = (await response.json()) as EaRefForks[];
+    setRefForkRows(rows);
+    setSelectedRefFork(
+      rows.find((row) => row.uid_ref_fork === selectedRefForkId) ?? null,
+    );
   }, []);
 
   useEffect(() => {
@@ -123,6 +145,19 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
     setIsForkFeatureDialogOpen(true);
   };
 
+  const openCreateRefFork = () => {
+    setRefForkDialogMode("create");
+    setIsRefForkDialogOpen(true);
+  };
+
+  const openEditRefFork = (row: Row<EaRefForks>) => {
+    setSelectedRefFork(row.original);
+    setRefForkDialogMode("edit");
+    setIsRefForkDialogOpen(true);
+  };
+
+  const closeRefForkDialog = () => setIsRefForkDialogOpen(false);
+
   const onFeatureDoubleClick = (row: Row<ForkFeature>) => {
     setSelectedForkFeature(row.original);
     setForkFeatureDialogMode("edit");
@@ -132,6 +167,68 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
   const closeForkFeatureDialog = () => {
     setIsForkFeatureDialogOpen(false);
     setSelectedForkFeature(null);
+  };
+
+  const requestDeleteRefFork = (row: Row<EaRefForks>) => {
+    setDeleteRequest({ type: "refFork", item: row.original });
+    setIsDeleteDialogOpen(true);
+  };
+
+  const requestDeleteForkFeature = (row: Row<ForkFeature>) => {
+    setDeleteRequest({ type: "forkFeature", item: row.original });
+    setIsDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+    setDeleteRequest(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteRequest) return;
+
+    try {
+      if (deleteRequest.type === "refFork") {
+        const uidRefFork = deleteRequest.item.uid_ref_fork;
+        const response = await fetch(`/ref_forks/delete_ref_fork/${uidRefFork}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) throw new Error("Reference Fork could not be deleted");
+
+        setRefForkRows((rows) =>
+          rows.filter((row) => row.uid_ref_fork !== uidRefFork),
+        );
+        if (selectedRefFork?.uid_ref_fork === uidRefFork) {
+          setSelectedRefFork(null);
+          setForkFeatures([]);
+          setRefArticles([]);
+          setRelatedDataError(null);
+        }
+        toast.success("Reference Fork deleted successfully");
+      } else {
+        const uidRefPart = deleteRequest.item.uid_ref_part;
+        const response = await fetch(`/ref_parts/delete_ref_part/${uidRefPart}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) throw new Error("Fork Feature could not be deleted");
+
+        setForkFeatures((features) =>
+          features.filter((feature) => feature.uid_ref_part !== uidRefPart),
+        );
+        if (selectedForkFeature?.uid_ref_part === uidRefPart) {
+          closeForkFeatureDialog();
+        }
+        toast.success("Fork Feature deleted successfully");
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Item could not be deleted",
+      );
+    } finally {
+      closeDeleteDialog();
+    }
   };
 
   return (
@@ -154,6 +251,7 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
               </div>
               <div className="max-h-250 overflow-y-scroll">
                 <DataTable
+                  onDoubleClick={openEditRefFork}
                   onRowClick={(row) => {
                     closeForkFeatureDialog();
                     setIsLoadingRelatedData(true);
@@ -161,7 +259,8 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
                     setSelectedRefFork(row.original);
                   }}
                   columns={columns}
-                  data={refForks}
+                  data={refForkRows}
+                  onCellClick={requestDeleteRefFork}
                 />
               </div>
             </Section>
@@ -191,7 +290,7 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
                     onDoubleClick={onFeatureDoubleClick}
                     columns={refFeatureColumns}
                     data={forkFeatures}
-                    onCellClick={deleteForkFeatureAction}
+                    onCellClick={requestDeleteForkFeature}
                   />
                 </div>
               </Section>
@@ -226,6 +325,29 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
         closeForkFeatureDialog={closeForkFeatureDialog}
         title="Fork Feature"
         mode={forkFeatureDialogMode}
+      />
+      <RefforkDialog
+        selectedRefFork={selectedRefFork}
+        isRefForkDialogOpen={isRefForkDialogOpen}
+        setIsRefForkDialogOpen={setIsRefForkDialogOpen}
+        refreshRefForks={refreshRefForks}
+        closeRefForkDialog={closeRefForkDialog}
+        title="Reference Fork"
+        mode={refForkDialogMode}
+      />
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        setOpen={(open) => {
+          setIsDeleteDialogOpen(open);
+          if (!open) setDeleteRequest(null);
+        }}
+        onConfirm={() => void confirmDelete()}
+        title="Confirm deletion"
+        description={
+          deleteRequest?.type === "refFork"
+            ? `Do you really want to delete the Reference Fork “${deleteRequest.item.fork_model ?? ""}”?`
+            : `Do you really want to delete the Fork Feature “${deleteRequest?.item.ref_part_name ?? ""}”?`
+        }
       />
     </>
   );

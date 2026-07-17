@@ -1,57 +1,92 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-import { _createRefforks, _updateReffork } from "@/app/api/refforks/crud";
-
-import ValueSelect from "@/components/general/value_select";
+import type { DropdownItem } from "@/app/data_types/general/dropdown";
+import type { EaRefForks } from "@/app/data_types/ref_forks/ref_forks";
+import { ValueTypes } from "@/app/data_types/values/value_types";
+import {
+  refforkSchema,
+  type RefForkType,
+} from "@/app/schemas/refforks/reffork_schema";
+import { LabeledInput } from "@/components/app/LabeledInput";
+import MovableDialog from "@/components/app/movable_dialog";
+import ValueSelect from "@/components/app/value_select";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
-import { LabeledInput } from "@/components/ui/LabeledInput";
 
-import { refforkSchema, RefForkType } from "@/schemas/refforks/reffork_schema";
-import { useShallow } from "zustand/react/shallow";
-import { useForm } from "react-hook-form";
-import {
-  useRefForkStore,
-  useSelectedRefFork,
-} from "@/lib/stores/refforks/ref_forks_store";
-import MovableDialog from "@/components/ui/movable_dialog";
+type RefforkDialogProps = {
+  selectedRefFork: EaRefForks | null;
+  isRefForkDialogOpen: boolean;
+  setIsRefForkDialogOpen: (open: boolean) => void;
+  refreshRefForks: (selectedRefForkId: number) => Promise<void>;
+  closeRefForkDialog: () => void;
+  title: string;
+  mode: "create" | "edit";
+};
 
-export default function RefforkDialog({ title }: { title: string }) {
-  const selectedRefFork = useSelectedRefFork();
+async function saveRefFork(
+  url: string,
+  method: "POST" | "PUT",
+  refFork: RefForkType,
+): Promise<EaRefForks | null> {
+  try {
+    const response = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(refFork),
+    });
 
-  const {
-    categories,
-    loadCategories,
-    loadInitialData,
-    mode,
-    isRefForkDialogOpen,
-    closeRefForkDialog,
-  } = useRefForkStore(
-    useShallow((s) => ({
-      categories: s.categories,
-      loadCategories: s.loadCategories,
-      loadInitialData: s.loadInitialData,
-      mode: s.mode,
-      isRefForkDialogOpen: s.isRefForkDialogOpen,
-      closeRefForkDialog: s.closeRefForkDialog,
-    })),
+    if (!response.ok) return null;
+
+    return (await response.json()) as EaRefForks;
+  } catch {
+    return null;
+  }
+}
+
+function createRefFork(refFork: RefForkType) {
+  return saveRefFork("/ref_forks/create_ref_fork", "POST", refFork);
+}
+
+function updateRefFork(refFork: RefForkType) {
+  return saveRefFork("/ref_forks/update_ref_fork", "PUT", refFork);
+}
+
+async function getForkCategories(signal: AbortSignal) {
+  const response = await fetch(
+    `/values/get_values_label/${encodeURIComponent(ValueTypes.ea_forks_category)}`,
+    { signal },
   );
 
-  const dialogTitle = useMemo(() => {
-    if (mode === "create") return `New ${title}`;
-    if (mode === "edit") return `Edit ${title}`;
-    return title;
-  }, [mode, title]);
+  if (!response.ok) throw new Error("Fork categories could not be loaded");
 
+  return (await response.json()) as DropdownItem[];
+}
+
+export default function RefforkDialog({
+  selectedRefFork,
+  isRefForkDialogOpen,
+  setIsRefForkDialogOpen,
+  refreshRefForks,
+  closeRefForkDialog,
+  title,
+  mode,
+}: RefforkDialogProps) {
+  const [categories, setCategories] = useState<DropdownItem[]>([]);
+  const dialogTitle = useMemo(
+    () => `${mode === "create" ? "New" : "Edit"} ${title}`,
+    [mode, title],
+  );
   const {
     control,
     handleSubmit,
     reset,
     setValue,
-    formState: { isDirty },
+    formState: { isDirty, isSubmitting },
   } = useForm<RefForkType>({
     resolver: zodResolver(refforkSchema),
     defaultValues: {
@@ -63,8 +98,17 @@ export default function RefforkDialog({ title }: { title: string }) {
   });
 
   useEffect(() => {
-    loadCategories();
-  }, [loadCategories]);
+    const controller = new AbortController();
+
+    void getForkCategories(controller.signal)
+      .then(setCategories)
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        toast.error("Fork categories could not be loaded");
+      });
+
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     if (mode === "create") {
@@ -77,7 +121,7 @@ export default function RefforkDialog({ title }: { title: string }) {
       return;
     }
 
-    if (mode === "edit" && selectedRefFork) {
+    if (selectedRefFork) {
       reset({
         uid_ref_fork: selectedRefFork.uid_ref_fork,
         category_fork: selectedRefFork.category_fork ?? "",
@@ -87,15 +131,21 @@ export default function RefforkDialog({ title }: { title: string }) {
     }
   }, [mode, selectedRefFork, reset]);
 
-  const addForkCategory = (value: string) => {
-    setValue("category_fork", value, { shouldDirty: true });
-  };
-
   const onSubmit = async (data: RefForkType) => {
-    if (mode === "create") await _createRefforks(data);
-    else if (mode === "edit") await _updateReffork(data);
+    const response =
+      mode === "create"
+        ? await createRefFork(data)
+        : await updateRefFork(data);
 
-    await loadInitialData();
+    if (!response?.uid_ref_fork) {
+      toast.error("Error saving Reference Fork");
+      return;
+    }
+
+    toast.success(
+      mode === "create" ? "Reference Fork Created" : "Reference Fork Updated",
+    );
+    await refreshRefForks(response.uid_ref_fork);
     closeRefForkDialog();
   };
 
@@ -104,48 +154,44 @@ export default function RefforkDialog({ title }: { title: string }) {
       title={dialogTitle}
       open={isRefForkDialogOpen}
       setOpen={(open) => {
+        setIsRefForkDialogOpen(open);
         if (!open) closeRefForkDialog();
       }}
-      isDirty={isDirty}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 p-4">
           <ValueSelect
-            labelText={"Select Fork Category"}
+            labelText="Select Fork Category"
             options={categories}
-            onValueChange={addForkCategory}
+            onValueChange={(value) =>
+              setValue("category_fork", value, { shouldDirty: true })
+            }
           />
-
           <LabeledInput
-            name={"category_fork"}
-            label={"Fork Category"}
+            name="category_fork"
+            label="Fork Category"
             control={control}
           />
-
-          <LabeledInput
-            name={"fork_model"}
-            label={"Fork Model"}
-            control={control}
-          />
-
+          <LabeledInput name="fork_model" label="Fork Model" control={control} />
           <LabeledInput
             type="textarea"
-            name={"notes"}
-            label={"Notes"}
+            rows={4}
+            name="notes"
+            label="Notes"
             control={control}
           />
         </div>
 
         <DialogFooter className="h-12 p-4">
           <div className="flex justify-end gap-2">
-            <Button
-              variant="outline"
-              type="button"
-              onClick={closeRefForkDialog}
-            >
+            <Button type="button" variant="outline" onClick={closeRefForkDialog}>
               Close
             </Button>
-            <Button disabled={!isDirty} variant="destructive" type="submit">
+            <Button
+              disabled={!isDirty || isSubmitting}
+              variant="destructive"
+              type="submit"
+            >
               Save
             </Button>
           </div>
