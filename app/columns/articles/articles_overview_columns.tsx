@@ -1,0 +1,104 @@
+import { EaArticleOverview } from "@/app/api/articles/articles_crud";
+import useGerman from "@/lib/hooks/useGerman";
+import { ColumnDef } from "@tanstack/react-table";
+import { useMemo } from "react";
+
+export default function ArticlesOverviewColumns() {
+  const { truncate, toCurrency } = useGerman();
+  const columns = useMemo<ColumnDef<EaArticleOverview>[]>(
+    () => [
+      {
+        accessorKey: "article_no",
+        header: () => "No",
+        footer: (props) => props.column.id,
+        size: 60,
+      },
+      {
+        accessorKey: "articlecode",
+        header: () => "Article Code",
+        footer: (props) => props.column.id,
+        size: 160,
+      },
+      {
+        accessorKey: "articlecharacter",
+        header: () => "Description",
+        cell: (info) => truncate(String(info.getValue() ?? ""), 40),
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorKey: "article_group",
+        header: () => "Group",
+        footer: (props) => props.column.id,
+        size: 70,
+      },
+      {
+        accessorKey: "category_article",
+        header: () => "Category",
+        footer: (props) => props.column.id,
+        size: 70,
+      },
+      {
+        accessorKey: "quantity",
+        header: () => "Qty",
+        cell: (info) => String(info.getValue() ?? ""),
+        footer: (props) => props.column.id,
+        size: 30,
+        meta: {
+          align: "right",
+          isEditable: false,
+        },
+      },
+      {
+        accessorKey: "cost_price",
+        header: () => "Cost",
+        cell: (info) => {
+          const value = info.getValue();
+          return value === null || value === undefined
+            ? ""
+            : toCurrency(Number(value));
+        },
+        footer: (props) => props.column.id,
+        size: 40,
+        meta: {
+          align: "right",
+          isEditable: false,
+        },
+      },
+      {
+        accessorKey: "price_netto_categ1",
+        header: () => "Dealer",
+        cell: (info) => {
+          const value = info.getValue();
+          return value === null || value === undefined
+            ? ""
+            : toCurrency(Number(value));
+        },
+        footer: (props) => props.column.id,
+        size: 40,
+        meta: {
+          align: "right",
+          isEditable: false,
+        },
+      },
+      {
+        accessorKey: "price_netto_categ2",
+        header: () => "Cust",
+        cell: (info) => {
+          const value = info.getValue();
+          return value === null || value === undefined
+            ? ""
+            : toCurrency(Number(value));
+        },
+        footer: (props) => props.column.id,
+        size: 40,
+        meta: {
+          align: "right",
+          isEditable: false,
+        },
+      },
+    ],
+    [truncate],
+  );
+
+  return columns;
+}

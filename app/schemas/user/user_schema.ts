@@ -1,5 +1,5 @@
-import { UserRights } from "@/data_types/user/rights";
-import React, { useMemo } from "react";
+import { UserRights } from "@/app/data_types/user/rights";
+import { useMemo } from "react";
 import { z } from "zod";
 
 const UserEnum = z.enum([UserRights.admin, UserRights.root, UserRights.user]);
