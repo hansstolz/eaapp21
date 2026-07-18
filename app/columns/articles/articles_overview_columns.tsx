@@ -1,12 +1,8 @@
-import { EaArticleOverview } from "@/app/api/articles/articles_crud";
-import useGerman from "@/lib/hooks/useGerman";
+import { EaArticleOverview } from "@/app/data_types/articles/article_overview";
 import { ColumnDef } from "@tanstack/react-table";
-import { useMemo } from "react";
 
 export default function ArticlesOverviewColumns() {
-  const { truncate, toCurrency } = useGerman();
-  const columns = useMemo<ColumnDef<EaArticleOverview>[]>(
-    () => [
+  const columns: ColumnDef<EaArticleOverview>[] = [
       {
         accessorKey: "article_no",
         header: () => "No",
@@ -96,9 +92,20 @@ export default function ArticlesOverviewColumns() {
           isEditable: false,
         },
       },
-    ],
-    [truncate],
-  );
+    ];
 
   return columns;
+}
+
+const euroFormatter = new Intl.NumberFormat("de-DE", {
+  style: "currency",
+  currency: "EUR",
+});
+
+function toCurrency(value: number) {
+  return euroFormatter.format(value);
+}
+
+function truncate(value: string, length: number) {
+  return value.length > length ? `${value.slice(0, length - 1)}...` : value;
 }

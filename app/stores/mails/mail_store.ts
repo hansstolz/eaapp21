@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import type { EaMails } from "@/data_types/forms/ea_mails";
+import type { EaMails } from "@/app/data_types/forms/ea_mails";
 import {
-  _getMailsByCompany,
   _getMailsByCustomer,
 } from "@/app/api/mails/mails_crud";
 import { createTypeSlice, TypeSlice } from "../common/type_slice";

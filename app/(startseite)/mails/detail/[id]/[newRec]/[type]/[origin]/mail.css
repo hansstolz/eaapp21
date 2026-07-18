@@ -1,0 +1,24 @@
+
+.mail-grid {
+    display: grid;
+    grid-template-areas:
+    "address content" 
+    "comm content"  ;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 16px;
+    padding-right: 32px;
+    
+  }
+
+  .mail-address {
+    grid-area: address;
+  }
+
+  .mail-content {
+    grid-area: content;
+  }
+
+  .mail-comm {
+    grid-area: comm;
+  }

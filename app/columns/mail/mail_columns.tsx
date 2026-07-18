@@ -1,21 +1,10 @@
-import { EaMailOverview } from "@/app/api/mails/mails_crud";
-import Trash from "@/components/general/trash";
-import useGerman from "@/lib/hooks/useGerman";
+import { EaMailOverview } from "@/app/data_types/mails/mail_overview";
+import Trash from "@/components/app/trash";
 import { ColumnDef } from "@tanstack/react-table";
-import { MailIcon, PrinterIcon, Trash2 } from "lucide-react";
+import { MailIcon, PrinterIcon } from "lucide-react";
 import React, { useMemo } from "react";
 
 export default function MailColumns() {
-  const { to2DigitDateFromString } = useGerman();
-
-  const getIconForStatus = (status: string) => {
-    if (!status) return null;
-    if (status.toLowerCase().includes("mail")) {
-      return <MailIcon className={`size-4 text-blue-700`} />;
-    } else {
-      return <PrinterIcon className={`size-4 text-teal-700`} />;
-    }
-  };
   const columns = useMemo<ColumnDef<EaMailOverview>[]>(
     () => [
       {
@@ -87,4 +76,21 @@ export default function MailColumns() {
   );
 
   return columns;
+}
+
+function getIconForStatus(status: string) {
+  if (!status) return null;
+  return status.toLowerCase().includes("mail") ? (
+    <MailIcon className="size-4 text-blue-700" />
+  ) : (
+    <PrinterIcon className="size-4 text-teal-700" />
+  );
+}
+
+function to2DigitDateFromString(isoString: string) {
+  return new Date(isoString).toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 }

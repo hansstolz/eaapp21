@@ -7,8 +7,7 @@ import { EaPurchases } from "@/data_types/purachases/ea_purchases";
 import { FiCreditCard, FiMail, FiUsers } from "react-icons/fi";
 import { EaContacts } from "@/schemas/contacts/contact_schema";
 import { useContactStore } from "../contact/contact_store";
-import { set } from "zod";
-import { EaMails } from "@/data_types/forms/ea_mails";
+import { EaMails } from "@/app/data_types/forms/ea_mails";
 import useMailStore from "../mails/mail_store";
 
 interface CompanySlice {
@@ -63,7 +62,7 @@ const createPurchaseSlice: StateCreator<
   [],
   [],
   PurchaseSlice
-> = (set) => ({
+> = () => ({
   purchases: [],
 });
 
@@ -72,7 +71,7 @@ export const useBoundStore = create<CompanySlice & PurchaseSlice>()((...a) => ({
   ...createPurchaseSlice(...a),
 }));
 
-export const updateBoundStore = (uid_company: number) => {
+export const useUpdateBoundStore = (uid_company: number) => {
   const fetchData = useBoundStore((state) => state.fetchData);
   const company = useBoundStore((state) => state.company);
   const contacts = useBoundStore((state) => state.contacts);
@@ -90,7 +89,7 @@ export const updateBoundStore = (uid_company: number) => {
 
   useEffect(() => {
     fetchData(uid_company);
-  }, [uid_company]);
+  }, [fetchData, uid_company]);
 
   useEffect(() => {
     setContacts(contacts);
@@ -99,7 +98,7 @@ export const updateBoundStore = (uid_company: number) => {
     return () => {
       setContacts([]);
     };
-  }, [contacts]);
+  }, [contacts, setContacts, setContactType, setUidCustomerOrSupplier, uid_company]);
 
   useEffect(() => {
     setMails(mails);
@@ -108,7 +107,13 @@ export const updateBoundStore = (uid_company: number) => {
     return () => {
       setMails([]);
     };
-  }, [mails]);
+  }, [
+    mails,
+    setContactTypeMail,
+    setMails,
+    setUidCustomerOrSupplierMail,
+    uid_company,
+  ]);
 
   return company;
 };
