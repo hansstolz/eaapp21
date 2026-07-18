@@ -4,7 +4,7 @@ import {
   _updateContact,
 } from "@/app/api/contact/crud_contact";
 import { addOrUpdateArray, removeFromArray } from "@/lib/utils";
-import { EaContacts } from "@/schemas/contacts/contact_schema";
+import { EaContacts } from "@/app/schemas/contacts/contact_schema";
 import { toast } from "sonner";
 import { create } from "zustand";
 import { createTypeSlice, TypeSlice } from "../common/type_slice";
@@ -60,7 +60,7 @@ export const useContactStore = create<ContactStore & TypeSlice>(
       const compare = (f: EaContacts) => f.uid_contact === Number(uid_contact);
       const updatedContacts = removeFromArray(contacts, compare);
 
-      set((state) => ({
+      set(() => ({
         contacts: [...updatedContacts],
       }));
     },
@@ -69,13 +69,14 @@ export const useContactStore = create<ContactStore & TypeSlice>(
       const uid_customer_or_supplier = get().uid_customer_or_supplier;
       const contactType = get().contactType;
 
-      contactType === "customer"
-        ? (data.uid_customer = uid_customer_or_supplier ?? 0)
-        : (data.uid_company = uid_customer_or_supplier ?? 0);
+      if (contactType === "customer") {
+        data.uid_customer = uid_customer_or_supplier ?? 0;
+      } else {
+        data.uid_company = uid_customer_or_supplier ?? 0;
+      }
 
-      get().isNew
-        ? await get().createContact(data)
-        : await get().updateContact(data);
+      if (get().isNew) await get().createContact(data);
+      else await get().updateContact(data);
     },
   }),
 );

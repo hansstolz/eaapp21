@@ -1,14 +1,14 @@
 import { StateCreator, create } from "zustand";
 import { useEffect } from "react";
-import { EaCompanies } from "@/schemas/companies/company_schema";
-import { DropdownItem } from "@/data_types/data/values_data";
-import { _getCompanyById } from "@/app/api/companies/companies_crud";
-import { EaPurchases } from "@/data_types/purachases/ea_purchases";
 import { FiCreditCard, FiMail, FiUsers } from "react-icons/fi";
-import { EaContacts } from "@/schemas/contacts/contact_schema";
 import { useContactStore } from "../contact/contact_store";
 import { EaMails } from "@/app/data_types/forms/ea_mails";
 import useMailStore from "../mails/mail_store";
+import { EaCompanies } from "@/app/schemas/companies/company_schema";
+import { EaContacts } from "@/app/schemas/contacts/contact_schema";
+import { DropdownItem } from "@/components/app/DropDown";
+import { EaPurchases } from "@/app/data_types/purachases/ea_purchases";
+import { _getCompanyById } from "@/app/api/companies/companies_crud";
 
 interface CompanySlice {
   company: EaCompanies | null;
@@ -98,7 +98,13 @@ export const useUpdateBoundStore = (uid_company: number) => {
     return () => {
       setContacts([]);
     };
-  }, [contacts, setContacts, setContactType, setUidCustomerOrSupplier, uid_company]);
+  }, [
+    contacts,
+    setContacts,
+    setContactType,
+    setUidCustomerOrSupplier,
+    uid_company,
+  ]);
 
   useEffect(() => {
     setMails(mails);

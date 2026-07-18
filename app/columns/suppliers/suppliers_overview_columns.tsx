@@ -1,4 +1,4 @@
-import { EaCompanyOverview } from "@/app/api/companies/companies_crud";
+import { EaCompanyOverview } from "@/app/data_types/companies/ea_companies_overview";
 import useGerman from "@/lib/hooks/useGerman";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";

@@ -1,14 +1,9 @@
-import { CellContext, ColumnDef } from "@tanstack/react-table";
-import { FiDelete } from "react-icons/fi";
-import React, { useMemo, useState } from "react";
-import useGerman from "@/lib/hooks/useGerman";
-import { EaContacts } from "@/schemas/contacts/contact_schema";
-import Trash from "@/components/general/trash";
+import { ColumnDef } from "@tanstack/react-table";
+import { EaContacts } from "@/app/schemas/contacts/contact_schema";
+import Trash from "@/components/app/trash";
 
 export default function ContactsColumns() {
-  const { truncate } = useGerman();
-  const columns = useMemo<ColumnDef<EaContacts>[]>(
-    () => [
+  const columns: ColumnDef<EaContacts>[] = [
       {
         accessorKey: "last_name",
         header: () => "Last Name",
@@ -41,23 +36,25 @@ export default function ContactsColumns() {
         footer: (props) => props.column.id,
         meta: {
           align: "left",
-          width: "200px",
         },
       },
       {
         accessorKey: "uid_contact",
         header: () => "D",
         footer: (props) => props.column.id,
-        cell: (info) => <Trash />,
+        cell: () => <Trash />,
         size: 30,
         meta: {
           align: "right",
           isClickable: true,
         },
       },
-    ],
-    [],
-  );
+    ];
 
   return columns;
+}
+
+function truncate(value: string | null | undefined, length: number) {
+  if (!value) return "";
+  return value.length > length ? `${value.slice(0, length - 1)}...` : value;
 }
