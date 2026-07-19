@@ -6,7 +6,7 @@ import {
   _getForkPartsByForkId,
   _updateForkPart,
 } from "@/app/api/forksparts/forksparts_crud";
-import { EaForksParts } from "@/data_types/forks/ea_forks";
+import { EaForksParts } from "@/app/data_types/forks/ea_forks";
 import { create } from "zustand";
 import {
   createPaginatedSlice,

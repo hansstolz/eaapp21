@@ -1,16 +1,17 @@
-import { EaForkHistory } from "@/data_types/forks/ea_fork_history";
-import useGerman from "@/lib/hooks/useGerman";
+import { EaForkHistory } from "@/app/data_types/forks/ea_fork_history";
 import { ColumnDef } from "@tanstack/react-table";
-import { useMemo } from "react";
+
+const toGermanDate = (isoString: string) =>
+  new Date(isoString).toLocaleDateString("de-DE", {
+    day: "2-digit", month: "2-digit", year: "numeric",
+  });
 
 export default function ForkHistCol() {
-  const { to2DigitDateFromString } = useGerman();
-  const columns = useMemo<ColumnDef<EaForkHistory>[]>(
-    () => [
+  const columns: ColumnDef<EaForkHistory>[] = [
       {
         accessorKey: "created_at",
         header: () => "Date",
-        cell: (info) => to2DigitDateFromString(info.getValue() as string),
+        cell: (info) => toGermanDate(info.getValue() as string),
         footer: (props) => props.column.id,
       },
       {
@@ -35,11 +36,9 @@ export default function ForkHistCol() {
       {
         accessorKey: "fork_in_date",
         header: () => "Fork in",
-        cell: (info) => to2DigitDateFromString(info.getValue() as string),
+        cell: (info) => toGermanDate(info.getValue() as string),
         footer: (props) => props.column.id,
       },
-    ],
-    [],
-  );
+    ];
   return columns;
 }

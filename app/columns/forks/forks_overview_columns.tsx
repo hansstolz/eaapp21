@@ -1,5 +1,5 @@
-import { EaForks } from "@/data_types/forks/ea_forks";
-import { EaForksOverview } from "@/data_types/forks/ea_forks_overview";
+import { EaForks } from "@/app/data_types/forks/ea_forks";
+import { EaForksOverview } from "@/app/data_types/forks/ea_forks_overview";
 import useGerman from "@/lib/hooks/useGerman";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";

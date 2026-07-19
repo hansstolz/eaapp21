@@ -1,19 +1,15 @@
-import { EaForksParts } from "@/data_types/forks/ea_forks";
-import { CellContext, ColumnDef } from "@tanstack/react-table";
-import React, { useMemo, useState } from "react";
+import { EaForksParts } from "@/app/data_types/forks/ea_forks";
+import { ColumnDef } from "@tanstack/react-table";
 
 export default function PartsColumns() {
-  const columns = useMemo<ColumnDef<EaForksParts>[]>(
-    () => [
+  const columns: ColumnDef<EaForksParts>[] = [
       {
         accessorKey: "forks_part_name",
         header: () => "Partname",
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id,
       },
-    ],
-    [],
-  );
+    ];
 
   return columns;
 }
