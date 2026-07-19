@@ -1,4 +1,4 @@
-import { EaOrdersOverview } from "@/data_types/orders/ea_orders_overview";
+import { EaOrdersOverview } from "@/app/data_types/orders/ea_orders_overview";
 import useGerman from "@/lib/hooks/useGerman";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
@@ -15,23 +15,19 @@ export const StatusMap = new Map<string, string>([
   ["default", "bg-black-700"],
 ]);
 
+const toWarranty = (value: number) => value === 0 ? "" : `WA:${value}`;
+
+const toColor = (value: string | null) => {
+  if (value === null) return "bg-black-700";
+  const color = value.split("||").at(0);
+  return color ? StatusMap.get(color) : "bg-black-700";
+};
+
+const toStatus = (value: string | null) =>
+  value === null ? "No Stat" : value.split("||").at(0);
+
 export default function OrdersOverviewColumns() {
   const { to2DigitDateFromString, truncate } = useGerman();
-
-  const toWarranty = (str: number) => {
-    return str === 0 ? "" : `WA:${str}`;
-  };
-  const toColor = (str: string) => {
-    if (str === null) return "bg-black-700";
-    const col = str.split("||").at(0);
-
-    return col ? StatusMap.get(col) : "bg-black-700";
-  };
-
-  const toStatus = (str: string) => {
-    if (str === null) return "No Stat";
-    return str.split("||").at(0);
-  };
 
   const columns = useMemo<ColumnDef<EaOrdersOverview>[]>(
     () => [

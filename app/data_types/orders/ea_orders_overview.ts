@@ -1,5 +1,5 @@
 export type EaOrdersOverview = {
-  uid_order: number | null;
+  uid_order: number;
   invoice_date: string | null;
   order_no: number | null;
   customer_no: number | null;
@@ -9,5 +9,15 @@ export type EaOrdersOverview = {
   fork_model: string | null;
   created_at: string | null;
   order_status: string | null;
-  warranty_no: string | null;
+  warranty_no: number | null;
+  invoice_no: number | null;
+  number: string | null;
+  user_group: string | null;
+  warranty_request: string | null;
+  customer_address: string | null;
+  worksheet_no: number | null;
+  diagnosis_no: number | null;
+  fork_in_date: string | null;
+  costestimates_numbers: string | null;
+  ftsearch: string | null;
 };
