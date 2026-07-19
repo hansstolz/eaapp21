@@ -1,5 +1,5 @@
 import { StateCreator, create } from "zustand";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import {
   FaBicycle,
   FaEnvelope,
@@ -7,14 +7,11 @@ import {
   FaUser,
   FaUsers,
 } from "react-icons/fa";
-import { EaClients } from "@/data_types/clients/ea_clients";
-import { DropdownItem } from "@/components/general/DropDown";
+import { EaClients } from "@/app/data_types/clients/ea_clients";
+import { DropdownItem } from "@/components/app/DropDown";
 import { _getCustomerById } from "@/app/api/customers/customers_crud";
-import { FormSelectOption } from "@/components/ui/FormSelect";
-import { EaCustomerMails } from "@/schemas/customer/customer_schema";
-import { get_values_label } from "@/app/api/values/crud";
-import { ValueTypes } from "@/data_types/values/value_types";
-import { EaContacts } from "@/schemas/contacts/contact_schema";
+import { EaCustomerMails } from "@/app/schemas/customer/customer_schema";
+import { EaContacts } from "@/app/schemas/contacts/contact_schema";
 import { useContactStore } from "../contact/contact_store";
 import { useShallow } from "zustand/react/shallow";
 import { _deleteClient } from "@/app/api/clients/client_crud";
@@ -26,6 +23,8 @@ interface ClientSlice {
   setClients: (data: EaClients[]) => void;
   deleteClient: (uid_client: number) => void;
 }
+
+type FormSelectOption = { label: string; value: string };
 
 export const createClientSlice: StateCreator<
   ClientSlice,
@@ -88,7 +87,10 @@ const createCustomerSlice: StateCreator<
   setPayments: (data: FormSelectOption[]) => set({ payments: data }),
 
   get_payments: async () => {
-    const payments = await get_values_label(ValueTypes.ea_customer_payment);
+    const response = await fetch(
+      "/values/get_values_label/ea_customer_payment",
+    );
+    const payments = response.ok ? await response.json() : [];
     set({ payments: payments });
   },
 
@@ -118,7 +120,7 @@ export const useCustomerBoundStore = create<CustomerSlice & ClientSlice>()(
   }),
 );
 
-export const updateCustomerBoundStore = (uid_customer: number | undefined) => {
+export const useUpdateCustomerBoundStore = (uid_customer: number | undefined) => {
   const fetchData = useCustomerBoundStore((state) => state.fetchData);
   const contacts = useCustomerBoundStore((state) => state.contacts);
   const customer = useCustomerBoundStore((state) => state.customer);
@@ -140,7 +142,7 @@ export const updateCustomerBoundStore = (uid_customer: number | undefined) => {
     } else {
       setContacts([]);
     }
-  }, [uid_customer]);
+  }, [fetchData, setContacts, uid_customer]);
 
   useEffect(() => {
     setContacts(contacts);
@@ -149,14 +151,20 @@ export const updateCustomerBoundStore = (uid_customer: number | undefined) => {
     return () => {
       setContacts([]);
     };
-  }, [contacts, uid_customer]);
+  }, [
+    contacts,
+    setContacts,
+    setContactType,
+    setUidCustomerOrSupplier,
+    uid_customer,
+  ]);
 
   useEffect(() => {
-    uid_customer && getMailsByCustomer(uid_customer);
+    if (uid_customer) getMailsByCustomer(uid_customer);
     return () => {
       setMails([]);
     };
-  }, [uid_customer]);
+  }, [getMailsByCustomer, setMails, uid_customer]);
 
   return customer;
 };

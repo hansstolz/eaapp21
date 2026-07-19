@@ -1,20 +1,22 @@
-import { EaOrdersCustomer } from "@/data_types/orders/ea_orders_customer";
-import useGerman from "@/lib/hooks/useGerman";
+import { EaOrdersCustomer } from "@/app/data_types/orders/ea_orders_customer";
 import { ColumnDef } from "@tanstack/react-table";
-import React, { useMemo, useState } from "react";
+
+const toGermanDate = (isoString: string) =>
+  new Date(isoString).toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 
 export default function CustomerOrdersColumns() {
-  const { to2DigitDateFromString } = useGerman();
-  const columns = useMemo<ColumnDef<EaOrdersCustomer>[]>(
-    () => [
+  const columns: ColumnDef<EaOrdersCustomer>[] = [
       {
         accessorKey: "invoice_date",
         header: () => "Date",
-        cell: (info) => to2DigitDateFromString(info.getValue() as string),
+        cell: (info) => toGermanDate(info.getValue() as string),
         footer: (props) => props.column.id,
         meta: {
           align: "left",
-          width: "80px",
         },
       },
       {
@@ -24,7 +26,6 @@ export default function CustomerOrdersColumns() {
         footer: (props) => props.column.id,
         meta: {
           align: "left",
-          width: "80px",
         },
       },
 
@@ -35,7 +36,6 @@ export default function CustomerOrdersColumns() {
         footer: (props) => props.column.id,
         meta: {
           align: "left",
-          width: "80px",
         },
       },
       {
@@ -43,9 +43,7 @@ export default function CustomerOrdersColumns() {
         header: () => "Fork Model",
         footer: (props) => props.column.id,
       },
-    ],
-    [],
-  );
+    ];
 
   return columns;
 }

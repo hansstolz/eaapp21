@@ -1,4 +1,4 @@
-import { EaCustomerOverview } from "@/data_types/customer/ea_customer_overview";
+import { EaCustomerOverview } from "@/app/data_types/customer/ea_customer_overview";
 import useGerman from "@/lib/hooks/useGerman";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";

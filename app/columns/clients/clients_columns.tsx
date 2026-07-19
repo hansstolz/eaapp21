@@ -1,8 +1,7 @@
-import { CellContext, ColumnDef } from "@tanstack/react-table";
-import { FiDelete } from "react-icons/fi";
+import { EaClients } from "@/app/data_types/clients/ea_clients";
+import Trash from "@/components/app/trash";
+import { ColumnDef } from "@tanstack/react-table";
 import React, { useMemo, useState } from "react";
-import { EaClients } from "@/data_types/clients/ea_clients";
-import Trash from "@/components/general/trash";
 
 export default function ClientColumns() {
   const columns = useMemo<ColumnDef<EaClients>[]>(

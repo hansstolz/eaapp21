@@ -1,29 +1,36 @@
 "use client";
-import { CustomerCategory } from "@/data_types/orders/customer_category";
-import { EaOrdersPositions } from "@/data_types/positions/ea_orders_positions";
-import useGerman from "@/lib/hooks/useGerman";
+import { CustomerCategory } from "@/app/data_types/orders/customer_category";
+import { EaOrdersPositions } from "@/app/data_types/positions/ea_orders_positions";
 import { CellContext, ColumnDef } from "@tanstack/react-table";
-import React, { useMemo } from "react";
 import { FiDelete } from "react-icons/fi";
 
-export default function PositionsColumns() {
-  const { toCurrency, truncate } = useGerman();
+const euroFormatter = new Intl.NumberFormat("de-DE", {
+  style: "currency",
+  currency: "EUR",
+});
 
-  const showPrice = (
-    info: CellContext<EaOrdersPositions, unknown>,
-    no: number,
-  ) => {
+const toCurrency = (value: number) => euroFormatter.format(value);
+const truncate = (value: string | null, length = 50) =>
+  value && value.length > length
+    ? `${value.slice(0, length - 1)}...`
+    : (value ?? "");
+
+const showPrice = (
+  info: CellContext<EaOrdersPositions, unknown>,
+  no: number,
+) => {
     if (info.row.getValue("customer_category_no") === no) {
       return (
         <div className="text-primary">
           {toCurrency(info.getValue() as number)}
         </div>
       );
-    } else return toCurrency(info.getValue() as number);
-  };
+    }
+    return toCurrency(info.getValue() as number);
+};
 
-  const columns = useMemo<ColumnDef<EaOrdersPositions>[]>(
-    () => [
+export default function PositionsColumns() {
+  const columns: ColumnDef<EaOrdersPositions>[] = [
       {
         accessorKey: "article_no",
         header: () => "No",
@@ -48,7 +55,6 @@ export default function PositionsColumns() {
         cell: (info) => truncate(info.getValue() as string),
         footer: (props) => props.column.id,
         meta: {
-          width: "400px",
         },
       },
 
@@ -59,7 +65,6 @@ export default function PositionsColumns() {
         footer: (props) => props.column.id,
         meta: {
           align: "right",
-          width: "100px",
         },
       },
       {
@@ -69,7 +74,6 @@ export default function PositionsColumns() {
         footer: (props) => props.column.id,
         meta: {
           align: "right",
-          width: "100px",
         },
       },
       {
@@ -79,7 +83,6 @@ export default function PositionsColumns() {
         footer: (props) => props.column.id,
         meta: {
           align: "right",
-          width: "100px",
         },
       },
       {
@@ -89,7 +92,6 @@ export default function PositionsColumns() {
         footer: (props) => props.column.id,
         meta: {
           align: "right",
-          width: "100px",
         },
       },
 
@@ -97,19 +99,16 @@ export default function PositionsColumns() {
         accessorKey: "uid_orders_position",
         header: () => "Del",
         footer: (props) => props.column.id,
-        cell: (info) => (
+        cell: () => (
           <div className="text-primary">
             <FiDelete />
           </div>
         ),
         meta: {
           align: "right",
-          width: "50px",
         },
       },
-    ],
-    [],
-  );
+    ];
 
   return columns;
 }

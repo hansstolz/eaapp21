@@ -5,14 +5,14 @@ import {
   _getOrdersByForkId,
   _updateFork,
 } from "@/app/api/forks/forks_crud";
-import { TCustForkResult } from "@/data_types/customer/ea_customer_fork";
+import { TCustForkResult } from "@/app/data_types/customer/ea_customer_fork";
 import {
   EaForks,
   EaForksParts,
   EaForksReferences,
   TForkOrder,
-} from "@/data_types/forks/ea_forks";
-import { DropdownItem } from "@/data_types/general/dropdown";
+} from "@/app/data_types/forks/ea_forks";
+import { DropdownItem } from "@/app/data_types/general/dropdown";
 import { FiFilePlus, FiUser } from "react-icons/fi";
 import { toast } from "sonner";
 import { create } from "zustand/react";
