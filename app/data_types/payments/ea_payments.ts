@@ -1,4 +1,4 @@
-type EaPayments = {
+export type EaPayments = {
   user_group: string | null;
   created_at: Date | null;
   updated_at: Date | null;

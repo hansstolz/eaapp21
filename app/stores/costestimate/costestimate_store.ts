@@ -5,26 +5,24 @@ import {
   _getCostestimatesNumbers,
   _updateCostestimate,
 } from "@/app/api/costestimates/costestimate_crud";
-import { DropdownItem } from "@/data_types/general/dropdown";
+import { DropdownItem } from "@/app/data_types/general/dropdown";
 import { create } from "zustand/react";
 import {
-  CostestimateDetail,
   EaCostestimate,
-} from "@/data_types/costestimate/ea_costestimate";
-import { EaConfirmCost } from "@/data_types/costestimate/ea_cofirm_cost";
-import { OrderStatus } from "@/data_types/orders/order_status";
+} from "@/app/data_types/costestimate/ea_costestimate";
+import { EaConfirmCost } from "@/app/data_types/costestimate/ea_cofirm_cost";
+import { OrderStatus } from "@/app/data_types/orders/order_status";
 import { _updateOrderStatus } from "@/app/api/orders/orders_crud";
-import { EaOrdersPosition } from "@/data_types/orders/ea_orders_position";
-import { EaOrdersText } from "@/data_types/orders/ea_orders_texts";
-import Order from "@/data_types/orders/order";
+import { EaOrdersPosition } from "@/app/data_types/orders/ea_orders_position";
+import { EaOrdersText } from "@/app/data_types/orders/ea_orders_texts";
+import Order from "@/app/data_types/orders/order";
 import { toast } from "sonner";
-import { EaOrdersPositions } from "@/data_types/positions/ea_orders_positions";
+import { EaOrdersPositions } from "@/app/data_types/positions/ea_orders_positions";
 import {
   createPaginatedSlice,
   PaginatedSlice,
   PaginatedSliceDelegate,
 } from "../common/paginated_slice";
-import { add } from "date-fns";
 
 interface CostestimateStore {
   costestimate: EaCostestimate | null;
@@ -86,11 +84,12 @@ export const createCostestimateStore = create<
             : OrderStatus.Costestimate,
         );
 
-        result &&
+        if (result) {
           set({
             isConfirmed: result.costestimate_confirm_check === 1,
             costestimate: { ...costestimate },
           });
+        }
       }
     },
 

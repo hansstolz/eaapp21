@@ -4,7 +4,7 @@ import {
   _updateWarrantyNumber,
   _updateWarrantyReason,
 } from "@/app/api/warranty/warranty_crud";
-import { EaWarranty } from "@/data_types/warranty/ea_warranty";
+import { EaWarranty } from "@/app/data_types/warranty/ea_warranty";
 import { create } from "zustand/react";
 import { useOrderStore } from "../order/order_store";
 import { useEffect } from "react";
@@ -29,9 +29,11 @@ export const createWarrantyStore = create<WarrantyStore>((set, get) => ({
   onWarrantyRequestChange: async (status: string) => {
     const { warranty } = get();
     if (!warranty) return;
-    status === "accept"
-      ? warranty && (await _updateWarrantyNumber(warranty.uid_warranty))
-      : warranty && (await _resetWarrantyNumber(warranty.uid_warranty));
+    if (status === "accept") {
+      await _updateWarrantyNumber(warranty.uid_warranty);
+    } else {
+      await _resetWarrantyNumber(warranty.uid_warranty);
+    }
 
     toast.success(
       `Warranty ${status === "accept" ? "accepted" : "reset"} successfully!`,
@@ -62,6 +64,6 @@ export const useWarrantyStore = () => {
     if (order) {
       getWarrantyByUidOrder(order.uid_order);
     }
-  }, [order]);
+  }, [getWarrantyByUidOrder, order]);
   return { warranty, onWarrantyRequestChange, updateWarrantyReason };
 };

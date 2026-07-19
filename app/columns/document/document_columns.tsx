@@ -1,23 +1,21 @@
-import { TDocument } from "@/data_types/documents/tdocument";
-import { TForkOrder } from "@/data_types/forks/ea_forks";
-import useGerman from "@/lib/hooks/useGerman";
-import { CellContext, ColumnDef } from "@tanstack/react-table";
+import { TDocument } from "@/app/data_types/documents/tdocument";
+import { ColumnDef } from "@tanstack/react-table";
 import { MailIcon, PrinterIcon } from "lucide-react";
-import React, { useMemo, useState } from "react";
+
+const toGermanDate = (value: string) => new Date(value).toLocaleDateString(
+  "de-DE",
+  { day: "2-digit", month: "2-digit", year: "numeric" },
+);
+
+const getIconForStatus = (status: string) => {
+  if (!status) return null;
+  return status.toLowerCase().startsWith("mail")
+    ? <MailIcon className="size-4 text-blue-700" />
+    : <PrinterIcon className="size-4 text-teal-700" />;
+};
 
 export default function DocumentColumns() {
-  const { to2DigitDateFromString } = useGerman();
-
-  const getIconForStatus = (status: string) => {
-    if (!status) return null;
-    if (status.toLowerCase().startsWith("mail")) {
-      return <MailIcon className={`size-4 text-blue-700`} />;
-    } else {
-      return <PrinterIcon className={`size-4 text-teal-700`} />;
-    }
-  };
-  const columns = useMemo<ColumnDef<TDocument>[]>(
-    () => [
+  const columns: ColumnDef<TDocument>[] = [
       {
         accessorKey: "doc_type",
         header: () => "Type",
@@ -35,7 +33,7 @@ export default function DocumentColumns() {
       {
         accessorKey: "doc_date",
         header: () => "Date",
-        cell: (info) => to2DigitDateFromString(info.getValue() as string),
+        cell: (info) => toGermanDate(info.getValue() as string),
         footer: (props) => props.column.id,
       },
       {
@@ -44,9 +42,7 @@ export default function DocumentColumns() {
         cell: (info) => getIconForStatus(info.getValue() as string),
         footer: (props) => props.column.id,
       },
-    ],
-    [],
-  );
+    ];
 
   return columns;
 }

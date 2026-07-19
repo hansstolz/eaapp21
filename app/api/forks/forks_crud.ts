@@ -1,6 +1,5 @@
 import type { EaForksOverview } from "@/app/data_types/forks/ea_forks_overview";
 import type { PaginatedProps } from "@/app/data_types/general/tpaginated_props";
-import type { EaForkDialog } from "@/app/schemas/forks/fork_schema_dialog";
 import type { EaForkHistory } from "@/app/data_types/forks/ea_fork_history";
 import type {
   EaForks,
@@ -53,7 +52,17 @@ export function _updateFork(data: EaForks) {
   });
 }
 
-export function _updateForkOrder(data: EaForkDialog) {
+export function _updateForkOrder(data: {
+  uid_fork?: number;
+  client_name?: string | null;
+  fork_no?: number | null;
+  fork_model?: string | null;
+  colour?: string | null;
+  wheelsize?: string | null;
+  category_fork?: string | null;
+  fork_in_date?: string | Date;
+  fork_in_carrier?: string;
+}) {
   return request<EaForks | null>(`/forks/update_fork_order`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

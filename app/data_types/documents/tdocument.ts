@@ -4,4 +4,5 @@ export type TDocument = {
   doc_type: string | null;
   doc_name: string | null;
   sent_by: string | null;
+  doc_no: string;
 };

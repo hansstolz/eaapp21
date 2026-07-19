@@ -1,7 +1,7 @@
-import { EaForksParts } from "@/data_types/forks/ea_forks";
+import { EaForksParts } from "@/app/data_types/forks/ea_forks";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
-import Trash from "@/components/general/trash";
+import Trash from "@/components/app/trash";
 
 export default function ForkPartColumns() {
   const columns = useMemo<ColumnDef<EaForksParts>[]>(

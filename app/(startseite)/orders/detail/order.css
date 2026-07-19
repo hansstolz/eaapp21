@@ -1,0 +1,53 @@
+.order-grid {
+    display: grid;
+    grid-gap:12px;
+    margin-right:12px;
+    grid-template-areas:
+    "customer fork client" 
+    "tabs tabs tabs" 
+    "calc calc calc" ;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 500px 1fr 250px;
+}
+
+.order-customer{
+    grid-area: customer;
+  }
+
+  .order-fork {
+    grid-area: fork;
+  }
+
+  .order-client {
+    grid-area: client;
+  }
+
+  .order-tabs {
+    grid-area: tabs;
+  }
+
+  .order-calc {
+    grid-area: calc;
+  }
+
+
+  .ws-values {
+    display: grid;
+    grid-gap:6px;
+    grid-template-areas:
+   
+    "first second third" ;
+    
+    grid-template-columns: 160px 1fr 1fr;
+  }
+
+  .ws-first {
+    grid-area: first;
+  }
+  .ws-second {
+    grid-area: second;
+  }
+  .ws-third {
+    grid-area: third;
+  }
+  

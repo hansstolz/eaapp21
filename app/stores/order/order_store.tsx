@@ -1,6 +1,5 @@
 import { _getOrderById } from "@/app/api/orders/orders_crud";
-import Order from "@/data_types/orders/order";
-import { useEffect } from "react";
+import Order from "@/app/data_types/orders/order";
 import { create } from "zustand/react";
 
 export interface OrderStore {
@@ -19,6 +18,7 @@ export const createOrderStore = create<OrderStore>((set, get) => ({
     set({ order });
   },
   deleteOrderById: async (id: number) => {
+    void id;
     // Implement the logic to delete the order by ID
   },
 

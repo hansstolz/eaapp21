@@ -1,13 +1,11 @@
-import { use } from "react";
-import { create, StateCreator } from "zustand";
-import { useOrderStore } from "./order_store";
+import { create } from "zustand";
 import { removeFromArray } from "@/lib/utils";
 import {
   _addPayment,
   _deletePayment,
   _getPayments,
 } from "@/app/api/payments/_crud_paymtents";
-import { OrderStatus } from "@/data_types/orders/order_status";
+import type { EaPayments } from "@/app/data_types/payments/ea_payments";
 
 export interface PaymentSlice {
   payments: EaPayments[];
@@ -61,6 +59,7 @@ export const usePaymentStore = create<PaymentSlice>((set, get) => ({
     }
   },
   updateAmountPaid: async (amount_paid: number) => {
+    void amount_paid;
     /*
     const { order } = useOrderStore();
 

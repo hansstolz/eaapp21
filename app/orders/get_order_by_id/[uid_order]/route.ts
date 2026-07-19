@@ -1,0 +1,16 @@
+import { getAuthSession } from "@/lib/auth-session";
+import { findOwnedOrder } from "@/lib/order-detail";
+import { errorResponse, parsePositiveId } from "@/lib/route-utils";
+
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ uid_order: string }> },
+) {
+  const session = await getAuthSession();
+  if (!session) return errorResponse("Nicht authentifiziert.", 401);
+  const uidOrder = parsePositiveId((await params).uid_order);
+  if (!uidOrder) return errorResponse("Ungültige Auftrags-ID.", 400);
+  const order = await findOwnedOrder(uidOrder, session.userGroup);
+  if (!order) return errorResponse("Auftrag nicht gefunden.", 404);
+  return Response.json(order);
+}
