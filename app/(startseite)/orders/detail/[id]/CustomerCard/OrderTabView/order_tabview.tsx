@@ -1,0 +1,114 @@
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useEffect } from "react";
+import {
+  FaEuroSign,
+  FaFileInvoice,
+  FaFileInvoiceDollar,
+  FaOutdent,
+  FaReadme,
+  FaStethoscope,
+} from "react-icons/fa";
+
+import { useOrderStore } from "@/app/stores/order/order_store";
+import { usePaymentStore } from "@/app/stores/order/PaymentSlice";
+import DiagnosisTab from "../../Tabs/diagnosis_tab";
+
+export enum TabNamesOrder {
+  Diagnose = "Diagnose",
+  Costestimate = "Costestimate",
+  Worksheet = "Worksheet",
+  Invoice = "Invoice",
+  Creditnote = "Creditnote",
+  Payments = "Payments",
+  Reminders = "Reminders",
+}
+
+export default function OrderTabView() {
+  const { order } = useOrderStore();
+  const { getPayments, paymentCount } = usePaymentStore();
+
+  useEffect(() => {
+    if (order) {
+      getPayments(order.uid_order);
+    }
+  }, [order]);
+
+  const tabs = () => {
+    const items = [];
+    if (!order?.isArticleSales) {
+      items.push({
+        label: TabNamesOrder.Diagnose,
+        value: TabNamesOrder.Diagnose,
+        icon: FaStethoscope,
+      });
+    }
+    items.push({
+      label: TabNamesOrder.Costestimate,
+      value: TabNamesOrder.Costestimate,
+      icon: FaEuroSign,
+    });
+    if (!order?.isArticleSales) {
+      items.push({
+        label: TabNamesOrder.Worksheet,
+        value: TabNamesOrder.Worksheet,
+        icon: FaOutdent,
+      });
+    }
+    items.push({
+      label: TabNamesOrder.Invoice,
+      value: TabNamesOrder.Invoice,
+      icon: FaFileInvoiceDollar,
+    });
+    items.push({
+      label: TabNamesOrder.Creditnote,
+      value: TabNamesOrder.Creditnote,
+      icon: FaFileInvoice,
+    });
+    items.push({
+      label: `Payments[${paymentCount}]`,
+      value: TabNamesOrder.Payments,
+      icon: FaEuroSign,
+    });
+    items.push({
+      label: TabNamesOrder.Reminders,
+      value: TabNamesOrder.Reminders,
+      icon: FaReadme,
+    });
+
+    return items;
+  };
+  return (
+    <>
+      <Card className="p-3">
+        {order && (
+          <Tabs defaultValue={"Diagnose"}>
+            <TabsList className="flex gap-3">
+              {tabs().map((tab) => (
+                <TabsTrigger
+                  className="tab-trigger data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                  key={tab.label}
+                  value={tab.value.toString()}
+                >
+                  {tab.icon && <tab.icon className="mr-2 inline-block" />}
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            <div className="min-h-100 max-h-165 overflow-y-scroll">
+              <TabsContent value={TabNamesOrder.Diagnose}>
+                <DiagnosisTab />
+              </TabsContent>
+              <TabsContent value={TabNamesOrder.Costestimate}></TabsContent>
+              <TabsContent value={TabNamesOrder.Worksheet}></TabsContent>
+              <TabsContent value={TabNamesOrder.Invoice}></TabsContent>
+              <TabsContent value={TabNamesOrder.Creditnote}></TabsContent>
+              <TabsContent value={TabNamesOrder.Payments}></TabsContent>
+              <TabsContent value={TabNamesOrder.Reminders}></TabsContent>
+            </div>
+          </Tabs>
+        )}
+      </Card>
+    </>
+  );
+}

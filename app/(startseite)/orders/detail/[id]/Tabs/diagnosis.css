@@ -1,0 +1,29 @@
+
+.diagnosis-grid {
+    display: grid;
+    grid-template-areas:
+    "col1 col2 col3 col4 col5" ; ;
+    grid-template-columns: 1fr 200px 200px 1fr 1fr;
+    grid-template-rows: 1fr;
+    grid-gap: 16px;
+    padding-right: 32px;
+    
+  }
+
+  .diagnosis-col1 {
+    grid-area: col1;
+  }
+
+  .diagnosis-col2 {
+    grid-area: col2;
+  }
+
+  .diagnosis-col3 {
+    grid-area: col3;
+  }
+  .diagnosis-col4 {
+    grid-area: col4;
+  }
+  .diagnosis-col5 {
+    grid-area: col5;
+  }

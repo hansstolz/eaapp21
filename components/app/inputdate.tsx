@@ -81,13 +81,21 @@ export function InputDate<
         control={control}
         name={name}
         render={({ field, fieldState }) => {
-          const value = (field.value ?? null) as Date | null;
+          const rawValue: unknown = field.value;
+          const parsedValue = rawValue instanceof Date
+            ? rawValue
+            : typeof rawValue === "string" && rawValue
+              ? new Date(rawValue)
+              : null;
+          const value = parsedValue && !Number.isNaN(parsedValue.getTime())
+            ? parsedValue
+            : null;
 
           return (
             <div className="grid gap-1">
               <Popover>
-                <PopoverTrigger>
-                  <Button
+                <PopoverTrigger
+                  render={<Button
                     id={buttonId}
                     type="button"
                     variant="outline"
@@ -97,10 +105,10 @@ export function InputDate<
                       !value && "text-muted-foreground",
                       buttonClassName,
                     )}
-                  >
+                  />}
+                >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {value ? format(value, displayFormat) : placeholder}
-                  </Button>
                 </PopoverTrigger>
 
                 <PopoverContent className="w-auto p-0" align="start">

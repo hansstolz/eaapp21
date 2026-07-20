@@ -3,13 +3,12 @@ import {
   _getValuesDiagnosis,
   _updateDiagnosis,
 } from "@/app/api/diagnosis/diagnosis_crud";
-import { EaDiagnosis } from "@/data_types/diagnosis/ea_diagnosis";
-import { TValuesDiagnosis } from "@/data_types/diagnosis/values_diagnosis";
-import { use, useEffect } from "react";
+import { EaDiagnosis } from "@/app/data_types/diagnosis/ea_diagnosis";
+import { TValuesDiagnosis } from "@/app/data_types/diagnosis/values_diagnosis";
+import { useEffect } from "react";
 import { create } from "zustand";
 import { useOrderStore } from "../order/order_store";
-import { DiagnosisType } from "@/schemas/diagnosis/DiagnosisSchema";
-import { _updateWarrantyReason } from "@/app/api/warranty/warranty_crud";
+import { DiagnosisType } from "@/app/schemas/diagnosis/DiagnosisSchema";
 import { toast } from "sonner";
 
 export interface DiagnosisStore {
@@ -23,7 +22,7 @@ export interface DiagnosisStore {
   submitDiagnosis: (data: DiagnosisType) => Promise<void>;
 }
 
-export const createDiagnosisStore = create<DiagnosisStore>((set, get) => ({
+export const createDiagnosisStore = create<DiagnosisStore>((set) => ({
   values: null,
   diagnosis: null,
   uses: [],
@@ -80,9 +79,9 @@ export const useDiagnosisStore = () => {
 
   useEffect(() => {
     if (order) {
-      getValuesDiagnosis();
-      getDiagnosisByUidOrder(order.uid_order);
+      void getValuesDiagnosis();
+      void getDiagnosisByUidOrder(order.uid_order);
     }
-  }, [order]);
+  }, [getDiagnosisByUidOrder, getValuesDiagnosis, order]);
   return { diagnosis, values, uses, settings, submitDiagnosis };
 };

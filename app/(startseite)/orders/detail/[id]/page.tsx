@@ -11,6 +11,9 @@ import CustomerCard from "./CustomerCard/customer_card";
 import ForkCard from "./ForkCard/fork_card";
 import DocumentCard from "./DocumentCard/document_card";
 import ArticleSales from "./CustomerCard/ArticleSales/article_sales";
+import OrderTabView from "./CustomerCard/OrderTabView/order_tabview";
+
+const goBack = () => window.history.back();
 
 export default function OrderDetail() {
   const { id } = useParams();
@@ -20,9 +23,6 @@ export default function OrderDetail() {
     getOrderById(Number(id)); // Example: Fetch order with ID 1 on component mount
   }, [getOrderById, id]);
 
-  const goBack = () => {
-    window.history.back();
-  };
   return (
     <>
       <LineLR>
@@ -53,7 +53,9 @@ export default function OrderDetail() {
           <DocumentCard />
         </div>
 
-        <div className="order-tabs"></div>
+        <div className="order-tabs">
+          <OrderTabView />
+        </div>
         <div className="order-calc">Calc</div>
       </div>
     </>

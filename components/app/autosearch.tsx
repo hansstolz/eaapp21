@@ -30,17 +30,9 @@ export default function AutoSearch<T>(props: Props<T>) {
   const [selected, setSelected] = React.useState<T | null>(null);
   const popoverId = React.useId();
 
-  const resetQuery = React.useCallback(() => {
-    setQuery("");
-  }, [setQuery]);
-
-  React.useEffect(() => {
-    // Verhalten wie vorher: bei placeholder-Änderung leeren
-    setSelected(null);
-    setOpen(false);
-    resetQuery();
-    return () => resetQuery();
-  }, [placeholder, resetQuery]);
+  const effectiveSelected = selected && data.some(
+    (item) => getId(item) === getId(selected),
+  ) ? selected : null;
 
   const onSelectItem = (item: T) => {
     setSelected(item);
@@ -52,22 +44,24 @@ export default function AutoSearch<T>(props: Props<T>) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger>
-        <Button
-          type="button"
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          aria-controls={popoverId}
-          className="w-full justify-between"
-        >
-          <span className="truncate">
-            {selected
-              ? showLabel(selected, false)
-              : `Search ${placeholder ?? ""}`}
-          </span>
-          <Search className="ml-2 h-4 w-4 opacity-70" />
-        </Button>
+      <PopoverTrigger
+        render={
+          <Button
+            type="button"
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            aria-controls={popoverId}
+            className="w-full justify-between"
+          />
+        }
+      >
+        <span className="truncate">
+          {effectiveSelected
+            ? showLabel(effectiveSelected, false)
+            : `Search ${placeholder ?? ""}`}
+        </span>
+        <Search className="ml-2 h-4 w-4 opacity-70" />
       </PopoverTrigger>
 
       <PopoverContent
@@ -85,13 +79,14 @@ export default function AutoSearch<T>(props: Props<T>) {
             <CommandEmpty>Nothing found.</CommandEmpty>
 
             <CommandGroup>
-              {data?.map((item, index) => {
+              {data?.map((item) => {
                 const id = getId(item);
-                const isSelected = selected != null && getId(selected) === id;
+                const isSelected = effectiveSelected != null
+                  && getId(effectiveSelected) === id;
 
                 return (
                   <CommandItem
-                    key={index}
+                    key={id}
                     value={String(id)}
                     onSelect={() => onSelectItem(item)}
                     className="cursor-pointer"

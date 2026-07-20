@@ -11,7 +11,7 @@ import {
 } from "../ui/dropdown-menu";
 
 type Props = {
-  onSelect?: (item: any) => void;
+  onSelect?: (item: DropdownItem) => void;
   items: DropdownItem[];
   title: string;
 };
@@ -20,16 +20,16 @@ export function DropdownMenuItems(props: Props) {
   const { onSelect, items, title } = props;
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button size="sm" className="w-full">
-          {title}
-        </Button>
+      <DropdownMenuTrigger
+        render={<Button type="button" size="sm" className="w-full" />}
+      >
+        {title}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-full" align="start">
         <DropdownMenuGroup>
           {items.map((item) => (
             <DropdownMenuItem
-              onSelect={() => onSelect && onSelect(item)}
+              onSelect={() => onSelect?.(item)}
               key={item.uid}
             >
               {item.label}

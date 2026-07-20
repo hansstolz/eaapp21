@@ -40,17 +40,16 @@ export default function DropDown({
   id,
 }: Props) {
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState<DropdownItem | null>(null);
-
-  React.useEffect(() => {
-    const i = index === -1 ? 0 : index;
-    const next =
-      valuesIn.length > 0 ? valuesIn[Math.min(i, valuesIn.length - 1)] : null;
-    setSelected(next);
-  }, [valuesIn, index]);
+  const [selectedValue, setSelectedValue] = React.useState<
+    string | number | null
+  >(null);
+  const selectedIndex = index === -1 ? 0 : index;
+  const selected = valuesIn.find((item) => item.value === selectedValue)
+    ?? valuesIn[Math.min(selectedIndex, valuesIn.length - 1)]
+    ?? null;
 
   const onSelectItem = (item: DropdownItem) => {
-    setSelected(item);
+    setSelectedValue(item.value);
     handler?.(item);
     setOpen(false);
   };
@@ -59,30 +58,30 @@ export default function DropDown({
     <div className={width}>
       {valuesIn.length > 0 && (
         <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger>
-            <Button
-              id={id}
-              type="button"
-              variant="outline"
-              disabled={disabled}
-              className={cn(
-                "w-full justify-between text-left text-xs shadow-md",
-                // wenn du den alten rounded/spacing look willst:
-                "rounded-lg py-1 pl-3 pr-2",
-              )}
-            >
-              <span className="flex min-w-0 items-center gap-2">
-                {selected?.icon ? (
-                  <selected.icon className="h-4 w-4 shrink-0" />
-                ) : null}
-                <span className="truncate">{selected?.label}</span>
-              </span>
+          <PopoverTrigger
+            render={
+              <Button
+                id={id}
+                type="button"
+                variant="outline"
+                disabled={disabled}
+                className={cn(
+                  "w-full justify-between text-left text-xs shadow-md",
+                  "rounded-lg py-1 pl-3 pr-2",
+                )}
+              />
+            }
+          >
+            <span className="flex min-w-0 items-center gap-2">
+              {selected?.icon ? (
+                <selected.icon className="h-4 w-4 shrink-0" />
+              ) : null}
+              <span className="truncate">{selected?.label}</span>
+            </span>
 
-              {/* rechter Bereich wie dein Gradient-Block */}
-              <span className="ml-2 inline-flex items-center rounded-md bg-linear-to-r from-secondary-200 to-secondary-400 px-2 py-1">
-                <ChevronDown className="h-4 w-4 text-white" />
-              </span>
-            </Button>
+            <span className="ml-2 inline-flex items-center rounded-md bg-linear-to-r from-secondary-200 to-secondary-400 px-2 py-1">
+              <ChevronDown className="h-4 w-4 text-white" />
+            </span>
           </PopoverTrigger>
 
           <PopoverContent className={cn("p-0", width)} align="start">
