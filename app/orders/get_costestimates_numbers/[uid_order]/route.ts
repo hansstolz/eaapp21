@@ -14,7 +14,7 @@ export async function GET(
   if (!await findOwnedOrder(uidOrder, session.userGroup))
     return errorResponse("Auftrag nicht gefunden.", 404);
   const costs = await prisma.ea_orders_costestimates.findMany({
-    where: { uid_order: uidOrder, user_group: session.userGroup },
+    where: { uid_order: uidOrder },
     select: { uid_costestimates: true, costestimate_no: true, costestimate_confirm_check: true },
     orderBy: [
       { costestimate_confirm_check: "desc" },

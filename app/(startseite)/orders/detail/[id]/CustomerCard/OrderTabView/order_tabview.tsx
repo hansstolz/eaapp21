@@ -13,8 +13,9 @@ import {
 import { useOrderStore } from "@/app/stores/order/order_store";
 import { usePaymentStore } from "@/app/stores/order/PaymentSlice";
 import DiagnosisTab from "../../Tabs/diagnosis_tab";
+import CostestimateTab from "../../Tabs/costestimate_tab";
 
-export enum TabNamesOrder {
+enum TabNamesOrder {
   Diagnose = "Diagnose",
   Costestimate = "Costestimate",
   Worksheet = "Worksheet",
@@ -30,9 +31,9 @@ export default function OrderTabView() {
 
   useEffect(() => {
     if (order) {
-      getPayments(order.uid_order);
+      void getPayments(order.uid_order);
     }
-  }, [order]);
+  }, [getPayments, order]);
 
   const tabs = () => {
     const items = [];
@@ -82,7 +83,13 @@ export default function OrderTabView() {
     <>
       <Card className="p-3">
         {order && (
-          <Tabs defaultValue={"Diagnose"}>
+          <Tabs
+            defaultValue={
+              order.isArticleSales
+                ? TabNamesOrder.Costestimate
+                : TabNamesOrder.Diagnose
+            }
+          >
             <TabsList className="flex gap-3">
               {tabs().map((tab) => (
                 <TabsTrigger
@@ -99,7 +106,9 @@ export default function OrderTabView() {
               <TabsContent value={TabNamesOrder.Diagnose}>
                 <DiagnosisTab />
               </TabsContent>
-              <TabsContent value={TabNamesOrder.Costestimate}></TabsContent>
+              <TabsContent value={TabNamesOrder.Costestimate}>
+                <CostestimateTab />
+              </TabsContent>
               <TabsContent value={TabNamesOrder.Worksheet}></TabsContent>
               <TabsContent value={TabNamesOrder.Invoice}></TabsContent>
               <TabsContent value={TabNamesOrder.Creditnote}></TabsContent>

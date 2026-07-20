@@ -106,6 +106,7 @@ export default function PositionsColumns() {
         ),
         meta: {
           align: "right",
+          isClickable: true,
         },
       },
     ];

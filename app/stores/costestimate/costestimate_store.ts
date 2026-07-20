@@ -1,9 +1,12 @@
 import {
   _createCostestimate,
+  _createCostestimatePosition,
+  _deleteCostestimatePosition,
   _getConfirmedCostestimate,
   _getCostestimate,
   _getCostestimatesNumbers,
   _updateCostestimate,
+  _updateCostestimatePosition,
 } from "@/app/api/costestimates/costestimate_crud";
 import { DropdownItem } from "@/app/data_types/general/dropdown";
 import { create } from "zustand/react";
@@ -37,9 +40,11 @@ interface CostestimateStore {
   getCostestimate: (uid_costestimates: number) => Promise<void>;
   getConfirmedCostestimate: (uid_order: number) => Promise<void>;
   updateCostestimate: (confirm: EaConfirmCost) => Promise<void>;
+  saveCostestimate: (costestimate: EaCostestimate) => Promise<void>;
   addCostestimate: (order: Order, username: string) => Promise<void>;
-  addPosition: (position: EaOrdersPositions) => void;
-  savePosition: (position: EaOrdersPositions) => void;
+  addPosition: (position: EaOrdersPositions) => Promise<void>;
+  savePosition: (position: EaOrdersPositions) => Promise<void>;
+  deletePosition: (uidPosition: number) => Promise<void>;
   getPosition: (selectedRow: number) => void;
 }
 
@@ -68,15 +73,14 @@ export const createCostestimateStore = create<
     updateCostestimate: async (confirm: EaConfirmCost) => {
       const costestimate = get().costestimate;
       if (costestimate) {
-        costestimate.confirmed_how = confirm.confirmed_how
-          ? Number(confirm.confirmed_how)
-          : null;
-        costestimate.confirmed_by = confirm.confirmed_by;
-        costestimate.confirmed_when = confirm.confirmed_when;
-        costestimate.costestimate_confirm_check = Number(
-          confirm.costestimate_confirm_check,
-        );
-        const result = await _updateCostestimate(costestimate);
+        const changed = {
+          ...costestimate,
+          confirmed_how: confirm.confirmed_how ? Number(confirm.confirmed_how) : null,
+          confirmed_by: confirm.confirmed_by,
+          confirmed_when: confirm.confirmed_when,
+          costestimate_confirm_check: Number(confirm.costestimate_confirm_check),
+        };
+        const result = await _updateCostestimate(changed);
         await _updateOrderStatus(
           costestimate.uid_order,
           result.costestimate_confirm_check === 1
@@ -87,10 +91,16 @@ export const createCostestimateStore = create<
         if (result) {
           set({
             isConfirmed: result.costestimate_confirm_check === 1,
-            costestimate: { ...costestimate },
+            costestimate: result,
           });
         }
       }
+    },
+
+    saveCostestimate: async (costestimate: EaCostestimate) => {
+      const result = await _updateCostestimate(costestimate);
+      set({ costestimate: result });
+      toast.success("Costestimate updated");
     },
 
     getCostestimatesNumbers: async (uid_order: number) => {
@@ -127,7 +137,8 @@ export const createCostestimateStore = create<
         );
         toast.success("Costestimate created");
         if (costestimate) {
-          get().getCostestimatesNumbers(order.uid_order);
+          await get().getCostestimatesNumbers(order.uid_order);
+          await get().getCostestimate(costestimate.uid_costestimates);
         }
       }
     },
@@ -142,8 +153,9 @@ export const createCostestimateStore = create<
       });
     },
 
-    addPosition: (position: EaOrdersPositions) => {
-      const positions = [...get().positions, position];
+    addPosition: async (position: EaOrdersPositions) => {
+      const saved = await _createCostestimatePosition(position);
+      const positions = [...get().positions, saved];
       const nextRow = positions.length - 1;
 
       set({
@@ -153,15 +165,29 @@ export const createCostestimateStore = create<
       });
     },
 
-    savePosition: (position: EaOrdersPositions) => {
+    savePosition: async (position: EaOrdersPositions) => {
+      const saved = await _updateCostestimatePosition(position);
       set((state) => {
         const positions = state.positions.map((pos) =>
-          pos.uid_orders_position === position.uid_orders_position
-            ? position
+          pos.uid_orders_position === saved.uid_orders_position
+            ? saved
             : pos,
         );
         return { positions, position: null };
       });
+    },
+
+    deletePosition: async (uidPosition: number) => {
+      await _deleteCostestimatePosition(uidPosition);
+      set((state) => ({
+        positions: state.positions.filter(
+          (position) => position.uid_orders_position !== uidPosition,
+        ),
+        position: state.position?.uid_orders_position === uidPosition
+          ? null
+          : state.position,
+      }));
+      toast.success("Position deleted");
     },
 
     getPosition: (selectedRow: number) => {
@@ -186,6 +212,7 @@ export const useCostestimateStore = () => {
     costestimates,
     isConfirmed,
     updateCostestimate,
+    saveCostestimate,
     addCostestimate,
     positions,
     position,
@@ -195,6 +222,7 @@ export const useCostestimateStore = () => {
     actions,
     addPosition,
     savePosition,
+    deletePosition,
     getPosition,
   } = createCostestimateStore();
 
@@ -206,6 +234,7 @@ export const useCostestimateStore = () => {
     getCostestimatesNumbers,
     getConfirmedCostestimate,
     updateCostestimate,
+    saveCostestimate,
     addCostestimate,
     positions,
     texts,
@@ -215,6 +244,7 @@ export const useCostestimateStore = () => {
     actions,
     addPosition,
     savePosition,
+    deletePosition,
     getPosition,
   };
 };

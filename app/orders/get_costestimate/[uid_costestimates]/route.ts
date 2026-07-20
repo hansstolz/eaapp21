@@ -15,7 +15,7 @@ export async function GET(
   if (!costestimate) return errorResponse("Costestimate nicht gefunden.", 404);
   const [positions, texts] = await Promise.all([
     prisma.ea_orders_positions.findMany({
-      where: { uid_costestimates: uid, user_group: session.userGroup },
+      where: { uid_costestimates: uid },
       orderBy: { uid_orders_position: "asc" },
     }),
     prisma.ea_orders_texts.findMany({

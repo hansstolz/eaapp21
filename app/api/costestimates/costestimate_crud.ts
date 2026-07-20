@@ -3,6 +3,7 @@ import type {
   EaCostestimate,
 } from "@/app/data_types/costestimate/ea_costestimate";
 import type { DropdownItem } from "@/app/data_types/general/dropdown";
+import type { EaOrdersPositions } from "@/app/data_types/positions/ea_orders_positions";
 
 async function request<T>(input: string, init?: RequestInit): Promise<T> {
   const response = await fetch(input, init);
@@ -36,3 +37,21 @@ export const _createCostestimate = (
     user, customer_category_no: customerCategoryNo, uid_order: uidOrder,
   }));
 };
+
+export const _createCostestimatePosition = (position: EaOrdersPositions) =>
+  request<EaOrdersPositions>(
+    "/orders/create_costestimate_position",
+    json("POST", position),
+  );
+
+export const _updateCostestimatePosition = (position: EaOrdersPositions) =>
+  request<EaOrdersPositions>(
+    "/orders/update_costestimate_position",
+    json("PUT", position),
+  );
+
+export const _deleteCostestimatePosition = (uidPosition: number) =>
+  request<EaOrdersPositions>(
+    `/orders/delete_costestimate_position/${uidPosition}`,
+    { method: "DELETE" },
+  );

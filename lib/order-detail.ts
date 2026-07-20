@@ -49,7 +49,11 @@ export async function findOwnedOrder(uidOrder: number, userGroup: string) {
 }
 
 export async function findOwnedCostestimate(uid: number, userGroup: string) {
-  return prisma.ea_orders_costestimates.findFirst({
-    where: { uid_costestimates: uid, user_group: userGroup },
+  const costestimate = await prisma.ea_orders_costestimates.findUnique({
+    where: { uid_costestimates: uid },
   });
+  if (!costestimate) return null;
+
+  const order = await findOwnedOrder(costestimate.uid_order, userGroup);
+  return order ? costestimate : null;
 }
