@@ -14,6 +14,11 @@ import { useOrderStore } from "@/app/stores/order/order_store";
 import { usePaymentStore } from "@/app/stores/order/PaymentSlice";
 import DiagnosisTab from "../../Tabs/diagnosis_tab";
 import CostestimateTab from "../../Tabs/costestimate_tab";
+import WorksheetPage from "../../Tabs/worksheet/WorksheetPage";
+import InvoicePage from "../../Tabs/invoice/InvoicePage";
+import CreditnotePage from "../../Tabs/creditnote/CreditnotePage";
+import PaymentsPage from "../../Tabs/payments/PaymentsPage";
+import RemindersPage from "../../Tabs/reminders/RemindersPage";
 
 enum TabNamesOrder {
   Diagnose = "Diagnose",
@@ -109,11 +114,21 @@ export default function OrderTabView() {
               <TabsContent value={TabNamesOrder.Costestimate}>
                 <CostestimateTab />
               </TabsContent>
-              <TabsContent value={TabNamesOrder.Worksheet}></TabsContent>
-              <TabsContent value={TabNamesOrder.Invoice}></TabsContent>
-              <TabsContent value={TabNamesOrder.Creditnote}></TabsContent>
-              <TabsContent value={TabNamesOrder.Payments}></TabsContent>
-              <TabsContent value={TabNamesOrder.Reminders}></TabsContent>
+              <TabsContent value={TabNamesOrder.Worksheet}>
+                <WorksheetPage />
+              </TabsContent>
+              <TabsContent value={TabNamesOrder.Invoice}>
+                <InvoicePage />
+              </TabsContent>
+              <TabsContent value={TabNamesOrder.Creditnote}>
+                <CreditnotePage />
+              </TabsContent>
+              <TabsContent value={TabNamesOrder.Payments}>
+                <PaymentsPage />
+              </TabsContent>
+              <TabsContent value={TabNamesOrder.Reminders}>
+                <RemindersPage />
+              </TabsContent>
             </div>
           </Tabs>
         )}

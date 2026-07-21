@@ -19,8 +19,9 @@ export const ORDER_UPDATE_FIELDS = [
   "price_categ3_freight_subtotal", "price_categ3_labor_subtotal",
   "price_categ3_material_subtotal", "price_categ3_subtotal",
   "price_categ3_total", "price_categ3_valuetax", "price_payments_total",
-  "reminder_date", "text_payments", "user_print_language", "vat_no_customer",
+  "reminder_date", "reminder_level", "text_payments", "user_print_language", "vat_no_customer",
   "worksheet_no", "uid_customer", "uid_fork", "diagnosis_no",
+  "worker_invoice", "worker_invoice_no",
 ] as const satisfies readonly (keyof Prisma.ea_ordersUncheckedUpdateInput)[];
 
 const ORDER_DATE_FIELDS = new Set<string>([
