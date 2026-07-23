@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaEuroSign,
   FaFileInvoice,
@@ -33,6 +33,9 @@ enum TabNamesOrder {
 export default function OrderTabView() {
   const { order } = useOrderStore();
   const { getPayments, paymentCount } = usePaymentStore();
+  const [activeTab, setActiveTab] = useState<TabNamesOrder>(
+    TabNamesOrder.Diagnose,
+  );
 
   useEffect(() => {
     if (order) {
@@ -89,11 +92,14 @@ export default function OrderTabView() {
       <Card className="p-3">
         {order && (
           <Tabs
-            defaultValue={
-              order.isArticleSales
+            value={
+              order.isArticleSales &&
+              (activeTab === TabNamesOrder.Diagnose ||
+                activeTab === TabNamesOrder.Worksheet)
                 ? TabNamesOrder.Costestimate
-                : TabNamesOrder.Diagnose
+                : activeTab
             }
+            onValueChange={(value) => setActiveTab(value as TabNamesOrder)}
           >
             <TabsList className="flex gap-3">
               {tabs().map((tab) => (
