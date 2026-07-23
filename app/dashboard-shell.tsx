@@ -104,19 +104,9 @@ export default function DashboardShell({
   return (
     <div className="min-h-screen bg-primary text-slate-900">
       <div className="flex min-h-screen">
-        <aside className="flex w-72 shrink-0 flex-col bg-blue-900 text-primary-foreground px-6 py-10">
+        <aside className="flex w-72 shrink-0 flex-col bg-blue-950 text-primary-foreground px-6 py-10">
           <div className="mb-10 flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/80 text-slate-700 shadow-sm">
-              <GitFork className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
-                Workspace
-              </p>
-              <p className="text-lg font-semibold text-slate-800">
-                Fork Repair
-              </p>
-            </div>
+            <img src="/_images/88_logo_weiss-rot.png" alt="Logo" width={240} />
           </div>
           <nav className="flex-1 space-y-1">
             <Accordion

@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AUTH_COOKIE_NAME, verifyAuthToken } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
 
 type LoginPageProps = {
   searchParams: Promise<{
@@ -43,9 +44,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-zinc-100 px-4 py-10 text-zinc-950">
-      <section className="w-full max-w-sm rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+      <section className="w-full max-w-sm rounded-lg border border-stone-200 bg-stone-100 p-6 shadow-sm">
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold">Login</h1>
+          <div>
+            <img src="/_images/88_logo_blau_rot.png" alt="Logo" width={320} />
+
+            <h1 className="mt-6 text-2xl font-semibold">Login</h1>
+          </div>
           <p className="mt-2 text-sm leading-6 text-zinc-600">
             Melde dich mit Benutzername oder E-Mail-Adresse und Passwort an.
           </p>
@@ -84,12 +89,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             />
           </label>
 
-          <button
-            type="submit"
-            className="h-11 w-full rounded-md bg-zinc-950 px-4 text-sm font-semibold text-white transition hover:bg-zinc-800"
-          >
+          <Button className="w-full h-12 text-lg" type="submit">
             Einloggen
-          </button>
+          </Button>
         </form>
       </section>
     </main>
