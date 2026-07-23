@@ -74,7 +74,7 @@ export default function AddPaymentDialog({ open, setOpen }: { open: boolean; set
             <Input id="payment-amount" type="number" step="0.01" {...form.register("payment_amount")} />
             {form.formState.errors.payment_amount?.message && <p className="text-sm text-destructive">{form.formState.errors.payment_amount.message}</p>}
           </div>
-          <DialogFooter>
+          <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>Close</Button>
             <Button disabled={!form.formState.isDirty} type="submit">Save</Button>
           </DialogFooter>

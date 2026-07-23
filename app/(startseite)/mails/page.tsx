@@ -18,10 +18,7 @@ import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { AlertDialog } from "@/app/dialogs/general/alert_dialog";
 import PaginatedContainer from "@/components/app/paging/PaginatedContainer";
 import NewMailDialog from "@/app/dialogs/mail/NewMailDialog";
-import {
-  _deleteMail,
-  _getMailsOverview,
-} from "@/app/api/mails/mails_crud";
+import { _deleteMail, _getMailsOverview } from "@/app/api/mails/mails_crud";
 
 export default function MailsPage() {
   const [showDialog, setShowDialog] = useState(false);
@@ -104,7 +101,7 @@ export default function MailsPage() {
       <LineLR>
         <LineRow>
           <MailSearch updateQuery={updateQuery} />
-          <Button variant="destructive" onClick={newHandler}>
+          <Button onClick={newHandler}>
             <FiFilePlus /> New Mail
           </Button>
         </LineRow>

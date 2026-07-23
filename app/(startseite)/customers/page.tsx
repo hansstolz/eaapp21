@@ -64,7 +64,7 @@ export default function CustomersPage() {
       <LineLR>
         <LineRow>
           <CustomerSearch updateQuery={updateQuery} />
-          <Button variant="destructive" onClick={newHandler}>
+          <Button onClick={newHandler}>
             <FiFilePlus /> New Customer
           </Button>
         </LineRow>

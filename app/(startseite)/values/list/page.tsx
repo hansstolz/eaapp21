@@ -12,7 +12,7 @@ export default function List() {
   return (
     <div className="flex w-full  flex-col gap-6">
       <Tabs value={category} onValueChange={setCategory}>
-        <TabsList className="flex gap-3">
+        <TabsList className="bg-stone-200 flex gap-3">
           {Array.from(valueMap.keys()).map((category) => (
             <TabsTrigger
               className="tab-trigger"

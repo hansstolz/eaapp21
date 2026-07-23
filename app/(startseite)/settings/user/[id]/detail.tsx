@@ -12,12 +12,11 @@ import Section from "@/components/app/Section";
 import { PageColumns } from "@/components/app/TwoPageColumns";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import useAutoFocus from "@/lib/hooks/autofocus";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -25,7 +24,6 @@ export default function Detail({ data }: { data: EaUser }) {
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { userSchema } = UserSchema();
-  const firstInput = useAutoFocus();
   const form = useForm({
     resolver: zodResolver(userSchema),
     defaultValues: {
@@ -45,6 +43,15 @@ export default function Detail({ data }: { data: EaUser }) {
   });
 
   const { isDirty } = form.formState;
+  const { setFocus } = form;
+
+  useEffect(() => {
+    const animationFrame = requestAnimationFrame(() => {
+      setFocus("name");
+    });
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [data.uid_user, setFocus]);
 
   async function onSubmit(data: z.infer<typeof userSchema>) {
     if (!isDirty) {
@@ -106,7 +113,7 @@ export default function Detail({ data }: { data: EaUser }) {
                 <Section no={1} title="Personal">
                   <div className="flex flex-col gap-5">
                     <LabeledInput
-                      ref={firstInput}
+                      autoFocus
                       name={"name"}
                       label={"name"}
                       control={form.control}

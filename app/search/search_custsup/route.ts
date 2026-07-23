@@ -24,12 +24,17 @@ export async function GET(request: Request) {
         ],
       },
       select: {
+        uid_customer: true,
         first_name: true, last_name: true, company: true, city: true,
         street_address: true, zip_postal_code: true, customer_no: true, email: true,
       },
       take: 15,
     });
-    return Response.json(customers.map(toSearchResult));
+    return Response.json(
+      customers.map((customer) =>
+        toSearchResult({ ...customer, id: customer.uid_customer }),
+      ),
+    );
   }
 
   const suppliers = await prisma.ea_companies.findMany({
@@ -45,6 +50,7 @@ export async function GET(request: Request) {
       ],
     },
     select: {
+      uid_company: true,
       first_name: true, last_name: true, company: true, city: true,
       street_address: true, zip_postal_code: true, company_customer_no: true, email: true,
     },
@@ -54,6 +60,7 @@ export async function GET(request: Request) {
     suppliers.map((supplier) =>
       toSearchResult({
         ...supplier,
+        id: supplier.uid_company,
         customer_no: Number(supplier.company_customer_no) || null,
       }),
     ),
@@ -61,6 +68,7 @@ export async function GET(request: Request) {
 }
 
 function toSearchResult(item: {
+  id: number;
   first_name: string | null;
   last_name: string | null;
   company: string | null;
@@ -72,6 +80,7 @@ function toSearchResult(item: {
 }) {
   const hasCompany = Boolean(item.company);
   return {
+    id: item.id,
     firstName: hasCompany ? "" : item.first_name,
     lastName: hasCompany ? item.company : item.last_name,
     company: item.company,

@@ -12,6 +12,7 @@ import { useSelectedText, useTextStore } from "@/app/stores/texts/text_store";
 import { textSchema } from "@/app/schemas/textSchema";
 import MovableDialog from "@/components/app/movable_dialog";
 import { LabeledInput } from "@/components/app/LabeledInput";
+import { FiPlus } from "react-icons/fi";
 
 type Props = {
   title: string;
@@ -76,7 +77,8 @@ export default function TextsDialog(props: Props) {
           }}
           className={cn("px-3 w-fit", buttonClassName)}
         >
-          New Item
+          <FiPlus className="inline mr-2" />
+          <div>New Item</div>
         </Button>
       </div>
       <MovableDialog
@@ -101,7 +103,7 @@ export default function TextsDialog(props: Props) {
               control={form.control}
             />
           </div>
-          <DialogFooter className="h-12 p-4 ">
+          <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
             <div className=" flex justify-end gap-2">
               <Button variant="outline" onClick={() => setShowDialog(false)}>
                 Close

@@ -30,7 +30,7 @@ export default function MailsPanel() {
   };
   return (
     <>
-      <Button onClick={onNew} className="my-3 h-6" size="sm">
+      <Button onClick={onNew} className="my-3 h-6">
         <FiPlus /> New Mail
       </Button>
       <DataTable columns={columns} data={mails} />

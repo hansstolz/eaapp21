@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { FiAlertCircle } from "react-icons/fi";
 
 type AlertDialogProps = {
   open: boolean;
@@ -24,16 +25,21 @@ export function AlertDialog({
 }: AlertDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-106">
+      <DialogContent className="min-h-40 bg-red-100">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="font-bold text-2xl text-red-900">
+            <div className="flex items-center gap-2">
+              <FiAlertCircle />
+              <div>{title}</div>
+            </div>
+          </DialogTitle>
         </DialogHeader>
-        <div>{description}</div>
-        <DialogFooter>
-          <DialogClose>
-            <Button className="min-w-24" variant="outline">
-              No
-            </Button>
+        <div className="text-red-900 text-lg">{description}</div>
+        <DialogFooter className="px-4 bg-stone-200">
+          <DialogClose
+            render={<Button className="min-w-24" variant="outline" />}
+          >
+            No
           </DialogClose>
           <Button
             onClick={() => onConfirm?.(true)}

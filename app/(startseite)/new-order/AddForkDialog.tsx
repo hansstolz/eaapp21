@@ -74,7 +74,7 @@ export default function AddForkDialog({
           <FormSelect label="Color" name="colour" control={form.control} options={refs?.ref_colors ?? []} />
           <FormSelect label="Wheelsize" name="wheelsize" control={form.control} options={refs?.ref_wheelsizes ?? []} />
           <LabeledInput name="client_name" label="Client Name" control={form.control} />
-          <DialogFooter>
+          <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>Close</Button>
             <Button type="submit">Save</Button>
           </DialogFooter>

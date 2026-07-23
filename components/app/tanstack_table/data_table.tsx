@@ -91,7 +91,7 @@ export function DataTable<TData>({
     <div className="border rounded-lg">
       <Table className={tableClassName}>
         {showHeader ? (
-          <TableHeader>
+          <TableHeader className="bg-stone-200">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

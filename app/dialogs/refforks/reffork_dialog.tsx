@@ -103,7 +103,8 @@ export default function RefforkDialog({
     void getForkCategories(controller.signal)
       .then(setCategories)
       .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") return;
+        if (error instanceof DOMException && error.name === "AbortError")
+          return;
         toast.error("Fork categories could not be loaded");
       });
 
@@ -133,9 +134,7 @@ export default function RefforkDialog({
 
   const onSubmit = async (data: RefForkType) => {
     const response =
-      mode === "create"
-        ? await createRefFork(data)
-        : await updateRefFork(data);
+      mode === "create" ? await createRefFork(data) : await updateRefFork(data);
 
     if (!response?.uid_ref_fork) {
       toast.error("Error saving Reference Fork");
@@ -172,7 +171,11 @@ export default function RefforkDialog({
             label="Fork Category"
             control={control}
           />
-          <LabeledInput name="fork_model" label="Fork Model" control={control} />
+          <LabeledInput
+            name="fork_model"
+            label="Fork Model"
+            control={control}
+          />
           <LabeledInput
             type="textarea"
             rows={4}
@@ -182,9 +185,13 @@ export default function RefforkDialog({
           />
         </div>
 
-        <DialogFooter className="h-12 p-4">
+        <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={closeRefForkDialog}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={closeRefForkDialog}
+            >
               Close
             </Button>
             <Button

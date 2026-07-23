@@ -1,4 +1,5 @@
 export type TCustSup = {
+  id: number;
   lastName: string | null;
   firstName: string | null;
   company: string | null;

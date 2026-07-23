@@ -64,7 +64,7 @@ export default function ArticlesPage() {
       <LineLR>
         <LineRow>
           <ArticleSearch updateQuery={updateQuery} />
-          <Button variant="destructive" onClick={newHandler}>
+          <Button onClick={newHandler}>
             <FiFilePlus /> New Article
           </Button>
         </LineRow>

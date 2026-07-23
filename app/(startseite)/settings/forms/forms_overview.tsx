@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Row } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { FiPlus } from "react-icons/fi";
 import { toast } from "sonner";
 
 type FormsOverviewProps = {
@@ -54,13 +55,11 @@ export default function FormsOverview({ data }: FormsOverviewProps) {
 
   return (
     <div className="flex flex-col gap-3 bg-blue rounded-lg border border-gray-400 py-4">
-      <Button
-        onClick={() => newItem()}
-        className="ml-3 px-3 w-fit"
-        size={"sm"}
-        variant={"destructive"}
-      >
-        New Item
+      <Button onClick={() => newItem()} className="ml-3 px-3 w-fit">
+        <div>
+          <FiPlus className="inline-block mr-2" />
+          New Item
+        </div>
       </Button>
       <AlertDialog
         open={open}

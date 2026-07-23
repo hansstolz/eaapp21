@@ -104,7 +104,7 @@ export default function DashboardShell({
   return (
     <div className="min-h-screen bg-primary text-slate-900">
       <div className="flex min-h-screen">
-        <aside className="flex w-72 shrink-0 flex-col bg-primary text-primary-foreground px-6 py-10">
+        <aside className="flex w-72 shrink-0 flex-col bg-blue-900 text-primary-foreground px-6 py-10">
           <div className="mb-10 flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/80 text-slate-700 shadow-sm">
               <GitFork className="h-5 w-5" />
@@ -217,9 +217,6 @@ export default function DashboardShell({
                 <h1 className="text-2xl font-semibold text-slate-900">
                   {headerSubtitle}
                 </h1>
-                <Badge className="bg-emerald-500/10 text-emerald-700">
-                  Live
-                </Badge>
               </div>
             </div>
             <div className="flex flex-wrap items-center justify-end gap-2">

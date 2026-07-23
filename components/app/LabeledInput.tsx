@@ -36,9 +36,9 @@ export function LabeledInput(props: LabeledInputProps) {
         name={name}
         control={control}
         render={({ field, fieldState }) => (
-          <Field className="gap-2" data-invalid={fieldState.invalid}>
+          <Field className="gap-1" data-invalid={fieldState.invalid}>
             <Label
-              className={className}
+              className={twMerge("text-stone-500", className)}
               htmlFor={`form-${label.toLowerCase()}`}
             >
               {label.toLocaleUpperCase()}
@@ -46,17 +46,18 @@ export function LabeledInput(props: LabeledInputProps) {
             <Input
               id={`form-${label.toLowerCase()}`}
               className={twMerge(
-                "border-gray-300 border rounded-sm text-black",
+                "border-stone-300 bg-stone-50 border rounded-sm text-black",
                 className,
               )}
               aria-invalid={fieldState.invalid}
               placeholder={label}
               autoComplete="off"
+              autoFocus={inputProps.autoFocus}
               disabled={inputProps.disabled}
               type={type}
               {...field}
               value={field.value ?? ""}
-              ref={props.ref}
+              ref={props.ref ?? field.ref}
               onKeyDown={props.onKeyDown}
               onInput={onInput}
             />
@@ -87,7 +88,7 @@ export function LabeledInput(props: LabeledInputProps) {
                   id={`form-${label.toLowerCase()}`}
                   placeholder={label}
                   rows={rows}
-                  className="min-h-24  border-gray-300 border rounded-sm resize-none input-text bg-gray-100"
+                  className="min-h-24  border-stone-300 border rounded-sm resize-none input-text bg-stone-50"
                   aria-invalid={fieldState.invalid}
                   disabled={inputProps.disabled}
                   value={field.value ?? ""}

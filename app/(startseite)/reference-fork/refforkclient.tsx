@@ -66,9 +66,10 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
   const [forkFeatureDialogMode, setForkFeatureDialogMode] = useState<
     "create" | "edit"
   >("create");
-  const [isForkFeatureDialogOpen, setIsForkFeatureDialogOpen] =
-    useState(false);
-  const [deleteRequest, setDeleteRequest] = useState<DeleteRequest | null>(null);
+  const [isForkFeatureDialogOpen, setIsForkFeatureDialogOpen] = useState(false);
+  const [deleteRequest, setDeleteRequest] = useState<DeleteRequest | null>(
+    null,
+  );
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const refreshRelatedData = useCallback(async (uidRefFork: number) => {
@@ -190,11 +191,15 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
     try {
       if (deleteRequest.type === "refFork") {
         const uidRefFork = deleteRequest.item.uid_ref_fork;
-        const response = await fetch(`/ref_forks/delete_ref_fork/${uidRefFork}`, {
-          method: "DELETE",
-        });
+        const response = await fetch(
+          `/ref_forks/delete_ref_fork/${uidRefFork}`,
+          {
+            method: "DELETE",
+          },
+        );
 
-        if (!response.ok) throw new Error("Reference Fork could not be deleted");
+        if (!response.ok)
+          throw new Error("Reference Fork could not be deleted");
 
         setRefForkRows((rows) =>
           rows.filter((row) => row.uid_ref_fork !== uidRefFork),
@@ -208,9 +213,12 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
         toast.success("Reference Fork deleted successfully");
       } else {
         const uidRefPart = deleteRequest.item.uid_ref_part;
-        const response = await fetch(`/ref_parts/delete_ref_part/${uidRefPart}`, {
-          method: "DELETE",
-        });
+        const response = await fetch(
+          `/ref_parts/delete_ref_part/${uidRefPart}`,
+          {
+            method: "DELETE",
+          },
+        );
 
         if (!response.ok) throw new Error("Fork Feature could not be deleted");
 
@@ -241,13 +249,7 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
           <CardContent>
             <Section no={1} title={"Reference Fork"}>
               <div className="flex flex-row mb-3">
-                <Button
-                  onClick={openCreateRefFork}
-                  size={"sm"}
-                  variant="destructive"
-                >
-                  New Reference Fork
-                </Button>
+                <Button onClick={openCreateRefFork}>New Reference Fork</Button>
               </div>
               <div className="max-h-250 overflow-y-scroll">
                 <DataTable
@@ -273,8 +275,6 @@ export default function RefforkClient({ refForks }: RefforkClientProps) {
                 <div className="flex flex-row mb-3">
                   <Button
                     onClick={openCreateForkFeature}
-                    variant="destructive"
-                    size={"sm"}
                     disabled={!selectedRefFork || isLoadingRelatedData}
                   >
                     New Fork Feature

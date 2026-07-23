@@ -50,7 +50,7 @@ export default function ForkHistoryDialog({ isOpen, setIsOpen }: Props) {
               </div>
             </PageColumns>
           </div>
-          <DialogFooter className="h-12 p-4">
+          <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
             <div className="flex gap-12 justify-end mr-4">
               <Button
                 size="sm"

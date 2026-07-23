@@ -64,7 +64,7 @@ export default function SuppliersPage() {
       <LineLR>
         <LineRow>
           <SupplierSearch updateQuery={updateQuery} />
-          <Button variant="destructive" onClick={newHandler}>
+          <Button onClick={newHandler}>
             <FiFilePlus /> New Supplier
           </Button>
         </LineRow>

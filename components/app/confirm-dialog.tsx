@@ -1,5 +1,6 @@
 "use client";
 
+import { FiAlertCircle } from "react-icons/fi";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,11 +33,18 @@ export default function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="w-125">
+      <AlertDialogContent className="bg-stone-100 min-h-45 w-125">
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogTitle className="text-2xl text-red-900 font-semibold">
+            <div>
+              <FiAlertCircle className="inline mr-2" />
+              {title}
+            </div>
+          </AlertDialogTitle>
           {description ? (
-            <AlertDialogDescription>{description}</AlertDialogDescription>
+            <AlertDialogDescription className="text-red-900 text-lg py-4">
+              {description}
+            </AlertDialogDescription>
           ) : null}
         </AlertDialogHeader>
         <AlertDialogFooter>

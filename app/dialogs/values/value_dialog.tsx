@@ -16,6 +16,7 @@ import {
   useSelectedValue,
   useValueStore,
 } from "@/app/stores/values/value_store";
+import { FiPlus } from "react-icons/fi";
 
 type Props = {
   title: string;
@@ -67,7 +68,8 @@ export default function ValueDialog(props: Props) {
         }}
         className="ml-3 px-3 w-fit"
       >
-        New Item
+        <FiPlus className="inline mr-2" />
+        <div>New Item</div>
       </Button>
 
       <MovableDialog
@@ -96,7 +98,7 @@ export default function ValueDialog(props: Props) {
               control={form.control}
             />
           </div>
-          <DialogFooter className="h-12 p-4 ">
+          <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
             <div className=" flex justify-end gap-2">
               <Button
                 type="button"

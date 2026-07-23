@@ -121,7 +121,7 @@ export default function NewContactDialog(props: Props) {
             </Section>
           </Card>
         </PageColumns>
-        <DialogFooter className="h-12 p-4">
+        <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
           <div className="flex justify-end gap-2">
             <Button
               variant="outline"

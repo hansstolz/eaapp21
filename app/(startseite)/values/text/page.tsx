@@ -80,7 +80,7 @@ export default function ValuesTextPage() {
       <Activity mode={isUpdating === true ? "hidden" : "visible"}>
         <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
           <table className="w-full">
-            <thead className="bg-blue-200 border-b">
+            <thead className="bg-stone-200 border-b">
               <tr>
                 {!isFiltered && (
                   <th className="w-12 px-4 py-3 text-left text-sm font-semibold text-blue-900">

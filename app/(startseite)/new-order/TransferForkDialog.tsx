@@ -57,7 +57,7 @@ export default function TransferForkDialog({
             <div><div className="font-medium">Transfer to</div><p>#{customer.customer_no} {customer.cal_name_list}</p><p>{customer.street_address} {customer.city}</p></div>
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
           <Button type="button" variant="outline" onClick={() => setOpen(false)}>Close</Button>
           <Button disabled={!fork} type="button" onClick={transfer}>Transfer</Button>
         </DialogFooter>

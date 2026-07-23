@@ -41,10 +41,10 @@ export default function NewMailDialog(props: Props) {
 
   return (
     <MovableDialog open={isOpen} setOpen={setIsOpen} title={"New Mail/Letter"}>
-      <div className="flex flex-col gap-2">
+      <div className="py-6">
         <LargeText>Create a new Mail or Letter.</LargeText>
       </div>
-      <DialogFooter className="h-12 p-4">
+      <DialogFooter className="h-14 py-3 px-4 bg-gray-200">
         <div className="flex justify-end gap-2">
           <Button
             className="bg-blue-100 text-blue-900"

@@ -44,11 +44,11 @@ export default function MovableDialog({
             animate={{ scale: 1, opacity: 1 }}
             exit={prefersReducedMotion ? {} : { scale: 0.9, opacity: 0 }}
           >
-            <DialogHeader className="h-14 py-3 px-4  rounded-t-xl bg-primary">
+            <DialogHeader className="h-14 py-3 px-4  rounded-t-xl bg-blue-900">
               {header ? (
                 header
               ) : (
-                <DialogTitle className="text-primary-foreground">
+                <DialogTitle className="text-lg text-primary-foreground">
                   {title}
                 </DialogTitle>
               )}

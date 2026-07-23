@@ -31,7 +31,7 @@ export default function CustSupSearch({ handleSelection }: Props) {
       : `${item.lastName} ${item.firstName}`;
   };
   const getId = (item: TCustSup): number => {
-    return item.customerNo ?? Math.floor(Math.random() * 1000);
+    return item.id;
   };
 
   const dropDownHandler = (option: DropdownItem) => {
