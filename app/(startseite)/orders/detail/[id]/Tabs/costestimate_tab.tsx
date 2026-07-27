@@ -15,10 +15,13 @@ import ConfirmCostDialog from "@/app/dialogs/costestimate/ConfirmCostDialog";
 import AddCostDialog from "@/app/dialogs/costestimate/add_costestimate";
 import { useOrderStore } from "@/app/stores/order/order_store";
 import type { EaCostestimate } from "@/app/data_types/costestimate/ea_costestimate";
+import AddTextDialog from "@/app/dialogs/texts/AddTextDialog";
+import OrderTextList from "@/app/dialogs/texts/OrderTextList";
 
 export default function CostestimateTab() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showAddText, setShowAddText] = useState(false);
   const { order } = useOrderStore();
   const {
     costestimate,
@@ -27,7 +30,11 @@ export default function CostestimateTab() {
     getCostestimate,
     getCostestimatesNumbers,
     saveCostestimate,
+    texts,
+    addText,
+    deleteText,
   } = useCostestimateStore();
+  const costestimateTexts = texts.filter((text) => text.type === 0);
   const firstCostestimateUid = costestimates[0]?.value;
   const {
     handleSubmit,
@@ -72,6 +79,15 @@ export default function CostestimateTab() {
                 <div>Costestimate</div>
               </div>
               <div className="flex flex-row gap-3">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={!costestimate}
+                  onClick={() => setShowAddText(true)}
+                >
+                  <FiPlus /> Add Text
+                </Button>
                 <Button disabled={!isDirty} type="submit" size="sm">
                   Save
                 </Button>
@@ -147,6 +163,17 @@ export default function CostestimateTab() {
           </div>
           <HLine />
           <OrderPositions />
+          <HLine />
+          <div className="grid gap-2">
+            <h3 className="text-sm font-medium text-secondary">
+              Costestimate texts
+            </h3>
+            <OrderTextList
+              texts={costestimateTexts}
+              emptyText="No costestimate texts available."
+              onDelete={deleteText}
+            />
+          </div>
         </form>
       </div>
       {showConfirmDialog && (
@@ -158,6 +185,11 @@ export default function CostestimateTab() {
       {showAddDialog && (
         <AddCostDialog isOpen={showAddDialog} setIsOpen={setShowAddDialog} />
       )}
+      <AddTextDialog
+        open={showAddText}
+        onOpenChange={setShowAddText}
+        onAdd={(text) => addText(text, 0)}
+      />
     </>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { FaFileInvoiceDollar } from "react-icons/fa";
+import { useState } from "react";
 import { FiMail, FiPrinter } from "react-icons/fi";
 import SubSection from "@/components/app/SubSection";
 import HLine from "@/components/app/hline";
@@ -10,8 +11,13 @@ import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { Button } from "@/components/ui/button";
 import InvoiceController from "./InvoiceController";
 import InvoicePositionsColumns from "./InvoicePositionsColumns";
+import AddTextDialog from "@/app/dialogs/texts/AddTextDialog";
+import { useCostestimateStore } from "@/app/stores/costestimate/costestimate_store";
+import OrderTextList from "@/app/dialogs/texts/OrderTextList";
 
 export default function InvoicePage() {
+  const [showAddText, setShowAddText] = useState(false);
+  const { addText, deleteText } = useCostestimateStore();
   const {
     control,
     handleSubmit,
@@ -56,14 +62,24 @@ export default function InvoicePage() {
           />
         </div>
         <div className="mt-6 grid gap-2">
-          <h3 className="text-sm font-medium text-secondary">Invoice texts</h3>
-          {invoiceTexts.length ? invoiceTexts.map((text) => (
-            <div key={text.uid_orders_texts} className="rounded-md border bg-slate-50 px-3 py-2 text-sm">
-              {text.text || "--"}
-            </div>
-          )) : <p className="text-sm text-muted-foreground">No invoice texts available.</p>}
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-secondary">Invoice texts</h3>
+            <Button type="button" size="sm" variant="outline" onClick={() => setShowAddText(true)}>
+              Add text
+            </Button>
+          </div>
+          <OrderTextList
+            texts={invoiceTexts}
+            emptyText="No invoice texts available."
+            onDelete={deleteText}
+          />
         </div>
       </SubSection>
+      <AddTextDialog
+        open={showAddText}
+        onOpenChange={setShowAddText}
+        onAdd={(text) => addText(text, 1)}
+      />
     </form>
   );
 }

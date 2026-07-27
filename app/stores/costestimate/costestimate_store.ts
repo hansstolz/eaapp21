@@ -18,6 +18,7 @@ import { OrderStatus } from "@/app/data_types/orders/order_status";
 import { _updateOrderStatus } from "@/app/api/orders/orders_crud";
 import { EaOrdersPosition } from "@/app/data_types/orders/ea_orders_position";
 import { EaOrdersText } from "@/app/data_types/orders/ea_orders_texts";
+import { EaText } from "@/app/data_types/text/ea_text";
 import Order from "@/app/data_types/orders/order";
 import { toast } from "sonner";
 import { EaOrdersPositions } from "@/app/data_types/positions/ea_orders_positions";
@@ -45,6 +46,8 @@ interface CostestimateStore {
   addPosition: (position: EaOrdersPositions) => Promise<void>;
   savePosition: (position: EaOrdersPositions) => Promise<void>;
   deletePosition: (uidPosition: number) => Promise<void>;
+  addText: (text: EaText, type: number) => Promise<void>;
+  deleteText: (uidOrdersText: number) => Promise<void>;
   getPosition: (selectedRow: number) => void;
 }
 
@@ -190,6 +193,50 @@ export const createCostestimateStore = create<
       toast.success("Position deleted");
     },
 
+    addText: async (text: EaText, type: number) => {
+      const costestimate = get().costestimate;
+      if (!costestimate) throw new Error("No costestimate is loaded");
+      const response = await fetch("/orders/create_order_text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type,
+          text_no: text.text_no ?? 0,
+          text: text.text_value,
+          uid_order: costestimate.uid_order,
+          uid_costestimates: costestimate.uid_costestimates,
+        }),
+      });
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        throw new Error(body?.error ?? "Failed to add text");
+      }
+      const saved = (await response.json()) as EaOrdersText;
+      set((state) => ({ texts: [...state.texts, saved] }));
+      toast.success("Text added");
+    },
+
+    deleteText: async (uidOrdersText: number) => {
+      const response = await fetch(`/orders/delete_order_text/${uidOrdersText}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        toast.error(body?.error ?? "Failed to delete text");
+        return;
+      }
+      set((state) => ({
+        texts: state.texts.filter(
+          (text) => text.uid_orders_texts !== uidOrdersText,
+        ),
+      }));
+      toast.success("Text deleted");
+    },
+
     getPosition: (selectedRow: number) => {
       //const positions = get().positions ?? [];
       //const getItemOf = get().getItemOf;
@@ -223,6 +270,8 @@ export const useCostestimateStore = () => {
     addPosition,
     savePosition,
     deletePosition,
+    addText,
+    deleteText,
     getPosition,
   } = createCostestimateStore();
 
@@ -245,6 +294,8 @@ export const useCostestimateStore = () => {
     addPosition,
     savePosition,
     deletePosition,
+    addText,
+    deleteText,
     getPosition,
   };
 };

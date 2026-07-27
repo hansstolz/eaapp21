@@ -82,6 +82,7 @@ export default function TextsDialog(props: Props) {
         </Button>
       </div>
       <MovableDialog
+        className="w-150"
         title={getTitle()}
         open={showDialog}
         setOpen={setShowDialog}

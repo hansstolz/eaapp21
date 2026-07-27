@@ -15,12 +15,15 @@ import { LabeledInput } from "@/components/app/LabeledInput";
 import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { Button } from "@/components/ui/button";
 import InvoicePositionsColumns from "../invoice/InvoicePositionsColumns";
+import AddTextDialog from "@/app/dialogs/texts/AddTextDialog";
+import OrderTextList from "@/app/dialogs/texts/OrderTextList";
 
 export default function CreditnotePage() {
   const { order } = useOrderStore();
-  const { positions, texts, isConfirmed, getConfirmedCostestimate, savePosition } = useCostestimateStore();
+  const { positions, texts, isConfirmed, getConfirmedCostestimate, savePosition, addText, deleteText } = useCostestimateStore();
   const { control, handleSubmit, reset, formState: { isDirty } } = useForm<CreditnoteForm>();
   const [loaded, setLoaded] = useState(false);
+  const [showAddText, setShowAddText] = useState(false);
 
   useEffect(() => {
     if (order) void getConfirmedCostestimate(order.uid_order);
@@ -67,12 +70,24 @@ export default function CreditnotePage() {
         </div>
         <HLine />
         <div className="grid gap-2">
-          <h3 className="text-sm font-medium text-secondary">Creditnote texts</h3>
-          {creditTexts.length ? creditTexts.map((text) => (
-            <div key={text.uid_orders_texts} className="rounded-md border bg-slate-50 px-3 py-2 text-sm">{text.text || "--"}</div>
-          )) : <p className="text-sm text-muted-foreground">No creditnote texts available.</p>}
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-secondary">Creditnote texts</h3>
+            <Button type="button" size="sm" variant="outline" onClick={() => setShowAddText(true)}>
+              Add text
+            </Button>
+          </div>
+          <OrderTextList
+            texts={creditTexts}
+            emptyText="No creditnote texts available."
+            onDelete={deleteText}
+          />
         </div>
       </SubSection>
+      <AddTextDialog
+        open={showAddText}
+        onOpenChange={setShowAddText}
+        onAdd={(text) => addText(text, 3)}
+      />
     </form>
   );
 }
