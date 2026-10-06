@@ -10,9 +10,7 @@ import {
 } from "@/app/api/costestimates/costestimate_crud";
 import { DropdownItem } from "@/app/data_types/general/dropdown";
 import { create } from "zustand/react";
-import {
-  EaCostestimate,
-} from "@/app/data_types/costestimate/ea_costestimate";
+import { EaCostestimate } from "@/app/data_types/costestimate/ea_costestimate";
 import { EaConfirmCost } from "@/app/data_types/costestimate/ea_cofirm_cost";
 import { OrderStatus } from "@/app/data_types/orders/order_status";
 import { _updateOrderStatus } from "@/app/api/orders/orders_crud";
@@ -78,10 +76,14 @@ export const createCostestimateStore = create<
       if (costestimate) {
         const changed = {
           ...costestimate,
-          confirmed_how: confirm.confirmed_how ? Number(confirm.confirmed_how) : null,
+          confirmed_how: confirm.confirmed_how
+            ? Number(confirm.confirmed_how)
+            : null,
           confirmed_by: confirm.confirmed_by,
           confirmed_when: confirm.confirmed_when,
-          costestimate_confirm_check: Number(confirm.costestimate_confirm_check),
+          costestimate_confirm_check: Number(
+            confirm.costestimate_confirm_check,
+          ),
         };
         const result = await _updateCostestimate(changed);
         await _updateOrderStatus(
@@ -148,6 +150,7 @@ export const createCostestimateStore = create<
 
     getConfirmedCostestimate: async (uid_order: number) => {
       const confirmedCostestimate = await _getConfirmedCostestimate(uid_order);
+
       set({
         costestimate: confirmedCostestimate,
         positions: confirmedCostestimate ? confirmedCostestimate.positions : [],
@@ -172,9 +175,7 @@ export const createCostestimateStore = create<
       const saved = await _updateCostestimatePosition(position);
       set((state) => {
         const positions = state.positions.map((pos) =>
-          pos.uid_orders_position === saved.uid_orders_position
-            ? saved
-            : pos,
+          pos.uid_orders_position === saved.uid_orders_position ? saved : pos,
         );
         return { positions, position: null };
       });
@@ -186,9 +187,10 @@ export const createCostestimateStore = create<
         positions: state.positions.filter(
           (position) => position.uid_orders_position !== uidPosition,
         ),
-        position: state.position?.uid_orders_position === uidPosition
-          ? null
-          : state.position,
+        position:
+          state.position?.uid_orders_position === uidPosition
+            ? null
+            : state.position,
       }));
       toast.success("Position deleted");
     },
@@ -208,9 +210,9 @@ export const createCostestimateStore = create<
         }),
       });
       if (!response.ok) {
-        const body = (await response.json().catch(() => null)) as
-          | { error?: string }
-          | null;
+        const body = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
         throw new Error(body?.error ?? "Failed to add text");
       }
       const saved = (await response.json()) as EaOrdersText;
@@ -219,13 +221,16 @@ export const createCostestimateStore = create<
     },
 
     deleteText: async (uidOrdersText: number) => {
-      const response = await fetch(`/orders/delete_order_text/${uidOrdersText}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/orders/delete_order_text/${uidOrdersText}`,
+        {
+          method: "DELETE",
+        },
+      );
       if (!response.ok) {
-        const body = (await response.json().catch(() => null)) as
-          | { error?: string }
-          | null;
+        const body = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
         toast.error(body?.error ?? "Failed to delete text");
         return;
       }

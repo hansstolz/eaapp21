@@ -14,6 +14,7 @@ export const createOrderStore = create<OrderStore>((set, get) => ({
 
   getOrderById: async (id: number) => {
     const eaDetailOrder = await _getOrderById(id);
+    console.log(JSON.stringify(eaDetailOrder, null, 2));
     const order = new Order(eaDetailOrder);
     set({ order });
   },
