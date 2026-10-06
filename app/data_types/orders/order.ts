@@ -4,7 +4,7 @@ import { EaOrder } from "./ea_order";
 import { EaDetailOrder } from "./ea_order_detail";
 import { addOrUpdateArray } from "@/lib/utils";
 import { EaCustomer } from "../customer/ea_customer";
-import { EaForkDialog } from "@/schemas/forks/fork_schema_dialog";
+import type { EaForkDialog } from "@/app/schemas/order/fork_schema_dialog";
 import { OrderStatus } from "./order_status";
 import { CustomerCategory } from "./customer_category";
 import { EaReminder } from "./ea_reminder";
@@ -275,7 +275,7 @@ class Order {
     this._order.wheelsize = fork.wheelsize!;
     this._order.customer_client_name = fork.client_name!;
     this._order.fork_in_carrier = fork.fork_in_carrier ?? "";
-    this._order.fork_in_date = fork.fork_in_date ?? new Date().toISOString();
+    this._order.fork_in_date = (fork.fork_in_date ?? new Date()).toISOString();
   }
 
   public getNameCustNo(): string {

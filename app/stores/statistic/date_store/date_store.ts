@@ -1,4 +1,4 @@
-import { DropdownItem } from "@/data_types/data/values_data";
+import type { DropdownItem } from "@/app/data_types/data/values_data";
 import { use, useEffect } from "react";
 import { StateCreator, create } from "zustand";
 

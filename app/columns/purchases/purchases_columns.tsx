@@ -1,4 +1,4 @@
-import { EaPurchases } from "@/data_types/purachases/ea_purchases";
+import type { EaPurchases } from "@/app/data_types/purachases/ea_purchases";
 import useGerman from "@/lib/hooks/useGerman";
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useMemo } from "react";
