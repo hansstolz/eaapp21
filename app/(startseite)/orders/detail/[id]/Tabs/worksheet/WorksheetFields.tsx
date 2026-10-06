@@ -63,6 +63,15 @@ export function InputMenu<T extends FieldValues>({
   label?: string;
   labelStyle?: string;
 }) {
+  // Select values must be unique, even if the source contains duplicate entries.
+  const seenValues = new Set<string>();
+  const uniqueOptions = options.filter((option) => {
+    const value = String(option.value);
+    if (seenValues.has(value)) return false;
+    seenValues.add(value);
+    return true;
+  });
+
   return (
     <div className={cn("grid gap-1", labelStyle)}>
       {label && <Label className="text-xs">{label}</Label>}
@@ -78,7 +87,7 @@ export function InputMenu<T extends FieldValues>({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {options.map((option) => (
+              {uniqueOptions.map((option) => (
                 <SelectItem
                   key={String(option.value)}
                   value={String(option.value)}
