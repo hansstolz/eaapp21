@@ -2,7 +2,7 @@
 
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import { useState } from "react";
-import { FiMail, FiPrinter } from "react-icons/fi";
+import { FiMail, FiPlus, FiPrinter } from "react-icons/fi";
 import SubSection from "@/components/app/SubSection";
 import HLine from "@/components/app/hline";
 import { InputDate } from "@/components/app/inputdate";
@@ -61,13 +61,11 @@ export default function InvoicePage() {
             columnVisibility={{ customer_category_no: false }}
           />
         </div>
-        <div className="mt-6 grid gap-2">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-secondary">Invoice texts</h3>
-            <Button type="button" size="sm" variant="outline" onClick={() => setShowAddText(true)}>
-              Add text
-            </Button>
-          </div>
+        <div className="mt-6 flex flex-col gap-3">
+          <h3 className="text-sm font-medium text-secondary">Invoice texts</h3>
+          <Button type="button" className="w-25" size="sm" onClick={() => setShowAddText(true)}>
+            <FiPlus /> Add Text
+          </Button>
           <OrderTextList
             texts={invoiceTexts}
             emptyText="No invoice texts available."

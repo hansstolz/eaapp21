@@ -103,6 +103,7 @@ export default function OrdersPage() {
         </LineRow>
       </LineLR>
       <DataTable
+        enableColumnResizing
         columns={columns}
         data={paginated.items}
         tableClassName="table-fixed"

@@ -60,6 +60,7 @@ export default function ForksPage() {
         </LineRow>
       </LineLR>
       <DataTable
+        enableColumnResizing
         onDoubleClick={(row: Row<EaForksOverview>) => {
           router.push(`/forks/detail/${row.original.uid_fork}/false`);
         }}

@@ -242,15 +242,14 @@ export const createCostestimateStore = create<
       toast.success("Text deleted");
     },
 
-    getPosition: (selectedRow: number) => {
-      //const positions = get().positions ?? [];
-      //const getItemOf = get().getItemOf;
-      get().goTo(selectedRow);
-
-      set({
-        position: get().position,
-        selectedRow,
-      });
+    getPosition: (row: number) => {
+      const positions = get().positions;
+      if (!positions.length) {
+        set({ position: null, selectedRow: 0, itemOf: "0/0" });
+        return;
+      }
+      const selectedRow = Math.max(0, Math.min(row, positions.length - 1));
+      set({ position: positions[selectedRow], selectedRow, itemOf: `${selectedRow + 1}/${positions.length}` });
     },
   };
 });
@@ -271,6 +270,7 @@ export const useCostestimateStore = () => {
     texts,
     selectedNumber,
     itemOf,
+    selectedRow,
     actions,
     addPosition,
     savePosition,
@@ -295,6 +295,7 @@ export const useCostestimateStore = () => {
     position,
     selectedNumber,
     itemOf,
+    selectedRow,
     actions,
     addPosition,
     savePosition,

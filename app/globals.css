@@ -128,3 +128,8 @@
     @apply font-sans;
   }
 }
+/* Keep dialog content clear of the bottom action bar in every dialog. */
+[data-slot="dialog-footer"],
+[data-slot="alert-dialog-footer"] {
+  margin-top: 20px;
+}

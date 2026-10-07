@@ -79,15 +79,6 @@ export default function CostestimateTab() {
                 <div>Costestimate</div>
               </div>
               <div className="flex flex-row gap-3">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  disabled={!costestimate}
-                  onClick={() => setShowAddText(true)}
-                >
-                  <FiPlus /> Add Text
-                </Button>
                 <Button disabled={!isDirty} type="submit" size="sm">
                   Save
                 </Button>
@@ -164,10 +155,19 @@ export default function CostestimateTab() {
           <HLine />
           <OrderPositions />
           <HLine />
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-3">
             <h3 className="text-sm font-medium text-secondary">
               Costestimate texts
             </h3>
+            <Button
+              type="button"
+              className="w-25"
+              size="sm"
+              disabled={!costestimate}
+              onClick={() => setShowAddText(true)}
+            >
+              <FiPlus /> Add Text
+            </Button>
             <OrderTextList
               texts={costestimateTexts}
               emptyText="No costestimate texts available."

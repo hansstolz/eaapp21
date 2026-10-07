@@ -70,6 +70,7 @@ export default function SuppliersPage() {
         </LineRow>
       </LineLR>
       <DataTable
+        enableColumnResizing
         onDoubleClick={(row: Row<EaCompanyOverview>) => {
           router.push(`/suppliers/detail/${row.original.uid_company}/false`);
         }}

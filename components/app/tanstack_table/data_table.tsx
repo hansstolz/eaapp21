@@ -1,6 +1,8 @@
 import {
   ColumnDef,
   ColumnFiltersState,
+  ColumnSizingState,
+  functionalUpdate,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -23,7 +25,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { fillColumnSpace } from "./column_sizing";
+import { cn } from "@/lib/utils";
 import { ActiveCell, useDefaultColumn, useSkipper } from "./default_column";
 
 interface DataTableProps<TData> {
@@ -35,6 +39,7 @@ interface DataTableProps<TData> {
   onCellClick?: (row: Row<TData>) => void;
   updateData?: (rowIndex: number, columnId: string, value: unknown) => void;
   showHeader?: boolean;
+  enableColumnResizing?: boolean;
   columnVisibility?: Record<string, boolean>;
 
   /** optional: initial sorting */
@@ -52,9 +57,13 @@ export function DataTable<TData>({
   updateData,
   initialSorting,
   showHeader = true,
+  enableColumnResizing = false,
 }: DataTableProps<TData>) {
   const [activeCell, setActiveCell] = useState<ActiveCell | null>(null);
   const prevDataRef = useRef(data);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const containerWidthRef = useRef(0);
+  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
 
   if (prevDataRef.current !== data) {
     prevDataRef.current = data;
@@ -70,7 +79,26 @@ export function DataTable<TData>({
     data,
     columns,
     defaultColumn,
-    state: { columnFilters, sorting, columnVisibility },
+    enableColumnResizing,
+    columnResizeMode: "onChange",
+    state: { columnFilters, sorting, columnVisibility, columnSizing },
+    onColumnSizingChange: (updater) => {
+      setColumnSizing((previous) => {
+        const next = functionalUpdate(updater, previous);
+        if (!enableColumnResizing) return next;
+        return fillColumnSpace(
+          table.getVisibleLeafColumns().map((column) => ({
+            id: column.id,
+            size: column.columnDef.size ?? 150,
+            minSize: column.columnDef.minSize ?? 20,
+            maxSize: column.columnDef.maxSize ?? Number.MAX_SAFE_INTEGER,
+          })),
+          previous,
+          next,
+          containerWidthRef.current,
+        );
+      });
+    },
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
 
@@ -87,9 +115,40 @@ export function DataTable<TData>({
     },
   });
 
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!enableColumnResizing || !container) return;
+    const observer = new ResizeObserver(([entry]) => {
+      const width = Math.floor(entry.contentRect.width);
+      containerWidthRef.current = width;
+      const visibleColumns = table.getVisibleLeafColumns();
+      const total = table.getTotalSize();
+      if (width <= total || total === 0) return;
+      table.setColumnSizing((previous) => {
+        const next = { ...previous };
+        visibleColumns.forEach((column) => {
+          next[column.id] = Math.min(column.columnDef.maxSize ?? Number.MAX_SAFE_INTEGER, column.getSize() * width / total);
+        });
+        return next;
+      });
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [enableColumnResizing, columnVisibility, table]);
+
   return (
-    <div className="border rounded-lg">
-      <Table className={tableClassName}>
+    <div ref={containerRef} className="min-w-0 border rounded-lg">
+      <Table
+        className={cn(tableClassName, enableColumnResizing && "table-fixed")}
+        style={enableColumnResizing ? { width: table.getTotalSize() } : undefined}
+      >
+        {enableColumnResizing && (
+          <colgroup>
+            {table.getVisibleLeafColumns().map((column) => (
+              <col key={column.id} style={{ width: column.getSize() }} />
+            ))}
+          </colgroup>
+        )}
         {showHeader ? (
           <TableHeader className="bg-stone-200">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -101,6 +160,7 @@ export function DataTable<TData>({
                   return (
                     <TableHead
                       key={header.id}
+                      className={enableColumnResizing ? "p-0" : undefined}
                       aria-sort={
                         sortDir === "asc"
                           ? "ascending"
@@ -112,37 +172,78 @@ export function DataTable<TData>({
                         width: header.getSize(),
                       }}
                     >
-                      {header.isPlaceholder ? null : (
-                        <button
-                          type="button"
-                          className={[
-                            "w-full text-left inline-flex items-center gap-2",
-                            canSort
-                              ? "cursor-pointer select-none"
-                              : "cursor-default",
-                          ].join(" ")}
-                          onClick={
-                            canSort
-                              ? header.column.getToggleSortingHandler()
-                              : undefined
-                          }
-                        >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                      <div className={enableColumnResizing ? "relative flex h-10 items-center px-2" : undefined} style={enableColumnResizing ? { position: "relative", height: 40 } : undefined}>
+                        {header.isPlaceholder ? null : (
+                          <button
+                            type="button"
+                            className={[
+                              "w-full overflow-hidden text-left inline-flex items-center gap-2",
+                              enableColumnResizing ? "pr-2" : "",
+                              canSort
+                                ? "cursor-pointer select-none"
+                                : "cursor-default",
+                            ].join(" ")}
+                            onClick={
+                              canSort
+                                ? header.column.getToggleSortingHandler()
+                                : undefined
+                            }
+                          >
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
 
-                          {canSort && (
-                            <span className="text-xs">
-                              {sortDir === "asc"
-                                ? "▲"
-                                : sortDir === "desc"
-                                  ? "▼"
-                                  : "↕"}
-                            </span>
-                          )}
-                        </button>
-                      )}
+                            {canSort && (
+                              <span className="text-xs">
+                                {sortDir === "asc"
+                                  ? "▲"
+                                  : sortDir === "desc"
+                                    ? "▼"
+                                    : "↕"}
+                              </span>
+                            )}
+                          </button>
+                        )}
+                        {enableColumnResizing && header.column.getCanResize() && (
+                          <button
+                            type="button"
+                            aria-label={`Spaltenbreite für ${header.column.id} ändern`}
+                            title="Ziehen zum Ändern der Breite · Doppelklick zum Zurücksetzen"
+                            className={cn(
+                              "hover:border-primary focus-visible:border-primary focus-visible:outline-none",
+                              header.column.getIsResizing() && "border-primary bg-primary/20",
+                            )}
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                              width: 10,
+                              height: "100%",
+                              cursor: "col-resize",
+                              touchAction: "none",
+                              userSelect: "none",
+                              zIndex: 10,
+                              borderRight: "2px solid var(--border)",
+                            }}
+                            onMouseDown={header.getResizeHandler()}
+                            onTouchStart={header.getResizeHandler()}
+                            onClick={(event) => event.stopPropagation()}
+                            onDoubleClick={(event) => {
+                              event.stopPropagation();
+                              header.column.resetSize();
+                            }}
+                            onKeyDown={(event) => {
+                              if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+                              event.preventDefault();
+                              event.stopPropagation();
+                              const delta = event.key === "ArrowRight" ? 10 : -10;
+                              const size = Math.max(header.column.columnDef.minSize ?? 20, Math.min(header.column.columnDef.maxSize ?? Number.MAX_SAFE_INTEGER, header.column.getSize() + delta));
+                              table.setColumnSizing((previous) => ({ ...previous, [header.column.id]: size }));
+                            }}
+                          />
+                        )}
+                      </div>
                     </TableHead>
                   );
                 })}
@@ -180,7 +281,7 @@ export function DataTable<TData>({
                         ? "ignore"
                         : undefined
                     }
-                    className={cell.column.columnDef.meta?.className}
+                    className={cn(cell.column.columnDef.meta?.className, enableColumnResizing && "overflow-hidden text-ellipsis [&_*]:max-w-full [&_*]:overflow-hidden [&_*]:text-ellipsis")}
                     style={{
                       width: cell.column.getSize(),
                       textAlign: cell.column.columnDef.meta?.align,

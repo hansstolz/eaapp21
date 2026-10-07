@@ -70,6 +70,7 @@ export default function CustomersPage() {
         </LineRow>
       </LineLR>
       <DataTable
+        enableColumnResizing
         onDoubleClick={(row: Row<EaCustomerOverview>) => {
           router.push(`/customers/detail/${row.original.uid_customer}/false`);
         }}

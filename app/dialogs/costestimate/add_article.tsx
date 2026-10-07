@@ -1,5 +1,7 @@
 "use client";
 
+import { FaBackward, FaFastBackward, FaFastForward, FaForward } from "react-icons/fa";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DialogFooter, DialogTitle } from "@/components/ui/dialog";
 
@@ -65,6 +67,9 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
 
   const {
     position,
+    positions,
+    selectedRow,
+    getPosition,
     itemOf,
     selectedNumber,
     addPosition,
@@ -78,7 +83,7 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
     reset,
     setValue,
     getValues,
-    formState: { isDirty },
+    formState: { isDirty, isSubmitting },
   } = useForm<EaArticlesInp>({
     resolver: zodResolver(articlesSchema),
   });
@@ -267,6 +272,9 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
     article: EaArticlesInp,
     event?: React.BaseSyntheticEvent,
   ) => {
+    const submitter = (event?.nativeEvent as SubmitEvent | undefined)
+      ?.submitter as HTMLButtonElement | undefined;
+    const addMore = submitter?.title === "Add More";
     const position = getDefaultOrderPosition();
 
     position.article_no = article.article_no;
@@ -312,24 +320,53 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
     if (isNew) await addPosition(position);
     else await savePosition(position);
 
-    const submitter = (event?.nativeEvent as SubmitEvent | undefined)
-      ?.submitter as HTMLButtonElement | undefined;
-    if (submitter?.title === "Add More") {
+    setCanSave(false);
+    if (addMore) {
       setIsNew(true);
       resetDefault();
       setCanSave(false);
     } else {
+      getPosition(isNew ? positions.length : selectedRow);
       setIsNew(false);
+      reset(article);
+    }
+  };
+
+  const startNew = () => {
+    setIsNew(true);
+    setCanSave(false);
+    setTyping("");
+    setFilteredData([]);
+    resetDefault();
+  };
+
+  const navigate = async (row: number) => {
+    if (isNew || isSubmitting) return;
+    try {
+      if (isDirty || canSave) {
+        await handleSubmit(async (article) => {
+          await onSubmit(article);
+          getPosition(row);
+        })();
+      } else {
+        getPosition(row);
+      }
+    } catch {
+      toast.error("Artikel konnte nicht gespeichert werden.");
     }
   };
 
   const [placeHolder, setPlaceHolder] = useState("Article Search");
 
-  const submit = (article: EaArticlesInp, event?: React.BaseSyntheticEvent) => {
+  const submit = async (article: EaArticlesInp, event?: React.BaseSyntheticEvent) => {
     setPlaceHolder((current) =>
       current === "Article Search" ? "Add Article" : "Article Search",
     );
-    void onSubmit(article, event);
+    try {
+      await onSubmit(article, event);
+    } catch {
+      toast.error("Artikel konnte nicht gespeichert werden.");
+    }
   };
 
   const getHeader = () => {
@@ -337,7 +374,7 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
       <DialogTitle className="flex flex-col text-primary-foreground">
         <div className="flex flex-row items-center justify-between">
           <div>Article {isNew ? "New" : "Edit"}</div>
-          <span>{itemOf}</span>
+          <span>{isNew ? `${positions.length + 1}/${positions.length + 1}` : itemOf}</span>
         </div>
       </DialogTitle>
     );
@@ -472,8 +509,14 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
           </div>
         </div>
 
-        <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
-          <div className="flex gap-12 justify-end mr-4">
+        <DialogFooter className="min-h-12 py-2 px-4 bg-gray-200 sm:justify-between">
+          <div className="flex gap-3" role="group" aria-label="Artikelpositionen navigieren">
+            <Button type="button" size="sm" aria-label="Erster Artikel" title="Erster Artikel" disabled={isNew || isSubmitting || !positions.length || selectedRow === 0} onClick={() => void navigate(0)}><FaFastBackward /></Button>
+            <Button type="button" size="sm" aria-label="Vorheriger Artikel" title="Vorheriger Artikel" disabled={isNew || isSubmitting || !positions.length || selectedRow === 0} onClick={() => void navigate(selectedRow - 1)}><FaBackward /></Button>
+            <Button type="button" size="sm" aria-label="Nächster Artikel" title="Nächster Artikel" disabled={isNew || isSubmitting || !positions.length || selectedRow >= positions.length - 1} onClick={() => void navigate(selectedRow + 1)}><FaForward /></Button>
+            <Button type="button" size="sm" aria-label="Letzter Artikel" title="Letzter Artikel" disabled={isNew || isSubmitting || !positions.length || selectedRow >= positions.length - 1} onClick={() => void navigate(positions.length - 1)}><FaFastForward /></Button>
+          </div>
+          <div className="flex gap-3 justify-end">
             <Button
               size="sm"
               type="button"
@@ -481,19 +524,20 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
                 setIsOpen(false);
               }}
             >
-              Close
+              Close (C)
             </Button>
-            <Button disabled={!canSave && !isDirty} type="submit" size="sm">
-              Save
+            <Button disabled={isSubmitting || (!canSave && !isDirty)} type="submit" size="sm">
+              Save (S)
             </Button>
             <Button
               title="Add More"
-              disabled={!canSave && !isDirty}
+              disabled={isSubmitting || (!canSave && !isDirty)}
               type="submit"
               size="sm"
             >
-              Add More
+              Add More (N)
             </Button>
+            <Button type="button" size="sm" disabled={isNew || isSubmitting} onClick={startNew}>New</Button>
           </div>
         </DialogFooter>
       </form>

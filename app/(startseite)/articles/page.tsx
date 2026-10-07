@@ -70,6 +70,7 @@ export default function ArticlesPage() {
         </LineRow>
       </LineLR>
       <DataTable
+        enableColumnResizing
         onDoubleClick={(row: Row<EaArticleOverview>) => {
           router.push(`/articles/detail/${row.original.uid_article}/false`);
         }}
