@@ -7,7 +7,7 @@
     "tabs tabs tabs" 
     "calc calc calc" ;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 500px 1fr 250px;
+    grid-template-rows: 500px 1fr auto;
 }
 
 .order-customer{

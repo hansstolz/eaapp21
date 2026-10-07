@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   FaEuroSign,
   FaFileInvoice,
@@ -20,22 +20,14 @@ import CreditnotePage from "../../Tabs/creditnote/CreditnotePage";
 import PaymentsPage from "../../Tabs/payments/PaymentsPage";
 import RemindersPage from "../../Tabs/reminders/RemindersPage";
 
-enum TabNamesOrder {
-  Diagnose = "Diagnose",
-  Costestimate = "Costestimate",
-  Worksheet = "Worksheet",
-  Invoice = "Invoice",
-  Creditnote = "Creditnote",
-  Payments = "Payments",
-  Reminders = "Reminders",
-}
+import { TabNamesOrder } from "../../order-tabs";
 
-export default function OrderTabView() {
+export default function OrderTabView({ activeTab, onTabChange }: {
+  activeTab: TabNamesOrder;
+  onTabChange: (tab: TabNamesOrder) => void;
+}) {
   const { order } = useOrderStore();
   const { getPayments, paymentCount } = usePaymentStore();
-  const [activeTab, setActiveTab] = useState<TabNamesOrder>(
-    TabNamesOrder.Diagnose,
-  );
 
   useEffect(() => {
     if (order) {
@@ -99,7 +91,7 @@ export default function OrderTabView() {
                 ? TabNamesOrder.Costestimate
                 : activeTab
             }
-            onValueChange={(value) => setActiveTab(value as TabNamesOrder)}
+            onValueChange={(value) => onTabChange(value as TabNamesOrder)}
           >
             <TabsList className="flex gap-3">
               {tabs().map((tab) => (

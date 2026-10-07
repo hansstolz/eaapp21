@@ -1,6 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FiDelete, FiList } from "react-icons/fi";
 import "../order.css";
 import { useOrderStore } from "@/app/stores/order/order_store";
@@ -11,12 +11,15 @@ import CustomerCard from "./CustomerCard/customer_card";
 import ForkCard from "./ForkCard/fork_card";
 import DocumentCard from "./DocumentCard/document_card";
 import ArticleSales from "./CustomerCard/ArticleSales/article_sales";
+import OrderCalc from "./OrderCalc";
+import { TabNamesOrder } from "./order-tabs";
 import OrderTabView from "./CustomerCard/OrderTabView/order_tabview";
 
 const goBack = () => window.history.back();
 
 export default function OrderDetail() {
   const { id } = useParams();
+  const [activeTab, setActiveTab] = useState(TabNamesOrder.Diagnose);
   const { order, getOrderById, deleteOrderById } = useOrderStore();
 
   useEffect(() => {
@@ -54,9 +57,11 @@ export default function OrderDetail() {
         </div>
 
         <div className="order-tabs">
-          <OrderTabView />
+          <OrderTabView activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
-        <div className="order-calc">Calc</div>
+        <div className="order-calc">
+          <OrderCalc activeTab={order?.isArticleSales && (activeTab === TabNamesOrder.Diagnose || activeTab === TabNamesOrder.Worksheet) ? TabNamesOrder.Costestimate : activeTab} />
+        </div>
       </div>
     </>
   );
