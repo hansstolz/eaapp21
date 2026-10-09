@@ -52,10 +52,12 @@ class Order {
   }
 
   public get invoiceAddress() {
+    //return this._order.customer_address_alt;
+
     return this._order.customer_address_alt &&
       this._order.customer_address_alt.length > 0
       ? this._order.customer_address_alt
-      : "---";
+      : "";
   }
 
   public get customer_fon() {
@@ -289,7 +291,7 @@ class Order {
     if (typeof val === "number") {
       return String(val);
     }
-    return val && val.length ? val : "---";
+    return val && val.length ? val : "";
   }
 }
 

@@ -4,6 +4,7 @@ export enum TabNamesOrder {
   Worksheet = "Worksheet",
   Invoice = "Invoice",
   Creditnote = "Creditnote",
+  Warranty = "Warranty",
   Payments = "Payments",
   Reminders = "Reminders",
 }

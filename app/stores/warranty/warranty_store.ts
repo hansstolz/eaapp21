@@ -1,12 +1,11 @@
 import {
   _getWarrantyBy,
-  _resetWarrantyNumber,
-  _updateWarrantyNumber,
+  _updateWarrantyStatus,
   _updateWarrantyReason,
 } from "@/app/api/warranty/warranty_crud";
 import { EaWarranty } from "@/app/data_types/warranty/ea_warranty";
 import { create } from "zustand/react";
-import { useOrderStore } from "../order/order_store";
+import { createOrderStore, useOrderStore } from "../order/order_store";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -27,12 +26,15 @@ export const createWarrantyStore = create<WarrantyStore>((set, get) => ({
   },
 
   onWarrantyRequestChange: async (status: string) => {
-    const { warranty } = get();
-    if (!warranty) return;
-    if (status === "accept") {
-      await _updateWarrantyNumber(warranty.uid_warranty);
-    } else {
-      await _resetWarrantyNumber(warranty.uid_warranty);
+    const { order } = createOrderStore.getState();
+    if (!order) return;
+    try {
+      const warranty = await _updateWarrantyStatus(order.uid_order, status);
+      set({ warranty });
+    } catch {
+      toast.error("Warranty status could not be updated.");
+      await get().getWarrantyByUidOrder(order.uid_order);
+      return;
     }
 
     toast.success(
@@ -43,10 +45,11 @@ export const createWarrantyStore = create<WarrantyStore>((set, get) => ({
   updateWarrantyReason: async (warranty_reason: string) => {
     const { warranty } = get();
     if (!warranty) return;
-    await _updateWarrantyReason({
+    const updated = await _updateWarrantyReason({
       uid_warranty: warranty.uid_warranty,
       warranty_reason,
     });
+    set({ warranty: updated });
     toast.success(`Warranty reason updated successfully!`);
   },
 }));
@@ -65,5 +68,5 @@ export const useWarrantyStore = () => {
       getWarrantyByUidOrder(order.uid_order);
     }
   }, [getWarrantyByUidOrder, order]);
-  return { warranty, onWarrantyRequestChange, updateWarrantyReason };
+  return { warranty, getWarrantyByUidOrder, onWarrantyRequestChange, updateWarrantyReason };
 };

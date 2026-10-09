@@ -84,7 +84,8 @@ export default function OrdersOverviewColumns() {
             {toWarranty(info.getValue() as number)}
           </div>
         ),
-        size: 60,
+        size: 90,
+        minSize: 90,
         align: "center",
       },
       {

@@ -88,7 +88,7 @@ export function LabeledInput(props: LabeledInputProps) {
                   id={`form-${label.toLowerCase()}`}
                   placeholder={label}
                   rows={rows}
-                  className="min-h-24  border-stone-300 border rounded-sm resize-none input-text bg-stone-50"
+                  className="min-h-9 resize-none border-stone-300 border rounded-sm  input-text bg-stone-50"
                   aria-invalid={fieldState.invalid}
                   disabled={inputProps.disabled}
                   value={field.value ?? ""}

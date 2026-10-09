@@ -17,6 +17,7 @@ interface FormSwitchProps<
   name: TName;
   label: string;
   disabled?: boolean;
+  valueType?: "number" | "boolean";
   control: Control<TFieldValues, unknown, TTransformedValues>;
 }
 
@@ -29,6 +30,7 @@ export function FormSwitch<
   label,
   control,
   disabled = false,
+  valueType = "number",
   className = "",
 }: FormSwitchProps<TFieldValues, TName, TTransformedValues>) {
   return (
@@ -40,7 +42,9 @@ export function FormSwitch<
           <Switch
             id={name}
             checked={Number(field.value) === 1}
-            onCheckedChange={(checked) => field.onChange(checked ? 1 : 0)}
+            onCheckedChange={(checked) => field.onChange(
+              valueType === "boolean" ? checked : checked ? 1 : 0,
+            )}
             disabled={disabled}
           />
         )}

@@ -19,6 +19,8 @@ import InvoicePage from "../../Tabs/invoice/InvoicePage";
 import CreditnotePage from "../../Tabs/creditnote/CreditnotePage";
 import PaymentsPage from "../../Tabs/payments/PaymentsPage";
 import RemindersPage from "../../Tabs/reminders/RemindersPage";
+import WarrantyPage from "../../Tabs/warranty/WarrantyPage";
+import { useWarrantyStore } from "@/app/stores/warranty/warranty_store";
 
 import { TabNamesOrder } from "../../order-tabs";
 
@@ -27,6 +29,9 @@ export default function OrderTabView({ activeTab, onTabChange }: {
   onTabChange: (tab: TabNamesOrder) => void;
 }) {
   const { order } = useOrderStore();
+  const { warranty } = useWarrantyStore();
+  const warrantyAccepted = warranty?.uid_order === order?.uid_order
+    && warranty?.warranty_request === "accept";
   const { getPayments, paymentCount } = usePaymentStore();
 
   useEffect(() => {
@@ -66,6 +71,9 @@ export default function OrderTabView({ activeTab, onTabChange }: {
       value: TabNamesOrder.Creditnote,
       icon: FaFileInvoice,
     });
+    if (warrantyAccepted) {
+      items.push({ label: TabNamesOrder.Warranty, value: TabNamesOrder.Warranty, icon: FaFileInvoice });
+    }
     items.push({
       label: `Payments[${paymentCount}]`,
       value: TabNamesOrder.Payments,
@@ -85,7 +93,9 @@ export default function OrderTabView({ activeTab, onTabChange }: {
         {order && (
           <Tabs
             value={
-              order.isArticleSales &&
+              activeTab === TabNamesOrder.Warranty && !warrantyAccepted
+                ? TabNamesOrder.Invoice
+                : order.isArticleSales &&
               (activeTab === TabNamesOrder.Diagnose ||
                 activeTab === TabNamesOrder.Worksheet)
                 ? TabNamesOrder.Costestimate
@@ -121,6 +131,11 @@ export default function OrderTabView({ activeTab, onTabChange }: {
               <TabsContent value={TabNamesOrder.Creditnote}>
                 <CreditnotePage />
               </TabsContent>
+              {warrantyAccepted && (
+                <TabsContent value={TabNamesOrder.Warranty}>
+                  <WarrantyPage />
+                </TabsContent>
+              )}
               <TabsContent value={TabNamesOrder.Payments}>
                 <PaymentsPage />
               </TabsContent>

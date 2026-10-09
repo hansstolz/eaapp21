@@ -20,9 +20,72 @@ type Props<T> = {
   showLabel: (item: T, full?: boolean) => string;
   getId: (item: T) => number;
   handleSelection?: (item: T) => void;
+  directInput?: boolean;
 };
 
 export default function AutoSearch<T>(props: Props<T>) {
+  return props.directInput ? <DirectAutoSearch {...props} /> : <PopoverAutoSearch {...props} />;
+}
+
+function DirectAutoSearch<T>({ placeholder, data, showLabel, getId, setQuery, handleSelection }: Props<T>) {
+  const [query, setInputQuery] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <Command
+      shouldFilter={false}
+      className="relative overflow-visible rounded-lg! p-0 [&_[data-slot=command-input-wrapper]]:p-0"
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
+      }}
+    >
+      <CommandInput
+        value={query}
+        placeholder={`Search ${placeholder ?? ""}`}
+        aria-label={`Search ${placeholder ?? ""}`}
+        onFocus={() => setOpen(true)}
+        onValueChange={(value) => {
+          setInputQuery(value);
+          setQuery(value);
+          setOpen(true);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && open) event.preventDefault();
+          if (event.key === "Escape" && open) {
+            event.preventDefault();
+            event.stopPropagation();
+            setOpen(false);
+          }
+        }}
+      />
+      {open && query.trim() && (
+        <CommandList className="absolute inset-x-0 top-full z-50 mt-1 rounded-lg border bg-popover text-popover-foreground shadow-md">
+          <CommandEmpty>Nothing found.</CommandEmpty>
+          <CommandGroup>
+            {data.map((item) => (
+              <CommandItem
+                key={getId(item)}
+                value={String(getId(item))}
+                className="cursor-pointer"
+                onPointerDown={(event) => event.preventDefault()}
+                onSelect={() => {
+                  handleSelection?.(item);
+                  setInputQuery("");
+                  setQuery("");
+                  setOpen(false);
+                }}
+              >
+                <span className="min-w-0 truncate" dangerouslySetInnerHTML={{ __html: showLabel(item) }} />
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      )}
+    </Command>
+  );
+}
+
+function PopoverAutoSearch<T>(props: Props<T>) {
   const { placeholder, data, showLabel, getId, setQuery, handleSelection } =
     props;
 
@@ -66,7 +129,7 @@ export default function AutoSearch<T>(props: Props<T>) {
 
       <PopoverContent
         id={popoverId}
-        className="w-(--radix-popover-trigger-width) p-0"
+        className="w-(--anchor-width) p-0"
       >
         <Command shouldFilter={false}>
           <CommandInput

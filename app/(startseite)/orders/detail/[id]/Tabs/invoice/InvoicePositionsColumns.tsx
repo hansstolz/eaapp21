@@ -24,7 +24,10 @@ export default function InvoicePositionsColumns(
     {
       accessorKey: "articlecharacter",
       header: "Character",
-      cell: ({ row }) => row.original.articlecharacter ?? "",
+      cell: ({ row }) => {
+        const character = row.original.articlecharacter ?? "";
+        return character.length > 50 ? `${character.slice(0, 49)}...` : character;
+      },
     },
     {
       id: "price",

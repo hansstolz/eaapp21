@@ -1,7 +1,7 @@
 import { getAuthSession } from "@/lib/auth-session";
-import { prisma } from "@/lib/prisma";
 import { errorResponse, parsePositiveId } from "@/lib/route-utils";
-import { findOwnedWarranty, nextWarrantyNumber } from "@/lib/warranty-detail";
+import { findOwnedWarranty } from "@/lib/warranty-detail";
+import { PUT as updateWarrantyStatus } from "@/app/orders/update_warranty_status/[uid_order]/route";
 
 export async function PUT(
   _request: Request,
@@ -11,12 +11,11 @@ export async function PUT(
   if (!session) return errorResponse("Nicht authentifiziert.", 401);
   const uidWarranty = parsePositiveId((await params).uid_warranty);
   if (!uidWarranty) return errorResponse("Ungültige Warranty-ID.", 400);
-  if (!await findOwnedWarranty(uidWarranty, session.userGroup))
+  const existing = await findOwnedWarranty(uidWarranty, session.userGroup);
+  if (!existing)
     return errorResponse("Warranty nicht gefunden.", 404);
-  const warrantyNo = await nextWarrantyNumber(session.userGroup);
-  const warranty = await prisma.ea_warranty.update({
-    where: { uid_warranty: uidWarranty },
-    data: { warranty_no: warrantyNo, warranty_request: "accept", updated_at: new Date() },
-  });
-  return Response.json(warranty);
+  return updateWarrantyStatus(new Request(_request.url, {
+    method: "PUT", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: "accept" }),
+  }), { params: Promise.resolve({ uid_order: String(existing.uid_order) }) });
 }

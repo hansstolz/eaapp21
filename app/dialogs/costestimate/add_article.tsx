@@ -8,7 +8,6 @@ import { DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useDebounce from "@/lib/hooks/useDebounce";
 import { onlyDigits, onlyDigitsPoint } from "@/lib/utils";
 import { useWarrantyStore } from "@/app/stores/warranty/warranty_store";
 import type { TArticleResult } from "@/app/data_types/articles/article_result";
@@ -38,7 +37,6 @@ const to2DigitStr = (value: number) => value.toFixed(2);
 export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
   const [typing, setTyping] = useState("");
   const [filteredData, setFilteredData] = useState<TArticleResult[]>([]);
-  const debouncedValue = useDebounce(typing, 100);
   const { warranty } = useWarrantyStore();
   const [canSave, setCanSave] = useState(false);
   const [isNew, setIsNew] = useState(addArticle);
@@ -53,17 +51,20 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
   };
 
   useEffect(() => {
+    let active = true;
     const queryArticles = async () => {
-      if (debouncedValue && debouncedValue.length > 1) {
-        const data = await _getArticles(debouncedValue);
-        setFilteredData(data);
-      } else {
-        setFilteredData([]);
+      if (!typing.trim()) return;
+      try {
+        const data = await _getArticles(typing.trim());
+        if (active) setFilteredData(data);
+      } catch {
+        if (active) toast.error("Artikel konnten nicht geladen werden.");
       }
     };
 
     void queryArticles();
-  }, [debouncedValue]);
+    return () => { active = false; };
+  }, [typing]);
 
   const {
     position,
@@ -76,6 +77,8 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
     savePosition,
   } = useCostestimateStore();
   const { order } = useOrderStore();
+  const warrantyAccepted = warranty?.uid_order === order?.uid_order
+    && warranty?.warranty_request === "accept";
 
   const {
     control,
@@ -313,7 +316,7 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
     position.cal_value_tax2 = order?.value_tax2 ?? null;
     position.articlediscription = article.articledescription ?? "";
 
-    position.customer_category_no = article.isWarranty
+    position.customer_category_no = warrantyAccepted && article.isWarranty
       ? 3
       : order!.customer_category_no;
 
@@ -394,11 +397,15 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
             {isNew && (
               <div className="w-100">
                 <AutoSearch
+                  directInput
                   getId={getId}
                   showLabel={showLabel}
                   placeholder={placeHolder}
                   data={filteredData}
-                  setQuery={setTyping}
+                  setQuery={(value) => {
+                    setFilteredData([]);
+                    setTyping(value);
+                  }}
                   handleSelection={handleArticleSelection}
                 />
               </div>
@@ -433,18 +440,14 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
                 label={"Character"}
                 control={control}
               />
-              {warranty?.warranty_request === "accept" ? (
-                <div className="mt-4 text-2xl font-medium text-blue-700">
-                  {warranty?.warranty_request.toUpperCase()}
-                </div>
-              ) : (
-                <FormSwitch
-                  className="text-xl"
-                  name={"isWarranty"}
-                  label={"Article for Warranty"}
-                  control={control}
-                />
-              )}
+              <FormSwitch
+                className="text-xl"
+                name={"isWarranty"}
+                label={"Article for Warranty"}
+                control={control}
+                disabled={!warrantyAccepted}
+                valueType="boolean"
+              />
             </div>
 
             <div className="flex flex-col gap-5">

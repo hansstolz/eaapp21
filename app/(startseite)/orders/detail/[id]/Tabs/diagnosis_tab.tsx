@@ -75,7 +75,7 @@ export default function DiagnosisTab() {
   }, [firstCostestimateUid, getCostestimate]);
 
   useEffect(() => {
-    if (diagnosis && warranty) {
+    if (diagnosis) {
       reset({
         ...diagnosis,
         fork_invoice_date: diagnosis.fork_invoice_date,
@@ -83,11 +83,14 @@ export default function DiagnosisTab() {
         diagnosis_date: diagnosis.diagnosis_date,
         uses,
         settings,
-        warranty_request: warranty.warranty_request,
-        warranty_reason: warranty.warranty_reason,
       });
     }
-  }, [diagnosis, reset, settings, uses, warranty]);
+  }, [diagnosis, reset, settings, uses]);
+
+  useEffect(() => {
+    setValue("warranty_request", warranty?.warranty_request ?? "no warranty");
+    setValue("warranty_reason", warranty?.warranty_reason ?? "");
+  }, [diagnosis, setValue, warranty]);
 
   const valHandler = (value: DiagnoseValues, item: DropdownItem) => {
     setValue(value, item.label, { shouldDirty: true });

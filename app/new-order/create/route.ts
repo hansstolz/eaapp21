@@ -66,11 +66,6 @@ export async function POST(request: Request) {
         costestimate_date: now, customer_category_no: customer.customer_category_no,
         user_group: session.userGroup, created_at: now, updated_at: now,
       } }),
-      tx.ea_warranty.create({ data: {
-        uid_order: uidOrder, wa_fork_model: fork.fork_model ?? "",
-        warranty_request: "no warranty", warranty_reason: "",
-        user_group: session.userGroup, created_at: now, updated_at: now,
-      } }),
       tx.ea_worksheet.create({ data: {
         uid_order: uidOrder, worker_worksheet: worker, worksheet_date: now,
         notes_worksheet_extern: "", notes_intern_worksheet: "", text_consult_worksheet: "",
