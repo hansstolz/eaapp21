@@ -1,4 +1,4 @@
-import { _getOrderById } from "@/app/api/orders/orders_crud";
+import { _deleteOrderById, _getOrderById } from "@/app/api/orders/orders_crud";
 import Order from "@/app/data_types/orders/order";
 import { create } from "zustand/react";
 
@@ -19,8 +19,8 @@ export const createOrderStore = create<OrderStore>((set, get) => ({
     set({ order });
   },
   deleteOrderById: async (id: number) => {
-    void id;
-    // Implement the logic to delete the order by ID
+    await _deleteOrderById(id);
+    if (get().order?.uid_order === id) set({ order: null });
   },
 
   updateOrder: () => {

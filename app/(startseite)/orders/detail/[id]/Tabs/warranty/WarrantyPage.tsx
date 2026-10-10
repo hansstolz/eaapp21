@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FaFileInvoice } from "react-icons/fa";
-import { FiMail, FiPrinter } from "react-icons/fi";
+import { FiMail, FiPlus, FiPrinter } from "react-icons/fi";
 import { toast } from "sonner";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { EaOrdersPosition } from "@/app/data_types/orders/ea_orders_position";
@@ -20,6 +20,8 @@ import { InputDate } from "@/components/app/inputdate";
 import { LabeledInput } from "@/components/app/LabeledInput";
 import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { Button } from "@/components/ui/button";
+import AddTextDialog from "@/app/dialogs/texts/AddTextDialog";
+import OrderTextList from "@/app/dialogs/texts/OrderTextList";
 
 const currency = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 const columns: ColumnDef<EaOrdersPosition>[] = [
@@ -34,9 +36,10 @@ const columns: ColumnDef<EaOrdersPosition>[] = [
 ];
 
 export default function WarrantyPage() {
+  const [showAddText, setShowAddText] = useState(false);
   const { order } = useOrderStore();
   const { warranty, getWarrantyByUidOrder } = useWarrantyStore();
-  const { positions, costestimate, isConfirmed, getConfirmedCostestimate } = useCostestimateStore();
+  const { positions, texts, addText, deleteText, costestimate, isConfirmed, getConfirmedCostestimate } = useCostestimateStore();
   const { control, handleSubmit, reset, formState: { isDirty, isSubmitting } } = useForm<WarrantyForm>({
     resolver: zodResolver(warrantyFormSchema),
   });
@@ -73,6 +76,7 @@ export default function WarrantyPage() {
     position.uid_order === order.uid_order
       && (position.customer_category_no === CustomerCategory.warranty || position.article_warranty_int === 1),
   );
+  const warrantyTexts = texts.filter((text) => text.type === 2);
   const actions = <div className="flex gap-3">
     <Button disabled={!isDirty || isSubmitting} type="submit" size="sm">Save</Button>
     <Button disabled type="button" size="sm" title="Mail workflow is not available yet"><FiMail /> Mail</Button>
@@ -92,9 +96,24 @@ export default function WarrantyPage() {
         </div>
         <div className="mt-6 flex flex-col gap-3">
           <LabeledInput name="warranty_reason" label="Warranty reason" type="textarea" rows={3} control={control} />
-          <LabeledInput name="text_consult_warranty" label="Warranty text" type="textarea" rows={3} control={control} />
+        </div>
+        <div className="mt-6 flex flex-col gap-3">
+          <h3 className="text-sm font-medium text-secondary">Warranty texts</h3>
+          <Button type="button" className="w-25" size="sm" onClick={() => setShowAddText(true)}>
+            <FiPlus /> Add Text
+          </Button>
+          <OrderTextList
+            texts={warrantyTexts}
+            emptyText="No warranty texts available."
+            onDelete={deleteText}
+          />
         </div>
       </SubSection>
+      <AddTextDialog
+        open={showAddText}
+        onOpenChange={setShowAddText}
+        onAdd={(text) => addText({ ...text, text_no: 2 }, 2)}
+      />
     </form>
   );
 }

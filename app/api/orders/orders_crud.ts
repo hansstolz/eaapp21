@@ -24,6 +24,9 @@ const json = (method: "POST" | "PUT", data: unknown): RequestInit => ({
 export const _getOrderById = (uidOrder: number) =>
   request<EaOrder>(`/orders/get_order_by_id/${uidOrder}`);
 
+export const _deleteOrderById = (uidOrder: number) =>
+  request<{ success: boolean }>(`/orders/delete_order/${uidOrder}`, { method: "DELETE" });
+
 export const _getDocumentBy = (orderNo: number) =>
   request<TDocument[]>(`/orders/get_documents?order_no=${orderNo}`);
 

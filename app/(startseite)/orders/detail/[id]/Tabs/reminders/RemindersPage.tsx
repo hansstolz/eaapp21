@@ -9,7 +9,7 @@ import { FiMail, FiPrinter } from "react-icons/fi";
 import { toast } from "sonner";
 import { _updateOrder } from "@/app/api/orders/orders_crud";
 import { useCostestimateStore } from "@/app/stores/costestimate/costestimate_store";
-import { useOrderStore } from "@/app/stores/order/order_store";
+import { createOrderStore, useOrderStore } from "@/app/stores/order/order_store";
 import HLine from "@/components/app/hline";
 import { InputDate } from "@/components/app/inputdate";
 import { LabeledInput } from "@/components/app/LabeledInput";
@@ -55,7 +55,7 @@ export default function RemindersPage() {
     toast.success("Reminder updated");
   }, [getOrderById, order]);
   useEffect(() => () => {
-    if (dirty.current) void form.handleSubmit(submit)();
+    if (dirty.current && createOrderStore.getState().order) void form.handleSubmit(submit)();
   }, [form, submit]);
   if (!isConfirmed) return <div className="p-12 text-xl text-primary-700">Confirm Costestimate!</div>;
   const actions = <div className="flex gap-3">

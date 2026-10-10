@@ -6,7 +6,7 @@ import "./diagnosis.css";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { useOrderStore } from "@/app/stores/order/order_store";
+import { createOrderStore, useOrderStore } from "@/app/stores/order/order_store";
 import { useDiagnosisStore } from "@/app/stores/diagnosis/diagnosis_store";
 import { useCostestimateStore } from "@/app/stores/costestimate/costestimate_store";
 import { useWarrantyStore } from "@/app/stores/warranty/warranty_store";
@@ -122,7 +122,7 @@ export default function DiagnosisTab() {
       await handleSubmit(submitData)();
     };
     return () => {
-      if (dirty.current) void submitOnLeave();
+      if (dirty.current && createOrderStore.getState().order) void submitOnLeave();
     };
   }, [handleSubmit, submitData]);
 

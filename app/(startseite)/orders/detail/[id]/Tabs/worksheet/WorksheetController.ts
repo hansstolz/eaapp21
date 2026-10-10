@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import copyToClipboard from "@/lib/hooks/useCopy";
-import { useOrderStore } from "@/app/stores/order/order_store";
+import { createOrderStore, useOrderStore } from "@/app/stores/order/order_store";
 import { useDiagnosisStore } from "@/app/stores/diagnosis/diagnosis_store";
 import { useWarrantyStore } from "@/app/stores/warranty/warranty_store";
 import { useCostestimateStore } from "@/app/stores/costestimate/costestimate_store";
@@ -44,7 +44,7 @@ export default function WorksheetController() {
 
   useEffect(() => {
     return () => {
-      if (dirty.current) void handleSubmit(submitHandler)();
+      if (dirty.current && createOrderStore.getState().order) void handleSubmit(submitHandler)();
     };
   }, [handleSubmit, submitHandler]);
 

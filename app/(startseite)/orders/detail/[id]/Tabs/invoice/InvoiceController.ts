@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { _updateOrder } from "@/app/api/orders/orders_crud";
 import { useCostestimateStore } from "@/app/stores/costestimate/costestimate_store";
-import { useOrderStore } from "@/app/stores/order/order_store";
+import { createOrderStore, useOrderStore } from "@/app/stores/order/order_store";
 import { invoiceSchema, type InvoiceForm } from "./InvoiceSchema";
 
 export default function InvoiceController() {
@@ -50,7 +50,7 @@ export default function InvoiceController() {
   }, [getOrderById, order]);
 
   useEffect(() => () => {
-    if (dirty.current) void handleSubmit(submitHandler)();
+    if (dirty.current && createOrderStore.getState().order) void handleSubmit(submitHandler)();
   }, [handleSubmit, submitHandler]);
 
   return {
