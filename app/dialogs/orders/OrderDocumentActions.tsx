@@ -82,6 +82,7 @@ function DocumentOptions({ documentType, language: defaultLanguage }: Pick<Conte
 
 function useDocumentRequest(props: Context) {
   const container = useRef<HTMLDivElement>(null);
+  const { getOrderById } = useOrderStore();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   async function submit(action: "print" | "mail", email?: { to: string; subject: string; text: string }) {
@@ -91,10 +92,10 @@ function useDocumentRequest(props: Context) {
     // Open during the click so the browser does not block the PDF window.
     const preview = action === "print" ? window.open("", "_blank", "popup,width=1000,height=800") : null;
     if (action === "print" && !preview) { setError("Bitte Pop-ups für die PDF-Anzeige erlauben."); return; }
-    if (preview) { preview.opener = null; preview.document.title = "Costestimate PDF"; preview.document.body.textContent = "PDF wird erstellt…"; }
+    if (preview) { preview.opener = null; preview.document.title = `${props.documentType} PDF`; preview.document.body.textContent = "PDF wird erstellt…"; }
     setBusy(true);
     try {
-      const response = await fetch("/orders/costestimate_document", {
+      const response = await fetch(props.documentType === "Invoice" ? "/orders/invoice_document" : "/orders/costestimate_document", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: props.documentId, action, language: option("language"), version: option("version"), documents: option("documents"), email }),
       });
@@ -122,6 +123,10 @@ function useDocumentRequest(props: Context) {
         description: `Empfänger: ${result.email.accepted.join("; ")}`,
         duration: 10000,
       });
+      if (props.documentType === "Invoice") {
+        try { await getOrderById(props.orderId); }
+        catch { toast.warning(`${action === "mail" ? "E-Mail versendet." : "PDF erstellt."} Die aktualisierten Rechnungsdaten konnten nicht geladen werden; bitte die Auftragsansicht neu laden.`); }
+      }
       props.onClose();
     } catch (reason) {
       preview?.close();
@@ -142,10 +147,10 @@ function PrintDialog(props: Context) {
       <DialogDescription>Prepare the document for printing.</DialogDescription>
       <DocumentInfo {...props} />
       <DocumentOptions documentType={props.documentType} language={props.language} />
-      {props.documentType !== "Costestimate" && <p className="text-sm text-muted-foreground">Printing will be available in the next step.</p>}
+      {props.documentType !== "Costestimate" && props.documentType !== "Invoice" && <p className="text-sm text-muted-foreground">Printing will be available in the next step.</p>}
       <DialogFooter>
         <Button type="button" variant="outline" disabled={busy} onClick={props.onClose}>Close</Button>
-        <Button type="button" disabled={busy || props.documentType !== "Costestimate" || !props.documentId} onClick={() => void submit("print")}><FiPrinter /> {busy ? "Creating PDF…" : "Print"}</Button>
+        <Button type="button" disabled={busy || (props.documentType !== "Costestimate" && props.documentType !== "Invoice") || !props.documentId} onClick={() => void submit("print")}><FiPrinter /> {busy ? "Creating PDF…" : "Print"}</Button>
       </DialogFooter>
     </div>
   </MovableDialog>{errorDialog}</>;
@@ -170,7 +175,7 @@ function MailDialog(props: Context) {
         </div>
         <div className="grid gap-2">
           <Label htmlFor={`${id}-cc`}>CC</Label>
-          <Input disabled={props.documentType === "Costestimate"} placeholder={props.documentType === "Costestimate" ? "CC is not supported by the templates API" : undefined} id={`${id}-cc`} type="email" multiple value={cc} onChange={(event) => setCc(event.target.value)} />
+          <Input disabled={props.documentType === "Costestimate" || props.documentType === "Invoice"} placeholder={props.documentType === "Costestimate" || props.documentType === "Invoice" ? "CC is not supported by the templates API" : undefined} id={`${id}-cc`} type="email" multiple value={cc} onChange={(event) => setCc(event.target.value)} />
         </div>
         <div className="grid gap-2">
           <Label htmlFor={`${id}-subject`}>Subject</Label>
@@ -181,10 +186,10 @@ function MailDialog(props: Context) {
           <Textarea id={`${id}-message`} rows={5} value={message} onChange={(event) => setMessage(event.target.value)} />
         </div>
       </div>
-      {props.documentType !== "Costestimate" && <p className="text-sm text-muted-foreground">Sending email will be available in the next step.</p>}
+      {props.documentType !== "Costestimate" && props.documentType !== "Invoice" && <p className="text-sm text-muted-foreground">Sending email will be available in the next step.</p>}
       <DialogFooter>
         <Button type="button" variant="outline" disabled={busy} onClick={props.onClose}>Close</Button>
-        <Button type="button" disabled={busy || props.documentType !== "Costestimate" || !props.documentId || !recipient.trim() || !subject.trim()} onClick={() => void submit("mail", { to: recipient.trim(), subject, text: message })}><FiMail /> {busy ? "Sending…" : "Send"}</Button>
+        <Button type="button" disabled={busy || (props.documentType !== "Costestimate" && props.documentType !== "Invoice") || !props.documentId || !recipient.trim() || !subject.trim()} onClick={() => void submit("mail", { to: recipient.trim(), subject, text: message })}><FiMail /> {busy ? "Sending…" : "Send"}</Button>
       </DialogFooter>
     </div>
   </MovableDialog>{errorDialog}</>;
@@ -196,6 +201,7 @@ export default function OrderDocumentActions(props: Props) {
   const data = order?.getOrder();
   const context: Context = {
     ...props,
+    documentId: props.documentType === "Invoice" ? order?.uid_order : props.documentId,
     documentNo: props.documentNo ?? (props.documentType === "Invoice" ? data?.invoice_no : null),
     orderId: order?.uid_order ?? 0,
     customer: data?.customer_name ?? "",
