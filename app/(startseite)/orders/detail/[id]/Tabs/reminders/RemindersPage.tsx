@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FaReadme } from "react-icons/fa";
-import { FiMail, FiPrinter } from "react-icons/fi";
 import { toast } from "sonner";
 import { _updateOrder } from "@/app/api/orders/orders_crud";
 import { useCostestimateStore } from "@/app/stores/costestimate/costestimate_store";
@@ -15,6 +14,7 @@ import { InputDate } from "@/components/app/inputdate";
 import { LabeledInput } from "@/components/app/LabeledInput";
 import SubSection from "@/components/app/SubSection";
 import { Button } from "@/components/ui/button";
+import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
 
 const reminderSchema = z.object({
   reminderDate: z.union([z.string(), z.date()]).nullable(),
@@ -60,8 +60,7 @@ export default function RemindersPage() {
   if (!isConfirmed) return <div className="p-12 text-xl text-primary-700">Confirm Costestimate!</div>;
   const actions = <div className="flex gap-3">
     <Button disabled={!form.formState.isDirty} type="submit" size="sm">Save</Button>
-    <Button disabled type="button" size="sm"><FiMail /> Mail</Button>
-    <Button disabled type="button" size="sm"><FiPrinter /> Print</Button>
+    <OrderDocumentActions documentType="Reminders" />
   </div>;
   return (
     <form onSubmit={form.handleSubmit(submit)}>

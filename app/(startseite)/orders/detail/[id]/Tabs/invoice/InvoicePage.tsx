@@ -2,13 +2,14 @@
 
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import { useState } from "react";
-import { FiMail, FiPlus, FiPrinter } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 import SubSection from "@/components/app/SubSection";
 import HLine from "@/components/app/hline";
 import { InputDate } from "@/components/app/inputdate";
 import { LabeledInput } from "@/components/app/LabeledInput";
 import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { Button } from "@/components/ui/button";
+import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
 import InvoiceController from "./InvoiceController";
 import InvoicePositionsColumns from "./InvoicePositionsColumns";
 import AddTextDialog from "@/app/dialogs/texts/AddTextDialog";
@@ -41,8 +42,7 @@ export default function InvoicePage() {
   const actions = (
     <div className="flex gap-3">
       <Button disabled={!isDirty} type="submit" size="sm">Save</Button>
-      <Button disabled type="button" size="sm" title="Mail workflow is not available yet"><FiMail /> Mail</Button>
-      <Button disabled type="button" size="sm" title="Print workflow is not available yet"><FiPrinter /> Print</Button>
+      <OrderDocumentActions documentType="Invoice" />
     </div>
   );
 

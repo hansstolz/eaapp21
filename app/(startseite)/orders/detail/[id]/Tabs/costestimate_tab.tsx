@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaEuroSign, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
-import { FiCalendar, FiMail, FiPlus, FiPrinter } from "react-icons/fi";
+import { FiCalendar, FiPlus } from "react-icons/fi";
 import OrderPositions from "./costestimate/order_positions";
 import ConfirmCostDialog from "@/app/dialogs/costestimate/ConfirmCostDialog";
 import AddCostDialog from "@/app/dialogs/costestimate/add_costestimate";
@@ -17,6 +17,7 @@ import { useOrderStore } from "@/app/stores/order/order_store";
 import type { EaCostestimate } from "@/app/data_types/costestimate/ea_costestimate";
 import AddTextDialog from "@/app/dialogs/texts/AddTextDialog";
 import OrderTextList from "@/app/dialogs/texts/OrderTextList";
+import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
 
 export default function CostestimateTab() {
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -64,10 +65,6 @@ export default function CostestimateTab() {
     // Logic to copy diagnosis data to calendar
   };
 
-  const showPrintDialog = () => {
-    // Logic to show print dialog
-  };
-
   return (
     <>
       <div className={"mb-8 mt-4"}>
@@ -83,14 +80,7 @@ export default function CostestimateTab() {
                   Save
                 </Button>
 
-                <Button type="button" size="sm" onClick={showPrintDialog}>
-                  <FiMail />
-                  Mail
-                </Button>
-                <Button type="button" size="sm" onClick={showPrintDialog}>
-                  <FiPrinter />
-                  Print
-                </Button>
+                <OrderDocumentActions documentType="Costestimate" documentId={costestimate?.uid_order === order?.uid_order ? costestimate?.uid_costestimates : null} documentNo={costestimate?.costestimate_no} />
 
                 <Button type="button" onClick={copyToCal} size="sm">
                   <FiCalendar /> Cal

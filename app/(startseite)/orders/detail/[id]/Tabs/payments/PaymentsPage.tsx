@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { FaEuroSign } from "react-icons/fa";
-import { FiDelete, FiPlus, FiPrinter } from "react-icons/fi";
+import { FiDelete, FiPlus } from "react-icons/fi";
 import type { EaPayments } from "@/app/data_types/payments/ea_payments";
 import { useCostestimateStore } from "@/app/stores/costestimate/costestimate_store";
 import { useDeleteStore } from "@/app/stores/delete/delete_slice";
@@ -15,6 +15,7 @@ import SubSection from "@/components/app/SubSection";
 import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { Button } from "@/components/ui/button";
 import AddPaymentDialog from "./AddPaymentDialog";
+import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
 
 const date = new Intl.DateTimeFormat("de-DE");
 const currency = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
@@ -46,7 +47,7 @@ export default function PaymentsPage() {
     ) },
   ];
   if (!isConfirmed) return <div className="p-12 text-xl text-primary-700">Confirm Costestimate!</div>;
-  const actions = <Button disabled type="button" size="sm"><FiPrinter /> Print</Button>;
+  const actions = <OrderDocumentActions documentType="Payments" />;
   return (
     <SubSection icon={FaEuroSign} title="Payments" actions={actions}>
       <HLine />

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FaFileInvoice } from "react-icons/fa";
-import { FiMail, FiPlus, FiPrinter } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 import { toast } from "sonner";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { EaOrdersPosition } from "@/app/data_types/orders/ea_orders_position";
@@ -20,6 +20,7 @@ import { InputDate } from "@/components/app/inputdate";
 import { LabeledInput } from "@/components/app/LabeledInput";
 import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { Button } from "@/components/ui/button";
+import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
 import AddTextDialog from "@/app/dialogs/texts/AddTextDialog";
 import OrderTextList from "@/app/dialogs/texts/OrderTextList";
 
@@ -79,8 +80,7 @@ export default function WarrantyPage() {
   const warrantyTexts = texts.filter((text) => text.type === 2);
   const actions = <div className="flex gap-3">
     <Button disabled={!isDirty || isSubmitting} type="submit" size="sm">Save</Button>
-    <Button disabled type="button" size="sm" title="Mail workflow is not available yet"><FiMail /> Mail</Button>
-    <Button disabled type="button" size="sm" title="Print workflow is not available yet"><FiPrinter /> Print</Button>
+    <OrderDocumentActions documentType="Warranty" documentNo={warranty?.warranty_no} />
   </div>;
 
   return (

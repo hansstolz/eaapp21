@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { FaFileInvoice } from "react-icons/fa";
-import { FiMail, FiPrinter } from "react-icons/fi";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { _getCreditnote, _updateCreditnote, type CreditnoteForm } from "@/app/api/creditnote/creditnote_crud";
@@ -14,6 +13,7 @@ import { InputDate } from "@/components/app/inputdate";
 import { LabeledInput } from "@/components/app/LabeledInput";
 import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { Button } from "@/components/ui/button";
+import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
 import InvoicePositionsColumns from "../invoice/InvoicePositionsColumns";
 import AddTextDialog from "@/app/dialogs/texts/AddTextDialog";
 import OrderTextList from "@/app/dialogs/texts/OrderTextList";
@@ -54,8 +54,7 @@ export default function CreditnotePage() {
   if (!isConfirmed) return <div className="p-12 text-xl text-primary-700">Confirm Costestimate!</div>;
   const actions = <div className="flex gap-3">
     <Button disabled={!isDirty || !loaded} type="submit" size="sm">Save</Button>
-    <Button disabled type="button" size="sm"><FiMail /> Mail</Button>
-    <Button disabled type="button" size="sm"><FiPrinter /> Print</Button>
+    <OrderDocumentActions documentType="Creditnote" />
   </div>;
   return (
     <form onSubmit={handleSubmit(submit)}>

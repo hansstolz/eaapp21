@@ -7,7 +7,6 @@ import {
   EaCustomerMails,
 } from "@/app/schemas/customer/customer_schema";
 import { useOrderStore } from "@/app/stores/order/order_store";
-import { _updateOrderCustomer } from "@/app/api/orders/orders_crud";
 import type { EaCustomer } from "@/app/data_types/customer/ea_customer";
 import { ValueTypes } from "@/app/data_types/values/value_types";
 import DisabledInput from "@/components/app/DisabledInput";
@@ -47,7 +46,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
     reset,
     control,
     watch,
-    formState: { isDirty },
+    formState: { isDirty, isSubmitting },
   } = useForm<EaCustomerMails>({
     resolver: zodResolver(customerSchema),
   });
@@ -79,20 +78,21 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
   }, [order, reset]);
 
   const submitCustomer = async (data: EaCustomerMails) => {
-    const customer = await _updateCustomer(data);
-
-    if (customer && order) {
+    if (!order) return;
+    try {
+      const customer = await _updateCustomer({ ...data, uid_order: order.uid_order });
       order.updateCustomer(customer as unknown as EaCustomer);
-      await _updateOrderCustomer(order.orderCustomerUpdate);
       updateOrder();
       toast.success("Customer updated");
+      setIsOpen(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Customer could not be saved.");
     }
   };
 
-  const onSubmit = (data: EaCustomerMails) => {
+  const onSubmit = async (data: EaCustomerMails) => {
     if (isDirty) {
-      submitCustomer(data);
-      setIsOpen(false);
+      await submitCustomer(data);
     }
   };
 
@@ -101,7 +101,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
       <MovableDialog
         className="min-w-250 max-w-[90vw]"
         open={isOpen}
-        setOpen={setIsOpen}
+        setOpen={(open) => { if (!isSubmitting) setIsOpen(open); }}
         title={"Edit Customer"}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -267,6 +267,8 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
           </div>
           <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
             <Button
+              type="button"
+              disabled={isSubmitting}
               size="sm"
               onClick={() => {
                 setIsOpen(false);
@@ -277,11 +279,11 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
             </Button>
             <Button
               className="mr-8"
-              disabled={!isDirty}
+              disabled={!isDirty || isSubmitting}
               type="submit"
               size="sm"
             >
-              Save
+              {isSubmitting ? "Saving…" : "Save"}
             </Button>
           </DialogFooter>
         </form>

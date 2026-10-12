@@ -257,13 +257,15 @@ class Order {
   }
 
   public updateCustomer(customer: EaCustomer) {
-    //this._order.customer_client_name = customer.cal_name_list;
+    this._order.customer_name = customer.cal_name_list ?? "";
     this._order.customer_no = customer.customer_no;
     this._order.uid_customer = customer.uid_customer;
     this._order.customer_address = customer.cal_address;
     this._order.customer_fon = customer.fon;
     this._order.customer_email = customer.email;
     this._order.bank_account = customer.bank_account;
+    this._order.bank_name = customer.bank_name;
+    this._order.bank_id = customer.bank_id ?? "";
     this._order.bank_payment = customer.bank_payment;
     this._order.vat_no_customer = customer.vat_no;
     this._order.no_vat = customer.no_vat;

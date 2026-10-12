@@ -17,12 +17,15 @@ export type EaCustomer = {
   region: string | null;
   mobile: string | null;
   cal_address: string | null;
+  cal_name_list: string | null;
   customer_no_rel: string | null;
   order_no: number | null;
   check_export_ups: number | null;
   company: string | null;
   no_vat: number | null;
   bank_account: string | null;
+  bank_name: string | null;
+  bank_id: string | null;
   bank_payment: string | null;
   vat_no: string | null;
   customer_category_no: number | null;
