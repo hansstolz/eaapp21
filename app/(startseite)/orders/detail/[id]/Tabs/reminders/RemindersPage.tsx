@@ -46,7 +46,7 @@ export default function RemindersPage() {
   const submit = useCallback(async (data: ReminderResult) => {
     if (!order) return;
     await _updateOrder({
-      ...order.getOrder(),
+      uid_order: order.uid_order,
       reminder_date: data.reminderDate instanceof Date ? data.reminderDate.toISOString() : (data.reminderDate ?? ""),
       reminder_level: data.reminderLevel,
       text_payments: data.reminderText,

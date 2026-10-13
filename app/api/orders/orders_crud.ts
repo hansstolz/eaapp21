@@ -30,7 +30,7 @@ export const _deleteOrderById = (uidOrder: number) =>
 export const _getDocumentBy = (orderNo: number, signal?: AbortSignal) =>
   request<TDocument[]>(`/orders/get_documents?order_no=${orderNo}`, { cache: "no-store", signal });
 
-export const _updateOrder = (data: EaOrder) =>
+export const _updateOrder = (data: Partial<EaOrder> & Pick<EaOrder, "uid_order">) =>
   request<EaOrder>("/orders/update_order", json("PUT", data));
 
 export const _updateOrderCustomer = (data: EaOrdersCustomerUpdate) =>

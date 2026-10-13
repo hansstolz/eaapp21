@@ -2,6 +2,7 @@ import { getAuthSession } from "@/lib/auth-session";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, parsePositiveId, readJsonObject } from "@/lib/route-utils";
 import { OrderStatus } from "@/app/data_types/orders/order_status";
+import { nextCostestimateNumber, nextOrderNumber } from "@/lib/costestimate-number";
 
 const cleanSearch = (value: string | null) =>
   (value ?? "").replace(/[.\-'*+´`\"]/g, "");
@@ -27,7 +28,11 @@ export async function POST(request: Request) {
   const now = new Date();
 
   const order = await prisma.$transaction(async (tx) => {
+    const costestimateNo = await nextCostestimateNumber(tx, session.userGroup);
+    const orderNo = await nextOrderNumber(tx, session.userGroup);
     const created = await tx.ea_orders.create({ data: {
+      order_no: orderNo,
+      invoice_no: null,
       user_group: session.userGroup,
       bank_account: customer.bank_account,
       bank_id: customer.bank_id,
@@ -62,6 +67,7 @@ export async function POST(request: Request) {
     const uidOrder = created.uid_order;
     await Promise.all([
       tx.ea_orders_costestimates.create({ data: {
+        costestimate_no: costestimateNo,
         uid_order: uidOrder, worker_costestimate: worker,
         costestimate_date: now, customer_category_no: customer.customer_category_no,
         user_group: session.userGroup, created_at: now, updated_at: now,

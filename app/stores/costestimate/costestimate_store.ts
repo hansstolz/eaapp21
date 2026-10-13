@@ -29,6 +29,7 @@ interface CostestimateStore {
   positions: EaOrdersPosition[];
   texts: EaOrdersText[];
   costestimates: DropdownItem[];
+  costestimatesOrderId: number | null;
   selectedNumber: number | null;
   isConfirmed: boolean;
   position: EaOrdersPositions | null;
@@ -50,6 +51,7 @@ interface CostestimateStore {
 export const createCostestimateStore = create<
   CostestimateStore & PaginatedSlice<EaOrdersPosition>
 >((set, get, ...a) => {
+  let listRequest = 0;
   const delegate: PaginatedSliceDelegate<EaOrdersPosition> = {
     getItems: () => get().positions,
     onSelect: (_row, item) => {
@@ -62,6 +64,7 @@ export const createCostestimateStore = create<
     ...createPaginatedSlice<EaOrdersPosition>()(set, get, ...a),
 
     costestimates: [],
+    costestimatesOrderId: null,
     selectedNumber: null,
     isConfirmed: false,
     costestimate: null,
@@ -102,10 +105,19 @@ export const createCostestimateStore = create<
     },
 
     getCostestimatesNumbers: async (uid_order: number) => {
-      const costestimates = await _getCostestimatesNumbers(uid_order);
+      const request = ++listRequest;
+      set({ costestimates: [], costestimatesOrderId: null, selectedNumber: null });
+      let costestimates: DropdownItem[];
+      try { costestimates = await _getCostestimatesNumbers(uid_order); }
+      catch (error) {
+        if (request === listRequest) toast.error(error instanceof Error ? error.message : "Costestimates konnten nicht geladen werden.");
+        return;
+      }
+      if (request !== listRequest) return;
 
       set({
         costestimates,
+        costestimatesOrderId: uid_order,
         selectedNumber: costestimates.length
           ? Number(costestimates[0].value)
           : null,
@@ -114,7 +126,14 @@ export const createCostestimateStore = create<
 
     getCostestimate: async (uid_costestimate: number) => {
       get().setDelegate(delegate);
-      const costestimateDetail = await _getCostestimate(uid_costestimate);
+      const request = listRequest;
+      let costestimateDetail;
+      try { costestimateDetail = await _getCostestimate(uid_costestimate); }
+      catch (error) {
+        if (request === listRequest) toast.error(error instanceof Error ? error.message : "Costestimate konnte nicht geladen werden.");
+        return;
+      }
+      if (request !== listRequest || costestimateDetail.costestimate.uid_order !== get().costestimatesOrderId) return;
 
       set({
         costestimate: costestimateDetail.costestimate,
@@ -254,6 +273,7 @@ export const useCostestimateStore = () => {
     getConfirmedCostestimate,
     getCostestimate,
     costestimates,
+    costestimatesOrderId,
     isConfirmed,
     updateCostestimate,
     saveCostestimate,
@@ -276,6 +296,7 @@ export const useCostestimateStore = () => {
   return {
     costestimate,
     costestimates,
+    costestimatesOrderId,
     isConfirmed,
     getCostestimate,
     getCostestimatesNumbers,

@@ -31,7 +31,7 @@ export default function DocumentCard() {
     <Card className="h-full">
       <Section no={3} title={"Documents"} actions={undefined}>
         <div className="w-full flex flex-col gap-3">
-          <DataTable showHeader={false} columns={columns} data={documents} />
+          <DataTable showHeader={false} columns={columns} data={orderNo ? documents : []} />
         </div>
       </Section>
     </Card>

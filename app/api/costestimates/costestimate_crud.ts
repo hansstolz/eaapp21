@@ -7,7 +7,10 @@ import type { EaOrdersPositions } from "@/app/data_types/positions/ea_orders_pos
 
 async function request<T>(input: string, init?: RequestInit): Promise<T> {
   const response = await fetch(input, init);
-  if (!response.ok) throw new Error(`Request failed (${response.status}).`);
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.error ?? `Request failed (${response.status}).`);
+  }
   return response.json() as Promise<T>;
 }
 

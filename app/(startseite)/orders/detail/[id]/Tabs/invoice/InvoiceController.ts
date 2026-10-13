@@ -39,7 +39,7 @@ export default function InvoiceController() {
   const submitHandler = useCallback(async (data: InvoiceForm) => {
     if (!order) return;
     await _updateOrder({
-      ...order.getOrder(),
+      uid_order: order.uid_order,
       worker_invoice: data.worker_invoice ?? "",
       invoice_date: data.invoice_date instanceof Date
         ? data.invoice_date.toISOString()

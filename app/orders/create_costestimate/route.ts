@@ -3,6 +3,7 @@ import { OrderStatus } from "@/app/data_types/orders/order_status";
 import { getAuthSession } from "@/lib/auth-session";
 import { findOwnedOrder } from "@/lib/order-detail";
 import { prisma } from "@/lib/prisma";
+import { nextCostestimateNumber } from "@/lib/costestimate-number";
 import { errorResponse, parsePositiveId, readJsonObject } from "@/lib/route-utils";
 
 export async function POST(request: Request) {
@@ -16,8 +17,10 @@ export async function POST(request: Request) {
     return errorResponse("Auftrag nicht gefunden.", 404);
   const now = new Date();
   const costestimate = await prisma.$transaction(async (tx) => {
+    const costestimateNo = await nextCostestimateNumber(tx, session.userGroup);
     const result = await tx.ea_orders_costestimates.create({
       data: {
+        costestimate_no: costestimateNo,
         worker_costestimate: String(body.user ?? ""),
         worker_costestimate_no: 0,
         price_costestimate_total: 0,

@@ -1,3 +1,4 @@
+import { nextCostestimateNumber, nextOrderNumber } from "@/lib/costestimate-number";
 import { getAuthSession } from "@/lib/auth-session";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, parsePositiveId, readJsonObject } from "@/lib/route-utils";
@@ -23,7 +24,11 @@ export async function POST(request: Request) {
   const noVat = customer.no_vat === 1;
   const now = new Date();
   const order = await prisma.$transaction(async (tx) => {
+    const costestimateNo = await nextCostestimateNumber(tx, session.userGroup);
+    const orderNo = await nextOrderNumber(tx, session.userGroup);
     const created = await tx.ea_orders.create({ data: {
+      order_no: orderNo,
+      invoice_no: null,
       user_group: session.userGroup,
       bank_account: customer.bank_account,
       bank_id: customer.bank_id,
@@ -53,6 +58,7 @@ export async function POST(request: Request) {
       updated_at: now,
     } });
     await tx.ea_orders_costestimates.create({ data: {
+      costestimate_no: costestimateNo,
       uid_order: created.uid_order,
       worker_costestimate: worker,
       costestimate_date: now,

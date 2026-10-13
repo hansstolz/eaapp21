@@ -27,6 +27,7 @@ export default function CostestimateTab() {
   const {
     costestimate,
     costestimates,
+    costestimatesOrderId,
     isConfirmed,
     getCostestimate,
     getCostestimatesNumbers,
@@ -36,7 +37,7 @@ export default function CostestimateTab() {
     deleteText,
   } = useCostestimateStore();
   const costestimateTexts = texts.filter((text) => text.type === 0);
-  const firstCostestimateUid = costestimates[0]?.value;
+  const firstCostestimateUid = costestimatesOrderId === order?.uid_order ? costestimates[0]?.value : undefined;
   const {
     handleSubmit,
     reset,

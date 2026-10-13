@@ -34,6 +34,7 @@ export default function DiagnosisTab() {
     useDiagnosisStore();
   const {
     costestimates,
+    costestimatesOrderId,
     isConfirmed,
     getCostestimate,
     getCostestimatesNumbers,
@@ -61,7 +62,7 @@ export default function DiagnosisTab() {
     dirty.current = isDirty;
   }, [isDirty]);
 
-  const firstCostestimateUid = costestimates[0]?.uid;
+  const firstCostestimateUid = costestimatesOrderId === order?.uid_order ? costestimates[0]?.uid : undefined;
 
   useEffect(() => {
     if (order) {

@@ -46,6 +46,8 @@ export default function OrderDetail() {
     }
   };
 
+  if (order?.uid_order !== Number(id)) return <div className="p-6 text-muted-foreground">Auftrag wird geladen…</div>;
+
   return (
     <>
       <LineLR>
