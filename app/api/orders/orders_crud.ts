@@ -27,8 +27,8 @@ export const _getOrderById = (uidOrder: number) =>
 export const _deleteOrderById = (uidOrder: number) =>
   request<{ success: boolean }>(`/orders/delete_order/${uidOrder}`, { method: "DELETE" });
 
-export const _getDocumentBy = (orderNo: number) =>
-  request<TDocument[]>(`/orders/get_documents?order_no=${orderNo}`);
+export const _getDocumentBy = (orderNo: number, signal?: AbortSignal) =>
+  request<TDocument[]>(`/orders/get_documents?order_no=${orderNo}`, { cache: "no-store", signal });
 
 export const _updateOrder = (data: EaOrder) =>
   request<EaOrder>("/orders/update_order", json("PUT", data));

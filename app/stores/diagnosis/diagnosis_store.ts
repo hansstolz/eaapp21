@@ -61,7 +61,11 @@ export const createDiagnosisStore = create<DiagnosisStore>((set) => ({
     const updatedDiagnosis = await _updateDiagnosis(diagnosis);
     toast.success("Diagnosis updated successfully!");
 
-    set({ diagnosis: updatedDiagnosis });
+    set({
+      diagnosis: updatedDiagnosis,
+      uses: updatedDiagnosis.fork_use?.split("\n") || [],
+      settings: updatedDiagnosis.fork_setting?.split("\n") || [],
+    });
   },
 }));
 

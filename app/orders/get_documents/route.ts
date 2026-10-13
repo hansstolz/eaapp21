@@ -13,10 +13,14 @@ export async function GET(request: Request) {
       uid_document: true, doc_date: true, doc_type: true,
       doc_name: true, sent_by: true,
     },
-    orderBy: { doc_date: "desc" },
+    orderBy: [{ doc_date: "desc" }, { uid_document: "desc" }],
   });
   return Response.json(documents.map((document) => {
     const parts = document.doc_name?.split("_") ?? [];
-    return { ...document, doc_no: `${parts[1] ?? ""} ${parts[2] ?? ""} ` };
-  }));
+    const filename = document.doc_name ?? "";
+    const docNo = /^\d+(?:_client|_copy)?\.pdf$/i.test(filename)
+      ? filename.replace(/\.pdf$/i, "").replace(/_/g, " ")
+      : `${parts[1] ?? ""} ${parts[2] ?? ""}`.trim();
+    return { ...document, doc_no: docNo };
+  }), { headers: { "Cache-Control": "no-store" } });
 }

@@ -6,20 +6,26 @@ import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { TDocument } from "@/app/data_types/documents/tdocument";
 import { useOrderStore } from "@/app/stores/order/order_store";
 import { useEffect, useState } from "react";
+import { useDocumentRefreshStore } from "@/app/stores/documents/document_store";
+import { toast } from "sonner";
 
 export default function DocumentCard() {
-  const { order } = useOrderStore(); // Replace with actual order number from the store or prop
+  const { order } = useOrderStore();
+  const revision = useDocumentRefreshStore((state) => state.revision);
+  const orderNo = order?.order_no;
   const [documents, setDocuments] = useState<TDocument[]>([]);
   const columns = DocumentColumns();
 
   useEffect(() => {
-    const getDocuments = async () => {
-      if (!order) return;
-      const documents = await _getDocumentBy(order.order_no);
-      setDocuments(documents);
-    };
-    if (order) void getDocuments();
-  }, [order]);
+    if (!orderNo) return;
+    const controller = new AbortController();
+    void _getDocumentBy(orderNo, controller.signal).then((documents) => {
+      if (!controller.signal.aborted) setDocuments(documents);
+    }).catch(() => {
+      if (!controller.signal.aborted) toast.error("Documents konnten nicht aktualisiert werden.");
+    });
+    return () => controller.abort();
+  }, [orderNo, revision]);
 
   return (
     <Card className="h-full">

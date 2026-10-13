@@ -47,6 +47,8 @@ export default function DiagnosisTab() {
     reset,
     control,
     setValue,
+    resetField,
+    getFieldState,
 
     formState: { isDirty },
   } = useForm<DiagnosisType>({
@@ -83,14 +85,21 @@ export default function DiagnosisTab() {
         diagnosis_date: diagnosis.diagnosis_date,
         uses,
         settings,
+        warranty_request: "no warranty",
+        warranty_reason: "",
       });
+      dirty.current = false;
     }
   }, [diagnosis, reset, settings, uses]);
 
   useEffect(() => {
-    setValue("warranty_request", warranty?.warranty_request ?? "no warranty");
-    setValue("warranty_reason", warranty?.warranty_reason ?? "");
-  }, [diagnosis, setValue, warranty]);
+    if (!getFieldState("warranty_request").isDirty) {
+      resetField("warranty_request", { defaultValue: warranty?.warranty_request ?? "no warranty" });
+    }
+    if (!getFieldState("warranty_reason").isDirty) {
+      resetField("warranty_reason", { defaultValue: warranty?.warranty_reason ?? "" });
+    }
+  }, [diagnosis, getFieldState, resetField, warranty]);
 
   const valHandler = (value: DiagnoseValues, item: DropdownItem) => {
     setValue(value, item.label, { shouldDirty: true });

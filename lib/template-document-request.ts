@@ -1,8 +1,9 @@
 import { getAuthSession } from "@/lib/auth-session";
 import { findOwnedCostestimate, findOwnedOrder } from "@/lib/order-detail";
 import { errorResponse, parsePositiveId, readJsonObject } from "@/lib/route-utils";
+import { prisma } from "@/lib/prisma";
 
-export async function handleDocumentRequest(request: Request, type: "costestimate" | "invoice") {
+export async function handleDocumentRequest(request: Request, type: "costestimate" | "invoice" | "creditnote") {
   const session = await getAuthSession();
   if (!session) return errorResponse("Nicht authentifiziert.", 401);
   const body = await readJsonObject(request);
@@ -13,10 +14,14 @@ export async function handleDocumentRequest(request: Request, type: "costestimat
     || !["original", "copy"].includes(String(body.version))
     || !["document", "document-and-client", "client"].includes(String(body.documents)))
     return errorResponse("Ungültige Dokumentoptionen.", 400);
+  if (type === "creditnote" && body.documents !== "document")
+    return errorResponse("Für Gutschriften ist nur das Gutschrift-Dokument verfügbar.", 400);
   const document = type === "costestimate"
     ? await findOwnedCostestimate(id, session.userGroup)
     : await findOwnedOrder(id, session.userGroup);
-  if (!document) return errorResponse(type === "invoice" ? "Auftrag nicht gefunden." : "Costestimate nicht gefunden.", 404);
+  if (!document) return errorResponse(type === "costestimate" ? "Costestimate nicht gefunden." : "Auftrag nicht gefunden.", 404);
+  const order = await findOwnedOrder(type === "costestimate" ? document.uid_order : id, session.userGroup);
+  if (!order) return errorResponse("Auftrag nicht gefunden.", 404);
   let email: { to: string[]; subject: string; text: string } | undefined;
   if (body.action === "mail") {
     const input = body.email;
@@ -56,7 +61,33 @@ export async function handleDocumentRequest(request: Request, type: "costestimat
         return errorResponse(`${details} Bitte vor erneutem Versand den Versandstatus prüfen.`, 502);
       }
     }
-    return Response.json(result, { headers: { "Cache-Control": "no-store" } });
+    const generated = email ? result.email?.documents : result.documents;
+    if (!Array.isArray(generated) || !generated.length || generated.some((item: unknown) =>
+      !item || typeof item !== "object" || typeof (item as { filename?: unknown }).filename !== "string"))
+      return errorResponse("Die Templates-API hat keine gültigen Dokumentdaten geliefert.", 502);
+    let documentWarning: string | undefined;
+    try {
+      const now = new Date();
+      await prisma.ea_documents.createMany({
+        data: generated.map((item: { filename: string }) => ({
+          order_no: order.order_no,
+          doc_date: now,
+          customer: order.customer_name?.slice(0, 100),
+          doc_type: { costestimate: "Costestimate", invoice: "Invoice", creditnote: "Creditnote" }[type],
+          user: session.username.slice(0, 45),
+          printed: email ? null : now,
+          fork: order.fork_model?.slice(0, 100),
+          fork_no: order.fork_no,
+          user_group: session.userGroup,
+          doc_name: item.filename.slice(0, 45),
+          sent_by: email ? "Mail" : "Print",
+        })),
+      });
+    } catch {
+      // The PDF/SMTP operation already succeeded; do not invite another send.
+      documentWarning = "Der Vorgang war erfolgreich, aber der Eintrag unter Documents konnte nicht gespeichert werden. Bitte nicht erneut versenden.";
+    }
+    return Response.json({ ...result, ...(documentWarning ? { documentWarning } : {}) }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return errorResponse("Die Templates-API ist nicht erreichbar oder hat keine gültige Antwort geliefert. Bei E-Mail bitte vor erneutem Versand den Versandstatus prüfen.", 502);
   }
