@@ -12,8 +12,6 @@ import { DropdownItem } from "@/app/data_types/general/dropdown";
 import { create } from "zustand/react";
 import { EaCostestimate } from "@/app/data_types/costestimate/ea_costestimate";
 import { EaConfirmCost } from "@/app/data_types/costestimate/ea_cofirm_cost";
-import { OrderStatus } from "@/app/data_types/orders/order_status";
-import { _updateOrderStatus } from "@/app/api/orders/orders_crud";
 import { EaOrdersPosition } from "@/app/data_types/orders/ea_orders_position";
 import { EaOrdersText } from "@/app/data_types/orders/ea_orders_texts";
 import { EaText } from "@/app/data_types/text/ea_text";
@@ -86,12 +84,7 @@ export const createCostestimateStore = create<
           ),
         };
         const result = await _updateCostestimate(changed);
-        await _updateOrderStatus(
-          costestimate.uid_order,
-          result.costestimate_confirm_check === 1
-            ? OrderStatus.CostestimateConf
-            : OrderStatus.Costestimate,
-        );
+
 
         if (result) {
           set({

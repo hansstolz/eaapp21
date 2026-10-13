@@ -17,9 +17,11 @@ const documentEndpoints: Partial<Record<DocumentType, string>> = {
   Costestimate: "/orders/costestimate_document",
   Invoice: "/orders/invoice_document",
   Creditnote: "/orders/creditnote_document",
+  Payments: "/orders/payments_document",
+  Reminders: "/orders/reminder_document",
 };
 
-type Props = { documentType: DocumentType; documentNo?: number | null; documentId?: number | null };
+type Props = { documentType: DocumentType; documentNo?: number | null; documentId?: number | null; disabled?: boolean; beforeRequest?: () => Promise<void> };
 type Context = Props & { orderId: number; customer: string; recipient: string; language: string; onClose: () => void };
 
 function DocumentInfo({ documentType, documentNo, orderId, customer }: Context) {
@@ -103,6 +105,7 @@ function useDocumentRequest(props: Context) {
     if (preview) { preview.opener = null; preview.document.title = `${props.documentType} PDF`; preview.document.body.textContent = "PDF wird erstellt…"; }
     setBusy(true);
     try {
+      await props.beforeRequest?.();
       const response = await fetch(documentEndpoints[props.documentType]!, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: props.documentId, action, language: option("language"), version: option("version"), documents: option("documents") ?? "document", email }),
@@ -211,7 +214,7 @@ export default function OrderDocumentActions(props: Props) {
   const data = order?.getOrder();
   const context: Context = {
     ...props,
-    documentId: props.documentType === "Invoice" || props.documentType === "Creditnote" ? order?.uid_order : props.documentId,
+    documentId: props.documentType === "Invoice" || props.documentType === "Creditnote" || props.documentType === "Payments" || props.documentType === "Reminders" ? order?.uid_order : props.documentId,
     documentNo: props.documentNo ?? (props.documentType === "Invoice" ? data?.invoice_no : null),
     orderId: order?.uid_order ?? 0,
     customer: data?.customer_name ?? "",
@@ -221,10 +224,10 @@ export default function OrderDocumentActions(props: Props) {
   };
   return <>
     {props.documentType !== "Payments" && (
-      <Button disabled={!order} type="button" size="sm" onClick={() => setDialog("mail")}><FiMail /> Mail</Button>
+      <Button disabled={!order || props.disabled} type="button" size="sm" onClick={() => setDialog("mail")}><FiMail /> Mail</Button>
     )}
-    <Button disabled={!order} type="button" size="sm" onClick={() => setDialog("print")}><FiPrinter /> Print</Button>
-    {order && dialog === "print" && <PrintDialog key={`${order.uid_order}-${props.documentNo ?? ""}`} {...context} />}
+    <Button disabled={!order || props.disabled} type="button" size="sm" onClick={() => setDialog("print")}><FiPrinter /> Print</Button>
+    {order && !props.disabled && dialog === "print" && <PrintDialog key={`${order.uid_order}-${props.documentNo ?? ""}`} {...context} />}
     {order && dialog === "mail" && props.documentType !== "Payments" && <MailDialog key={`${order.uid_order}-${props.documentNo ?? ""}`} {...context} />}
   </>;
 }

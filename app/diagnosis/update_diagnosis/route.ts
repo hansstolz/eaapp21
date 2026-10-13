@@ -1,3 +1,5 @@
+import { advanceOrderStatus } from "@/lib/order-workflow-status";
+import { OrderStatus } from "@/app/data_types/orders/order_status";
 import type { Prisma } from "@/generated/prisma/client";
 import { getAuthSession } from "@/lib/auth-session";
 import { DIAGNOSIS_DATE_FIELDS, DIAGNOSIS_UPDATE_FIELDS } from "@/lib/diagnosis-fields";
@@ -27,9 +29,13 @@ export async function PUT(request: Request) {
     const value = data[field];
     if (typeof value === "string") data[field] = value ? new Date(value) : null;
   }
-  const diagnosis = await prisma.ea_diagnosis.update({
-    where: { uid_diagnosis: uidDiagnosis },
-    data: { ...data, user_group: session.userGroup, updated_at: new Date() },
+  const diagnosis = await prisma.$transaction(async (tx) => {
+    const result = await tx.ea_diagnosis.update({
+      where: { uid_diagnosis: uidDiagnosis },
+      data: { ...data, user_group: session.userGroup, updated_at: new Date() },
+    });
+    await advanceOrderStatus(tx, existing.uid_order, session.userGroup, OrderStatus.Diagnose);
+    return result;
   });
   return Response.json(diagnosis);
 }

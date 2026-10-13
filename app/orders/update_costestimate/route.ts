@@ -1,3 +1,5 @@
+import { advanceOrderStatus } from "@/lib/order-workflow-status";
+import { OrderStatus } from "@/app/data_types/orders/order_status";
 import type { Prisma } from "@/generated/prisma/client";
 import { getAuthSession } from "@/lib/auth-session";
 import { COSTESTIMATE_UPDATE_FIELDS } from "@/lib/costestimate-fields";
@@ -21,8 +23,12 @@ export async function PUT(request: Request) {
     const value = data[field];
     if (typeof value === "string") data[field] = value ? new Date(value) : null;
   }
-  const costestimate = await prisma.ea_orders_costestimates.update({
-    where: { uid_costestimates: uid }, data: { ...data, updated_at: new Date() },
+  const costestimate = await prisma.$transaction(async (tx) => {
+    const result = await tx.ea_orders_costestimates.update({
+      where: { uid_costestimates: uid }, data: { ...data, updated_at: new Date() },
+    });
+    await advanceOrderStatus(tx, result.uid_order, session.userGroup, result.costestimate_confirm_check === 1 ? OrderStatus.CostestimateConf : OrderStatus.Costestimate, body.costestimate_confirm_check !== undefined && result.costestimate_confirm_check !== 1);
+    return result;
   });
   return Response.json(costestimate);
 }

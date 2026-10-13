@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   return Response.json(documents.map((document) => {
     const parts = document.doc_name?.split("_") ?? [];
     const filename = document.doc_name ?? "";
-    const docNo = /^\d+(?:_client|_copy)?\.pdf$/i.test(filename)
+    const docNo = /^\d+(?:_[a-z0-9-]+)*\.pdf$/i.test(filename)
       ? filename.replace(/\.pdf$/i, "").replace(/_/g, " ")
       : `${parts[1] ?? ""} ${parts[2] ?? ""}`.trim();
     return { ...document, doc_no: docNo };

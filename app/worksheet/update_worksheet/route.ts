@@ -1,3 +1,5 @@
+import { advanceOrderStatus } from "@/lib/order-workflow-status";
+import { OrderStatus } from "@/app/data_types/orders/order_status";
 import type { Prisma } from "@/generated/prisma/client";
 import { worksheetSchema } from "@/app/(startseite)/orders/detail/[id]/Tabs/worksheet/WorksheetSchema";
 import { getAuthSession } from "@/lib/auth-session";
@@ -36,9 +38,13 @@ export async function PUT(request: Request) {
   for (const field of ["work_worksheet_date", "worksheet_date"] as const) {
     if (typeof data[field] === "string") data[field] = data[field] ? new Date(data[field]) : null;
   }
-  const worksheet = await prisma.ea_worksheet.update({
-    where: { uid_worksheet: uidWorksheet },
-    data: { ...data, user_group: session.userGroup, updated_at: new Date() },
+  const worksheet = await prisma.$transaction(async (tx) => {
+    const result = await tx.ea_worksheet.update({
+      where: { uid_worksheet: uidWorksheet },
+      data: { ...data, user_group: session.userGroup, updated_at: new Date() },
+    });
+    await advanceOrderStatus(tx, existing.uid_order, session.userGroup, OrderStatus.Worksheet);
+    return result;
   });
   return Response.json(worksheet);
 }

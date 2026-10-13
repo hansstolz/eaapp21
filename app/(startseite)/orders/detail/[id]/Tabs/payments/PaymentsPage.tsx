@@ -47,7 +47,7 @@ export default function PaymentsPage() {
     ) },
   ];
   if (!isConfirmed) return <div className="p-12 text-xl text-primary-700">Confirm Costestimate!</div>;
-  const actions = <OrderDocumentActions documentType="Payments" />;
+  const actions = <OrderDocumentActions documentType="Payments" disabled={!payments.some((payment) => payment.uid_order === order?.uid_order)} />;
   return (
     <SubSection icon={FaEuroSign} title="Payments" actions={actions}>
       <HLine />

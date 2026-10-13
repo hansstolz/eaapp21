@@ -47,16 +47,20 @@ export default function ConfirmCostDialog({ isOpen, setIsOpen }: Props) {
 
   useEffect(() => {
     if (costestimate) {
+      const alreadyConfirmed = costestimate.costestimate_confirm_check === 1;
+      const worker = costestimate.worker_costestimate?.trim() || user?.username || "Unknown";
       const conf: EaConfirmCost = {
         confirmed_how: costestimate.confirmed_how?.toString() ?? null,
-        confirmed_by: costestimate.confirmed_by ?? user?.username ?? "Unknown",
+        confirmed_by: alreadyConfirmed ? costestimate.confirmed_by || worker : worker,
         costestimate_confirm_check:
           costestimate.costestimate_confirm_check?.toString() ?? null,
-        confirmed_when: costestimate.confirmed_when,
+        confirmed_when: alreadyConfirmed && costestimate.confirmed_when
+          ? costestimate.confirmed_when
+          : new Date().toISOString(),
       };
       reset({ ...conf });
     }
-  }, [costestimate, reset, user?.username]);
+  }, [costestimate, isOpen, reset, user?.username]);
 
   const onSubmit = (data: EaConfirmCost) => {
     void updateCostestimate(data);

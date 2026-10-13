@@ -60,7 +60,10 @@ export default function RemindersPage() {
   if (!isConfirmed) return <div className="p-12 text-xl text-primary-700">Confirm Costestimate!</div>;
   const actions = <div className="flex gap-3">
     <Button disabled={!form.formState.isDirty} type="submit" size="sm">Save</Button>
-    <OrderDocumentActions documentType="Reminders" />
+    <OrderDocumentActions documentType="Reminders" disabled={form.formState.isSubmitting} beforeRequest={async () => {
+      if (!await form.trigger()) throw new Error("Bitte die Reminder-Angaben prüfen.");
+      await submit(reminderSchema.parse(form.getValues()));
+    }} />
   </div>;
   return (
     <form onSubmit={form.handleSubmit(submit)}>

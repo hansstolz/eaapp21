@@ -99,6 +99,14 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
     reset({ ...inp });
   };
 
+  const onChangePrice = (category: 1 | 2 | 3, event: React.FormEvent<HTMLInputElement>) => {
+    const price = Number(event.currentTarget.value);
+    const quantity = Number(getValues("quantity"));
+    setValue(`price_sum_categ${category}`, to2DigitStr(
+      (Number.isFinite(price) ? price : 0) * (Number.isFinite(quantity) ? quantity : 0),
+    ), { shouldDirty: true });
+  };
+
   const onChangeQuantity = (inp: React.FormEvent<HTMLInputElement>) => {
     const quantity = Number(inp.currentTarget.value);
     const safeQuantity = Number.isFinite(quantity) ? quantity : 0;
@@ -289,9 +297,10 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
     position.price_single_categ2 = Number(article.price_netto_categ2);
     position.price_single_categ3 = Number(article.price_netto_categ3);
 
-    position.amount_price_categ1 = Number(article.price_sum_categ1);
-    position.amount_price_categ2 = Number(article.price_sum_categ2);
-    position.amount_price_categ3 = Number(article.price_sum_categ3);
+    const quantity = Number(article.quantity ?? 1);
+    position.amount_price_categ1 = Number(to2DigitStr(position.price_single_categ1 * quantity));
+    position.amount_price_categ2 = Number(to2DigitStr(position.price_single_categ2 * quantity));
+    position.amount_price_categ3 = Number(to2DigitStr(position.price_single_categ3 * quantity));
 
     if (article.article_group === "Freight") {
       position.amount_price_categ3_freight = Number(article.price_netto_categ3);
@@ -306,7 +315,7 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
       );
     }
 
-    position.quantity = Number(article.quantity) ?? 1;
+    position.quantity = quantity;
     position.uid_article = article.uid_article;
     position.uid_ref_fork = article.uid_ref_fork;
     position.uid_orders_position = article.uid_orders_position ?? 0;
@@ -465,6 +474,7 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
                   name={"price_netto_categ2"}
                   label={"price private"}
                   control={control}
+                  onInput={(event) => onChangePrice(2, event)}
                   className="text-right"
                   onKeyDown={onlyDigitsPoint}
                 />
@@ -481,6 +491,7 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
                   name={"price_netto_categ1"}
                   label={"Price dealer"}
                   control={control}
+                  onInput={(event) => onChangePrice(1, event)}
                   className="text-right"
                   onKeyDown={onlyDigitsPoint}
                 />
@@ -497,6 +508,7 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
                   name={"price_netto_categ3"}
                   label={"Price warr"}
                   control={control}
+                  onInput={(event) => onChangePrice(3, event)}
                   className="text-right"
                   onKeyDown={onlyDigitsPoint}
                 />
