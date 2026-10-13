@@ -96,7 +96,7 @@ export default function ForkDetailPage() {
     <>
       <form onSubmit={handleSubmit(submit)}>
         <LineLR>
-          <DetailButtons isDisabled={!isDirty} />
+          <DetailButtons isDisabled={!isDirty} overviewPath="/forks" />
         </LineLR>
         <PageColumns className="grid-cols-2">
           <Card>

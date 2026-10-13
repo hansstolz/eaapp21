@@ -12,22 +12,24 @@ import { toast } from "sonner";
 import { useDocumentRefreshStore } from "@/app/stores/documents/document_store";
 import MovableDialog from "@/components/app/movable_dialog";
 
-type DocumentType = "Costestimate" | "Invoice" | "Creditnote" | "Warranty" | "Reminders" | "Payments";
+type DocumentType = "Costestimate" | "Invoice" | "Creditnote" | "Warranty" | "Reminders" | "Payments" | "Mail";
 const documentEndpoints: Partial<Record<DocumentType, string>> = {
   Costestimate: "/orders/costestimate_document",
   Invoice: "/orders/invoice_document",
   Creditnote: "/orders/creditnote_document",
   Payments: "/orders/payments_document",
   Reminders: "/orders/reminder_document",
+  Mail: "/mails/document",
+  Warranty: "/orders/warranty_document",
 };
 
 type Props = { documentType: DocumentType; documentNo?: number | null; documentId?: number | null; disabled?: boolean; beforeRequest?: () => Promise<void> };
-type Context = Props & { orderId: number; customer: string; recipient: string; language: string; onClose: () => void };
+type Context = Props & { orderId: number; customer: string; recipient: string; language: string; emailSubject?: string; emailText?: string; onClose: () => void };
 
 function DocumentInfo({ documentType, documentNo, orderId, customer }: Context) {
   return <div className="rounded-lg border bg-muted/40 px-3 py-2">
     <div className="font-medium">{documentType}{documentNo ? ` #${documentNo}` : ""}</div>
-    <div className="text-sm text-muted-foreground">Order #{orderId} · {customer}</div>
+    <div className="text-sm text-muted-foreground">{orderId ? `Order #${orderId} · ` : ""}{customer}</div>
   </div>;
 }
 
@@ -136,7 +138,7 @@ function useDocumentRequest(props: Context) {
         duration: 10000,
       });
       if (result.documentWarning) toast.warning(result.documentWarning, { duration: 15000 });
-      if (documentEndpoints[props.documentType]) {
+      if (documentEndpoints[props.documentType] && props.orderId) {
         try { await getOrderById(props.orderId); }
         catch { toast.warning(`${action === "mail" ? "E-Mail versendet." : "PDF erstellt."} Die aktualisierten Dokumentdaten konnten nicht geladen werden; bitte die Auftragsansicht neu laden.`); }
       }
@@ -174,8 +176,8 @@ function MailDialog(props: Context) {
   const id = useId();
   const [recipient, setRecipient] = useState(props.recipient);
   const [cc, setCc] = useState("");
-  const [subject, setSubject] = useState(`${props.documentType}${props.documentNo ? ` #${props.documentNo}` : ""} · Order #${props.orderId}`);
-  const [message, setMessage] = useState("");
+  const [subject, setSubject] = useState(props.emailSubject ?? `${props.documentType}${props.documentNo ? ` #${props.documentNo}` : ""} · Order #${props.orderId}`);
+  const [message, setMessage] = useState(props.emailText ?? "");
   return <><MovableDialog open setOpen={(open) => { if (!open && !busy) props.onClose(); }} title={`Mail ${props.documentType}`} className="min-w-xl max-w-xl">
     <div ref={container} className="grid max-h-[75vh] gap-4 overflow-y-auto">
       <DialogDescription>Prepare an email with this document as a PDF attachment.</DialogDescription>
@@ -208,13 +210,30 @@ function MailDialog(props: Context) {
   </MovableDialog>{errorDialog}</>;
 }
 
+export function MailLetterDocumentDialog(props: {
+  action: "print" | "email";
+  mailId: number;
+  customer: string;
+  recipient: string;
+  subject: string;
+  text: string;
+  onClose: () => void;
+}) {
+  const context: Context = {
+    documentType: "Mail", documentId: props.mailId, documentNo: props.mailId,
+    orderId: 0, customer: props.customer, recipient: props.recipient,
+    language: "german", emailSubject: props.subject, emailText: props.text, onClose: props.onClose,
+  };
+  return props.action === "print" ? <PrintDialog {...context} /> : <MailDialog {...context} />;
+}
+
 export default function OrderDocumentActions(props: Props) {
   const { order } = useOrderStore();
   const [dialog, setDialog] = useState<"print" | "mail" | null>(null);
   const data = order?.getOrder();
   const context: Context = {
     ...props,
-    documentId: props.documentType === "Invoice" || props.documentType === "Creditnote" || props.documentType === "Payments" || props.documentType === "Reminders" ? order?.uid_order : props.documentId,
+    documentId: props.documentType === "Invoice" || props.documentType === "Creditnote" || props.documentType === "Payments" || props.documentType === "Reminders" || props.documentType === "Warranty" ? order?.uid_order : props.documentId,
     documentNo: props.documentNo ?? (props.documentType === "Invoice" ? data?.invoice_no : null),
     orderId: order?.uid_order ?? 0,
     customer: data?.customer_name ?? "",

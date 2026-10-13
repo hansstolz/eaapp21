@@ -13,7 +13,7 @@ type Props = {
 export default function MailButtons({ isDisabled, setSendType }: Props) {
   const router = useRouter();
   const goBack = () => {
-    router.back();
+    router.push("/mails");
   };
   return (
     <div className="flex flex-row gap-3">

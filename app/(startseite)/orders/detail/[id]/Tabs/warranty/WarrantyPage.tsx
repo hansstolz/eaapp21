@@ -41,7 +41,7 @@ export default function WarrantyPage() {
   const { order } = useOrderStore();
   const { warranty, getWarrantyByUidOrder } = useWarrantyStore();
   const { positions, texts, addText, deleteText, costestimate, isConfirmed, getConfirmedCostestimate } = useCostestimateStore();
-  const { control, handleSubmit, reset, formState: { isDirty, isSubmitting } } = useForm<WarrantyForm>({
+  const { control, handleSubmit, reset, trigger, getValues, formState: { isDirty, isSubmitting } } = useForm<WarrantyForm>({
     resolver: zodResolver(warrantyFormSchema),
   });
 
@@ -80,7 +80,13 @@ export default function WarrantyPage() {
   const warrantyTexts = texts.filter((text) => text.type === 2);
   const actions = <div className="flex gap-3">
     <Button disabled={!isDirty || isSubmitting} type="submit" size="sm">Save</Button>
-    <OrderDocumentActions documentType="Warranty" documentNo={warranty?.warranty_no} />
+    <OrderDocumentActions documentType="Warranty" documentNo={warranty.warranty_no} disabled={isSubmitting} beforeRequest={async () => {
+      if (!await trigger()) throw new Error("Bitte die Warranty-Angaben prüfen.");
+      if (isDirty) {
+        await _updateWarranty(warranty.uid_warranty, warrantyFormSchema.parse(getValues()));
+        await getWarrantyByUidOrder(warranty.uid_order);
+      }
+    }} />
   </div>;
 
   return (

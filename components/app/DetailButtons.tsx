@@ -1,23 +1,23 @@
 "use client";
-import React, { useEffect } from "react";
 import { FiArrowLeft, FiSave } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 
 type Props = {
   isDisabled: boolean;
+  overviewPath: string;
   handler?: () => void;
 };
 
-export default function DetailButtons({ isDisabled, handler }: Props) {
+export default function DetailButtons({ isDisabled, overviewPath }: Props) {
   const router = useRouter();
   const goBack = () => {
-    router.back();
+    router.push(overviewPath);
   };
 
   return (
     <div className="flex flex-row gap-3">
-      <Button size="sm" onClick={goBack}>
+      <Button type="button" size="sm" onClick={goBack}>
         <FiArrowLeft /> List
       </Button>
 

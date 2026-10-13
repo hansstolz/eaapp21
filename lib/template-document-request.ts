@@ -5,7 +5,7 @@ import { findOwnedCostestimate, findOwnedOrder } from "@/lib/order-detail";
 import { errorResponse, parsePositiveId, readJsonObject } from "@/lib/route-utils";
 import { prisma } from "@/lib/prisma";
 
-export async function handleDocumentRequest(request: Request, type: "costestimate" | "invoice" | "creditnote" | "payment" | "reminder") {
+export async function handleDocumentRequest(request: Request, type: "costestimate" | "invoice" | "creditnote" | "payment" | "reminder" | "warranty") {
   const session = await getAuthSession();
   if (!session) return errorResponse("Nicht authentifiziert.", 401);
   const body = await readJsonObject(request);
@@ -20,12 +20,21 @@ export async function handleDocumentRequest(request: Request, type: "costestimat
     return errorResponse("Für Gutschriften ist nur das Gutschrift-Dokument verfügbar.", 400);
   if (type === "reminder" && body.documents !== "document")
     return errorResponse("Für Mahnungen ist nur das Mahnungs-Dokument verfügbar.", 400);
+  if (type === "warranty" && body.documents !== "document")
+    return errorResponse("Für Gewährleistungen ist nur das Warranty-Dokument verfügbar.", 400);
   const document = type === "costestimate"
     ? await findOwnedCostestimate(id, session.userGroup)
     : await findOwnedOrder(id, session.userGroup);
   if (!document) return errorResponse(type === "costestimate" ? "Costestimate nicht gefunden." : "Auftrag nicht gefunden.", 404);
   const order = await findOwnedOrder(type === "costestimate" ? document.uid_order : id, session.userGroup);
   if (!order) return errorResponse("Auftrag nicht gefunden.", 404);
+  if (type === "warranty") {
+    const warranty = await prisma.ea_warranty.findFirst({
+      where: { uid_order: order.uid_order, user_group: session.userGroup, warranty_request: "accept" },
+      select: { uid_warranty: true },
+    });
+    if (!warranty) return errorResponse("Für diesen Auftrag ist keine akzeptierte Gewährleistung vorhanden.", 422);
+  }
   if (type === "creditnote") {
     const issuedInvoice = await prisma.ea_documents.findFirst({
       where: {
@@ -98,7 +107,7 @@ export async function handleDocumentRequest(request: Request, type: "costestimat
             order_no: order.order_no,
             doc_date: now,
             customer: order.customer_name?.slice(0, 100),
-            doc_type: { costestimate: "Costestimate", invoice: "Invoice", creditnote: "Creditnote", payment: "Payments", reminder: "Reminders" }[type],
+            doc_type: { costestimate: "Costestimate", invoice: "Invoice", creditnote: "Creditnote", payment: "Payments", reminder: "Reminders", warranty: "Warranty" }[type],
             user: session.username.slice(0, 45),
             printed: email ? null : now,
             fork: order.fork_model?.slice(0, 100),
@@ -108,7 +117,7 @@ export async function handleDocumentRequest(request: Request, type: "costestimat
             sent_by: email ? "Mail" : "Print",
           })),
         });
-        if (type !== "payment" && type !== "reminder") await advanceOrderStatus(tx, order.uid_order, session.userGroup,
+        if (type !== "payment" && type !== "reminder" && type !== "warranty") await advanceOrderStatus(tx, order.uid_order, session.userGroup,
           type === "invoice" ? OrderStatus.Invoice : type === "creditnote" ? OrderStatus.Credit
             : type === "costestimate" && "costestimate_confirm_check" in document && document.costestimate_confirm_check === 1 ? OrderStatus.CostestimateConf : OrderStatus.Costestimate);
       });

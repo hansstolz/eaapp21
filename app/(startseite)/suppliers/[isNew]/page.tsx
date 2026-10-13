@@ -93,7 +93,7 @@ export default function SupplierDetailPage() {
     <>
       <form onSubmit={handleSubmit(submit)}>
         <LineLR>
-          <DetailButtons isDisabled={!isDirty} handler={() => {}} />
+          <DetailButtons isDisabled={!isDirty} overviewPath="/suppliers" />
         </LineLR>
         <PageColumns className="grid-cols-2">
           <Card>

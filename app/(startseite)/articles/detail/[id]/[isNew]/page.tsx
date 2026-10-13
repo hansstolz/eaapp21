@@ -91,7 +91,7 @@ export default function ArticleDetailPage() {
     <>
       <form onSubmit={handleSubmit(submitArticle)}>
         <LineLR>
-          <DetailButtons isDisabled={!isDirty} handler={() => {}} />
+          <DetailButtons isDisabled={!isDirty} overviewPath="/articles" />
         </LineLR>
         <PageColumns className="grid-cols-2">
           <Card>

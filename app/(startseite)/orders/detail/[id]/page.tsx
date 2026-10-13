@@ -18,8 +18,6 @@ import ConfirmDialog from "@/components/app/confirm-dialog";
 import { toast } from "sonner";
 import { canDeleteOrder } from "@/lib/order-deletion";
 
-const goBack = () => window.history.back();
-
 export default function OrderDetail() {
   const { id } = useParams();
   const router = useRouter();
@@ -52,7 +50,7 @@ export default function OrderDetail() {
     <>
       <LineLR>
         <LineRow>
-          <Button onClick={goBack} size="sm" title="List">
+          <Button type="button" onClick={() => router.push("/orders")} size="sm" title="List">
             <FiList /> List
           </Button>
           <Button disabled={isDeleting || !canDelete} title={canDelete ? "Delete order" : "Löschen ist nur bis Worksheet und ohne Rechnung erlaubt."} onClick={() => setShowDelete(true)} size="sm">

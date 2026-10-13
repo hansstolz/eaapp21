@@ -1,7 +1,7 @@
 "use client";
 import LineLR from "@/components/app/LineLR";
 import LineRow from "@/components/app/LineRow";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import MailButtons from "../../../../MailButtons";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +21,7 @@ import { useAuthStore } from "@/lib/stores/auth-store";
 import { _createMail, _getMailById } from "@/app/api/mails/mails_crud";
 import CustSupSearch from "./CustSupSearch";
 import { toast } from "sonner";
-import useEmailValidator from "@/lib/hooks/useEmailValidator";
+import { MailLetterDocumentDialog } from "@/app/dialogs/orders/OrderDocumentActions";
 
 export type TMailParam = {
   id: number;
@@ -42,8 +42,8 @@ export default function Detail() {
   const { type, id, newRec } = useParams<TMailParamIn>();
   const [sendType, setSendType] = useState<TPrintMail>("print");
   const isNew = newRec === "true";
-  const { validateEmails } = useEmailValidator();
-  const router = useRouter();
+  const [savedId, setSavedId] = useState<number | null>(null);
+  const [documentMail, setDocumentMail] = useState<{ id: number; customer: string; recipient: string; subject: string; text: string } | null>(null);
 
   const form = useForm<
     z.input<typeof mailSchema>,
@@ -74,6 +74,15 @@ export default function Detail() {
       if (!active) return;
       form.reset({
         ...mail,
+        user_group: mail.user_group ?? "",
+        customer: mail.customer ?? "",
+        address: mail.address ?? "",
+        customer_no: mail.customer_no ?? 0,
+        email_address: mail.email_address ?? "",
+        sender_email_address: mail.sender_email_address ?? "",
+        subject: mail.subject ?? "",
+        message_text: mail.message_text ?? "",
+        mail_status: mail.mail_status ?? "mail",
         mail_date: mail.mail_date ? new Date(mail.mail_date) : new Date(),
       } as z.input<typeof mailSchema>);
     });
@@ -81,20 +90,6 @@ export default function Detail() {
       active = false;
     };
   }, [form, id, isNew]);
-
-  const submitPDF = async (data: TMailSchema) => {
-    const { email_address } = data;
-    if (email_address && validateEmails(email_address) === true) {
-      createMail(data, "email");
-    }
-  };
-
-  const submitEMail = async (data: TMailSchema) => {
-    const { email_address } = data;
-    if (email_address && validateEmails(email_address) === true) {
-      createMail(data, "email");
-    }
-  };
 
   const addAddress = (customer: TCustSup) => {
     const address = new MailAddress(customer);
@@ -108,34 +103,29 @@ export default function Detail() {
       email_address: address.getEMail(),
     };
 
-    form.reset(def, { keepDefaultValues: false });
-  };
-
-  const createMail = async (value: TMailSchema, type: TPrintMail) => {
-    const result = await _createMail({
-      value: {
-        ...value,
-        uid_customer: 0,
-        uid_company: 0,
-        mail_status: sendType,
-      },
-      type,
-    });
-
-    if (result === null) {
-      toast.error("Mail could not be saved.");
-      return null;
-    }
-    const message = type === "email" ? "E-Mail saved." : "Letter saved.";
-    toast.success(message);
-    form.reset({}, { keepDefaultValues: true });
-    router.replace("/mails");
-    return result;
+    form.reset({ ...form.getValues(), ...def }, { keepDefaultValues: false });
   };
 
   const onSubmit = async (data: TMailSchema) => {
-    if (sendType === "email") await submitEMail(data);
-    else await submitPDF(data);
+    try {
+      if (sendType === "print" && (!data.customer.trim() || !data.address.trim())) {
+        toast.error("Bitte Name und Adresse für den Brief eingeben.");
+        return;
+      }
+      let mailId = isNew ? savedId : Number(id);
+      if (isNew && (!mailId || form.formState.isDirty)) {
+        const saved = await _createMail({ value: {
+          ...data, uid_customer: 0, uid_company: 0, mail_status: sendType,
+        } });
+        mailId = saved.uid_mail;
+        setSavedId(mailId);
+        form.reset(data);
+      }
+      if (!mailId) throw new Error("Mail konnte nicht gespeichert werden.");
+      setDocumentMail({ id: mailId, customer: data.customer, recipient: data.email_address ?? "", subject: data.subject, text: data.message_text });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Dokumentanfrage fehlgeschlagen.");
+    }
   };
 
   return (
@@ -144,8 +134,8 @@ export default function Detail() {
         <LineLR>
           <LineRow>
             <MailButtons
-              isDisabled={!form.formState.isDirty}
-              setSendType={setSendType}
+              isDisabled={form.formState.isSubmitting}
+              setSendType={(value) => { setSendType(value); form.setValue("mail_status", value); }}
             />
             {type === "search" && (
               <CustSupSearch handleSelection={addAddress} />
@@ -248,6 +238,11 @@ export default function Detail() {
           </div>
         </div>
       </form>
+      {documentMail && <MailLetterDocumentDialog
+        action={sendType} mailId={documentMail.id} customer={documentMail.customer}
+        recipient={documentMail.recipient} onClose={() => setDocumentMail(null)}
+        subject={documentMail.subject} text={documentMail.text}
+      />}
     </>
   );
 }

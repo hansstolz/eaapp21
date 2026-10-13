@@ -92,7 +92,7 @@ export default function CustomerDetailPage() {
     <>
       <form onSubmit={handleSubmit(submit)}>
         <LineLR>
-          <DetailButtons isDisabled={!isDirty} />
+          <DetailButtons isDisabled={!isDirty} overviewPath="/customers" />
         </LineLR>
         <PageColumns className="grid-cols-2">
           <Card>
