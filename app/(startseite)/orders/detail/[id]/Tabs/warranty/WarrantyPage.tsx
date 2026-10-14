@@ -1,5 +1,7 @@
 "use client";
 
+import { useAuthStore } from "@/lib/stores/auth-store";
+
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,6 +39,7 @@ const columns: ColumnDef<EaOrdersPosition>[] = [
 ];
 
 export default function WarrantyPage() {
+  const username = useAuthStore((state) => state.user?.username ?? "");
   const [showAddText, setShowAddText] = useState(false);
   const { order } = useOrderStore();
   const { warranty, getWarrantyByUidOrder } = useWarrantyStore();
@@ -52,12 +55,12 @@ export default function WarrantyPage() {
   useEffect(() => {
     if (!warranty || warranty.uid_order !== order?.uid_order) return;
     reset({
-      worker_warranty: warranty.worker_warranty ?? "",
+      worker_warranty: username || warranty.worker_warranty || "",
       work_warranty_date: warranty.work_warranty_date,
       warranty_reason: warranty.warranty_reason ?? "",
       text_consult_warranty: warranty.text_consult_warranty ?? "",
     });
-  }, [order?.uid_order, reset, warranty]);
+  }, [order?.uid_order, reset, warranty, username]);
 
   const submit = async (data: WarrantyForm) => {
     if (!warranty || warranty.uid_order !== order?.uid_order) return;

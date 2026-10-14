@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/lib/stores/auth-store";
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaStethoscope } from "react-icons/fa";
@@ -29,6 +30,7 @@ import { DropdownItem } from "@/components/app/DropDown";
 import { DiagnoseValues } from "@/app/data_types/diagnosis/diagnose_values";
 
 export default function DiagnosisTab() {
+  const username = useAuthStore((state) => state.user?.username ?? "");
   const { order } = useOrderStore();
   const { diagnosis, values, uses, settings, submitDiagnosis } =
     useDiagnosisStore();
@@ -81,6 +83,7 @@ export default function DiagnosisTab() {
     if (diagnosis) {
       reset({
         ...diagnosis,
+        worker_diagnosis: username || diagnosis.worker_diagnosis || "",
         fork_invoice_date: diagnosis.fork_invoice_date,
         work_diagnosis_date: diagnosis.work_diagnosis_date,
         diagnosis_date: diagnosis.diagnosis_date,
@@ -91,7 +94,7 @@ export default function DiagnosisTab() {
       });
       dirty.current = false;
     }
-  }, [diagnosis, reset, settings, uses]);
+  }, [diagnosis, reset, settings, uses, username]);
 
   useEffect(() => {
     if (!getFieldState("warranty_request").isDirty) {

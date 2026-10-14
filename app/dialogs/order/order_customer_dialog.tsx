@@ -1,9 +1,11 @@
 import {
   _getCustomerById,
+  _createCustomer,
   _updateCustomer,
 } from "@/app/api/customers/customers_crud";
 import {
   customerSchema,
+  customerDefault,
   EaCustomerMails,
 } from "@/app/schemas/customer/customer_schema";
 import { useOrderStore } from "@/app/stores/order/order_store";
@@ -16,7 +18,6 @@ import { FormSelectOption } from "@/components/app/FormSelect";
 import { LabeledInput } from "@/components/app/LabeledInput";
 import MovableDialog from "@/components/app/movable_dialog";
 import Section from "@/components/app/Section";
-import { PageColumns } from "@/components/app/TwoPageColumns";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -26,46 +27,47 @@ import useAutoFocus from "@/lib/hooks/autofocus";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 type Props = {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  mode?: "edit" | "create";
+  onCreated?: (customer: EaCustomerMails) => void;
 };
 
-export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
+const categories: FormSelectOption[] = [
+  { label: "Dealer", value: "Dealer" },
+  { label: "Private", value: "Private" },
+];
+
+export default function OrderCustomerDialog({ isOpen, setIsOpen, mode = "edit", onCreated }: Props) {
   const inputRef = useAutoFocus();
 
   const { order, updateOrder } = useOrderStore();
-  const [categories, setCategories] = useState<FormSelectOption[]>([]);
   const [payments, setPayments] = useState<FormSelectOption[]>([]);
 
   const {
     handleSubmit,
     reset,
     control,
-    watch,
     formState: { isDirty, isSubmitting },
   } = useForm<EaCustomerMails>({
     resolver: zodResolver(customerSchema),
+    defaultValues: mode === "create" ? { ...customerDefault, category_customer: "Private", bank_payment: "COD" } : undefined,
   });
 
-  const vat_no = watch("vat_no");
+  const vat_no = useWatch({ control, name: "vat_no" });
   const showVat = Boolean(vat_no && vat_no.length > 3);
 
   useEffect(() => {
     const getCustomer = async () => {
-      if (order) {
+      if (mode === "edit" && order) {
         const full_customer = await _getCustomerById(order.uid_customer!);
         if (full_customer.customer) reset(full_customer.customer);
       }
     };
-
-    setCategories([
-      { label: "Dealer", value: "Dealer" },
-      { label: "Private", value: "Private" },
-    ]);
 
     const get_payments = async () => {
       const response = await fetch(
@@ -75,11 +77,19 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
     };
     getCustomer();
     get_payments();
-  }, [order, reset]);
+  }, [mode, order, reset]);
 
   const submitCustomer = async (data: EaCustomerMails) => {
-    if (!order) return;
+    if (mode === "edit" && !order) return;
     try {
+      if (mode === "create") {
+        const customer = await _createCustomer(data);
+        onCreated?.(customer);
+        toast.success("Customer created");
+        setIsOpen(false);
+        return;
+      }
+      if (!order) return;
       const customer = await _updateCustomer({ ...data, uid_order: order.uid_order });
       order.updateCustomer(customer as unknown as EaCustomer);
       updateOrder();
@@ -99,19 +109,19 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
   return (
     <>
       <MovableDialog
-        className="min-w-250 max-w-[90vw]"
+        className="min-w-0 w-[95vw] max-w-7xl sm:max-w-7xl"
         open={isOpen}
         setOpen={(open) => { if (!isSubmitting) setIsOpen(open); }}
-        title={"Edit Customer"}
+        title={mode === "create" ? "New Customer" : "Edit Customer"}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="dialog-main bg-white">
-            <PageColumns className="grid-cols-4">
+          <div className="dialog-main max-h-[70vh] overflow-y-auto bg-white">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,16rem),1fr))] gap-4">
               <Card className="">
-                <Section no={1} title={"Name/Company"}>
+                <Section no={1} title={"Name/Company"} className="ml-4 mr-4">
                   <div className="flex flex-col gap-5">
                     <DisabledInput label={"Customer No"}>
-                      {order?.customer_no}
+                      {mode === "create" ? "Assigned on save" : order?.customer_no}
                     </DisabledInput>
                     <FormSelect
                       name={"category_customer"}
@@ -142,7 +152,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
                 </Section>
               </Card>
               <Card>
-                <Section no={2} title={"Adress"}>
+                <Section no={2} title={"Address"} className="ml-4 mr-4">
                   <div className="flex flex-col gap-5">
                     <LabeledInput
                       name={"street_address"}
@@ -180,7 +190,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
                 </Section>
               </Card>
               <Card className="">
-                <Section no={3} title={"Bank"}>
+                <Section no={3} title={"Bank"} className="ml-4 mr-4">
                   <div className="flex flex-col gap-5">
                     <LabeledInput
                       name={"bank_name"}
@@ -226,7 +236,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
                 </Section>
               </Card>
               <Card className="">
-                <Section no={4} title={"Communication"}>
+                <Section no={4} title={"Communication"} className="ml-4 mr-4">
                   <div className="flex flex-col gap-5">
                     <LabeledInput
                       name={"fon"}
@@ -239,6 +249,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
                       label={"mobile"}
                       control={control}
                     />
+                    <LabeledInput name="fax" label="Fax" control={control} />
                     <LabeledInput
                       name={"mail1"}
                       label={"E-Mail"}
@@ -263,7 +274,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
                   </div>
                 </Section>
               </Card>
-            </PageColumns>
+            </div>
           </div>
           <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
             <Button
@@ -275,7 +286,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen }: Props) {
               }}
               title={"Close"}
             >
-              Close
+              {mode === "create" ? "Cancel" : "Close"}
             </Button>
             <Button
               className="mr-8"

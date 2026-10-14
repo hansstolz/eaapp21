@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import AddForkDialog from "./AddForkDialog";
 import TransferForkDialog from "./TransferForkDialog";
+import OrderCustomerDialog from "@/app/dialogs/order/order_customer_dialog";
 import type { NewOrderCustomer, NewOrderFork } from "./types";
 
 const customerColumns: ColumnDef<NewOrderCustomer>[] = [
@@ -38,6 +39,7 @@ export default function NewOrderClient({ initialCustomers }: { initialCustomers:
   const [customerQuery, setCustomerQuery] = useState("");
   const [forkQuery, setForkQuery] = useState("");
   const [showForkDialog, setShowForkDialog] = useState(false);
+  const [showCustomerDialog, setShowCustomerDialog] = useState(false);
   const [showTransferDialog, setShowTransferDialog] = useState(false);
   const [creating, setCreating] = useState(false);
   const searchTimer = useRef<number | null>(null);
@@ -95,10 +97,11 @@ export default function NewOrderClient({ initialCustomers }: { initialCustomers:
   return (
     <div className="grid gap-4">
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border bg-card p-4">
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
           {[
             { key: "customer", label: customer ? `${customer.customer_no} ${customer.cal_name_list}` : "Customer", active: Boolean(customer) },
             { key: "fork", label: fork ? `${fork.fork_no} ${fork.fork_model}` : "Fork", active: Boolean(fork) },
+            ...(fork?.client_name?.trim() ? [{ key: "client", label: `Client: ${fork.client_name.trim()}`, active: true }] : []),
           ].map((step, index) => (
               <div key={step.key} className="flex min-w-0 items-center gap-2">
                 {index > 0 && <span className="text-muted-foreground">›</span>}
@@ -114,7 +117,7 @@ export default function NewOrderClient({ initialCustomers }: { initialCustomers:
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <Card className="p-4">
-          <Section no={1} title="Customer" actions={<Button size="sm" type="button" onClick={() => router.push("/customers/true")}><FiPlus /> New Customer</Button>}>
+          <Section no={1} title="Customer" actions={<Button size="sm" type="button" onClick={() => setShowCustomerDialog(true)}><FiPlus /> New Customer</Button>}>
             <div className="grid gap-4">
               <Searchbar value={customerQuery} setQuery={updateCustomerQuery} />
               <div className="h-[600px] overflow-auto">
@@ -134,6 +137,18 @@ export default function NewOrderClient({ initialCustomers }: { initialCustomers:
           </Section>
         </Card>
       </div>
+      {showCustomerDialog && <OrderCustomerDialog isOpen setIsOpen={setShowCustomerDialog} mode="create" onCreated={(created) => {
+        if (!created.uid_customer) return;
+        if (searchTimer.current !== null) window.clearTimeout(searchTimer.current);
+        searchRequest.current?.abort();
+        const selected: NewOrderCustomer = {
+          uid_customer: created.uid_customer, customer_no: created.customer_no ?? null,
+          cal_name_list: created.cal_name_list ?? "", street_address: created.street_address ?? "",
+          city: created.city ?? "", category_customer: created.category_customer,
+        };
+        setCustomers((items) => [selected, ...items.filter(item => item.uid_customer !== selected.uid_customer)]);
+        setCustomer(selected); setFork(null); setForks([]); setCustomerQuery(""); setForkQuery("");
+      }} />}
       {customer && <AddForkDialog open={showForkDialog} setOpen={setShowForkDialog} customer={customer} onCreated={(created) => { setForks((items) => [created, ...items]); setFork(created); }} />}
       {customer && <TransferForkDialog open={showTransferDialog} setOpen={setShowTransferDialog} customer={customer} onTransferred={(transferred) => { setForks((items) => [transferred, ...items.filter((item) => item.uid_fork !== transferred.uid_fork)]); setFork(transferred); }} />}
     </div>

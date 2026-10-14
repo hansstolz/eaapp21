@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/lib/stores/auth-store";
 import { useCallback, useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -11,6 +12,7 @@ import { useWorksheetStore } from "@/app/stores/worksheet/worksheet_store";
 import { worksheetSchema, type WorksheetForm } from "./WorksheetSchema";
 
 export default function WorksheetController() {
+  const username = useAuthStore((state) => state.user?.username ?? "");
   const { order } = useOrderStore();
   const { diagnosis, uses, settings } = useDiagnosisStore();
   const { warranty } = useWarrantyStore();
@@ -34,8 +36,8 @@ export default function WorksheetController() {
   }, [isDirty]);
 
   useEffect(() => {
-    if (worksheet) reset(worksheet);
-  }, [reset, worksheet]);
+    if (worksheet) reset({ ...worksheet, worker_worksheet: username || worksheet.worker_worksheet || "" });
+  }, [reset, worksheet, username]);
 
   const submitHandler = useCallback(
     async (data: WorksheetForm) => saveWorksheet(data),

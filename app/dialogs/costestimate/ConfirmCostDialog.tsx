@@ -16,6 +16,7 @@ import { useAuthStore } from "@/lib/stores/auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type Props = {
   isOpen: boolean;
@@ -40,7 +41,7 @@ export default function ConfirmCostDialog({ isOpen, setIsOpen }: Props) {
     reset,
     control,
     setValue,
-    formState: { isDirty },
+    formState: { isSubmitting },
   } = useForm<EaConfirmCost>({
     resolver: zodResolver(confirmSchema),
   });
@@ -48,12 +49,10 @@ export default function ConfirmCostDialog({ isOpen, setIsOpen }: Props) {
   useEffect(() => {
     if (costestimate) {
       const alreadyConfirmed = costestimate.costestimate_confirm_check === 1;
-      const worker = costestimate.worker_costestimate?.trim() || user?.username || "Unknown";
       const conf: EaConfirmCost = {
-        confirmed_how: costestimate.confirmed_how?.toString() ?? null,
-        confirmed_by: alreadyConfirmed ? costestimate.confirmed_by || worker : worker,
-        costestimate_confirm_check:
-          costestimate.costestimate_confirm_check?.toString() ?? null,
+        confirmed_how: alreadyConfirmed ? costestimate.confirmed_how?.toString() ?? "0" : "0",
+        confirmed_by: user?.username ?? "",
+        costestimate_confirm_check: "1",
         confirmed_when: alreadyConfirmed && costestimate.confirmed_when
           ? costestimate.confirmed_when
           : new Date().toISOString(),
@@ -62,15 +61,19 @@ export default function ConfirmCostDialog({ isOpen, setIsOpen }: Props) {
     }
   }, [costestimate, isOpen, reset, user?.username]);
 
-  const onSubmit = (data: EaConfirmCost) => {
-    void updateCostestimate(data);
-    setIsOpen(false);
+  const onSubmit = async (data: EaConfirmCost) => {
+    try {
+      await updateCostestimate(data);
+      setIsOpen(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Costestimate konnte nicht bestätigt werden.");
+    }
   };
   return (
     <MovableDialog
       className="min-w-1/4"
       open={isOpen}
-      setOpen={setIsOpen}
+      setOpen={(open) => { if (!isSubmitting) setIsOpen(open); }}
       title={`Confirm Costestimate ${costestimate?.costestimate_no}`}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -131,6 +134,7 @@ export default function ConfirmCostDialog({ isOpen, setIsOpen }: Props) {
           <div className="flex gap-12 justify-end mr-4">
             <Button
               type="button"
+              disabled={isSubmitting}
               size="sm"
               onClick={() => {
                 setIsOpen(false);
@@ -138,8 +142,8 @@ export default function ConfirmCostDialog({ isOpen, setIsOpen }: Props) {
             >
               Close
             </Button>
-            <Button disabled={!isDirty} type="submit" size="sm" title={"Save"}>
-              Save
+            <Button disabled={!costestimate || isSubmitting} type="submit" size="sm" title={"Save"}>
+              {isSubmitting ? "Saving…" : "Save"}
             </Button>
           </div>
         </DialogFooter>

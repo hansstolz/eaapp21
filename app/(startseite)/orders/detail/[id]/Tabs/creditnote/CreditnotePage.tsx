@@ -1,5 +1,7 @@
 "use client";
 
+import { useAuthStore } from "@/lib/stores/auth-store";
+
 import { useEffect, useState } from "react";
 import { FaFileInvoice } from "react-icons/fa";
 import { useForm } from "react-hook-form";
@@ -19,6 +21,7 @@ import AddTextDialog from "@/app/dialogs/texts/AddTextDialog";
 import OrderTextList from "@/app/dialogs/texts/OrderTextList";
 
 export default function CreditnotePage() {
+  const username = useAuthStore((state) => state.user?.username ?? "");
   const { order } = useOrderStore();
   const { positions, texts, isConfirmed, getConfirmedCostestimate, savePosition, addText, deleteText } = useCostestimateStore();
   const { control, handleSubmit, reset, formState: { isDirty } } = useForm<CreditnoteForm>();
@@ -32,12 +35,12 @@ export default function CreditnotePage() {
     if (!order) return;
     void _getCreditnote(order.uid_order).then((creditnote) => {
       reset({
-        worker_creditnote: creditnote?.worker_creditnote ?? "",
+        worker_creditnote: username || creditnote?.worker_creditnote || "",
         creditnote_date: creditnote?.creditnote_date ?? new Date().toISOString(),
       });
       setLoaded(true);
     });
-  }, [order, reset]);
+  }, [order, reset, username]);
 
   const submit = async (data: CreditnoteForm) => {
     if (!order) return;

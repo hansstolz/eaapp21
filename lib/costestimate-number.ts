@@ -8,6 +8,10 @@ export async function nextOrderNumber(tx: Prisma.TransactionClient, userGroup: s
   return reserveNumber(tx, `ea_orders_${userGroup}`, "Auftrag");
 }
 
+export async function nextCustomerNumber(tx: Prisma.TransactionClient): Promise<number> {
+  return reserveNumber(tx, "ea_customer", "Customer");
+}
+
 async function reserveNumber(tx: Prisma.TransactionClient, sequenceName: string, label: string): Promise<number> {
   // MyISAM does not roll back: reserve the current number in one atomic update.
   // Read it on the same transaction connection before any INSERT changes it.

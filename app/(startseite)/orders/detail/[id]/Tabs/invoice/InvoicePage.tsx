@@ -6,7 +6,7 @@ import { FiPlus } from "react-icons/fi";
 import SubSection from "@/components/app/SubSection";
 import HLine from "@/components/app/hline";
 import { InputDate } from "@/components/app/inputdate";
-import { LabeledInput } from "@/components/app/LabeledInput";
+import { WorksheetInput } from "../worksheet/WorksheetFields";
 import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { Button } from "@/components/ui/button";
 import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
@@ -21,6 +21,8 @@ export default function InvoicePage() {
   const { addText, deleteText } = useCostestimateStore();
   const {
     control,
+    register,
+    errors,
     handleSubmit,
     isDirty,
     positions,
@@ -49,9 +51,11 @@ export default function InvoicePage() {
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
       <SubSection icon={FaFileInvoiceDollar} title="Invoice" actions={actions}>
-        <div className="flex justify-end gap-3">
-          <LabeledInput name="worker_invoice" label="Worker" control={control} />
-          <InputDate name="invoice_date" control={control} label="Invoice date" className="w-44" classLabel="text-xs" />
+        <div className="flex flex-row justify-between">
+          <div className="ml-auto flex flex-row gap-3">
+            <WorksheetInput register={register("worker_invoice")} label="Worker" error={errors.worker_invoice?.message} />
+            <InputDate name="invoice_date" control={control} label="Invoice date" className="w-1/2" />
+          </div>
         </div>
         <HLine />
         <div className="max-h-60 overflow-auto">

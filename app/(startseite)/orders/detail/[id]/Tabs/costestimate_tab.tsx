@@ -1,5 +1,7 @@
 "use client";
 
+import { useAuthStore } from "@/lib/stores/auth-store";
+
 import { useCostestimateStore } from "@/app/stores/costestimate/costestimate_store";
 import HLine from "@/components/app/hline";
 import { InputDate } from "@/components/app/inputdate";
@@ -20,6 +22,7 @@ import OrderTextList from "@/app/dialogs/texts/OrderTextList";
 import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
 
 export default function CostestimateTab() {
+  const username = useAuthStore((state) => state.user?.username ?? "");
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showAddText, setShowAddText] = useState(false);
@@ -46,8 +49,8 @@ export default function CostestimateTab() {
   } = useForm<EaCostestimate>();
 
   useEffect(() => {
-    if (costestimate) reset(costestimate);
-  }, [costestimate, reset]);
+    if (costestimate) reset({ ...costestimate, worker_costestimate: username || costestimate.worker_costestimate || "" });
+  }, [costestimate, reset, username]);
 
   useEffect(() => {
     if (order) void getCostestimatesNumbers(order.uid_order);

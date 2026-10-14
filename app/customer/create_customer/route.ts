@@ -3,17 +3,22 @@ import { calculatedCustomerFields, CUSTOMER_FIELDS, mailParts } from "@/lib/cust
 import { getAuthSession } from "@/lib/auth-session";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, pickDefinedFields, readJsonObject } from "@/lib/route-utils";
+import { nextCustomerNumber } from "@/lib/costestimate-number";
+import { customerDefault, customerSchema } from "@/app/schemas/customer/customer_schema";
 
 export async function POST(request: Request) {
   const session = await getAuthSession();
   if (!session) return errorResponse("Nicht authentifiziert.", 401);
   const body = await readJsonObject(request);
   if (!body) return errorResponse("Ungültige Kundendaten.", 400);
+  const validation = customerSchema.safeParse({ ...customerDefault, ...body, category_customer: body.category_customer ?? "Private" });
+  if (!validation.success) return errorResponse(validation.error.issues[0]?.message ?? "Ungültige Kundendaten.", 400);
   const data = pickDefinedFields<ea_customerCreateInput>(body, CUSTOMER_FIELDS);
   Object.assign(data, calculatedCustomerFields(body));
   data.user_group = session.userGroup;
-  const customer = await prisma.ea_customer.create({
-    data: data as ea_customerCreateInput,
+  const customer = await prisma.$transaction(async tx => {
+    data.customer_no = await nextCustomerNumber(tx);
+    return tx.ea_customer.create({ data: data as ea_customerCreateInput });
   });
   return Response.json({ ...customer, ...mailParts(customer.email) }, { status: 201 });
 }

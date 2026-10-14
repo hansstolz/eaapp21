@@ -24,6 +24,7 @@ type FormSelectProps = {
   options: FormSelectOption[];
   placeholder?: string;
   disabled?: boolean;
+  onValueChange?: (value: string) => void;
 };
 
 export function FormSelect({
@@ -33,6 +34,7 @@ export function FormSelect({
   options,
   placeholder,
   disabled,
+  onValueChange,
 }: FormSelectProps) {
   return (
     <Controller
@@ -45,7 +47,10 @@ export function FormSelect({
           </Label>
           <Select
             value={field.value ?? ""}
-            onValueChange={field.onChange}
+            onValueChange={(value) => {
+              field.onChange(value);
+              onValueChange?.(value ?? "");
+            }}
             disabled={disabled}
           >
             <SelectTrigger
