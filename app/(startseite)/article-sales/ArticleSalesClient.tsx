@@ -1,5 +1,7 @@
 "use client";
 
+import OrderCustomerDialog from "@/app/dialogs/order/order_customer_dialog";
+
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ColumnDef, Row } from "@tanstack/react-table";
@@ -26,6 +28,7 @@ export default function ArticleSalesClient({ initialCustomers }: { initialCustom
   const worker = useAuthStore((state) => state.user?.username ?? "");
   const [customers, setCustomers] = useState(initialCustomers);
   const [customer, setCustomer] = useState<NewOrderCustomer | null>(null);
+  const [showCustomerDialog, setShowCustomerDialog] = useState(false);
   const [query, setQuery] = useState("");
   const [creating, setCreating] = useState(false);
   const searchTimer = useRef<number | null>(null);
@@ -79,7 +82,7 @@ export default function ArticleSalesClient({ initialCustomers }: { initialCustom
       </div>
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <Card className="p-4">
-          <Section no={1} title="Customer" actions={<Button size="sm" type="button" onClick={() => router.push("/customers/true")}><FiPlus /> New Customer</Button>}>
+          <Section no={1} title="Customer" actions={<Button size="sm" type="button" onClick={() => setShowCustomerDialog(true)}><FiPlus /> New Customer</Button>}>
             <div className="grid gap-4">
               <Searchbar value={query} setQuery={updateQuery} />
               <div className="h-[600px] overflow-auto">
@@ -89,6 +92,18 @@ export default function ArticleSalesClient({ initialCustomers }: { initialCustom
           </Section>
         </Card>
       </div>
+      {showCustomerDialog && <OrderCustomerDialog isOpen setIsOpen={setShowCustomerDialog} mode="create" onCreated={(created) => {
+        if (!created.uid_customer) return;
+        if (searchTimer.current !== null) window.clearTimeout(searchTimer.current);
+        searchRequest.current?.abort();
+        const selected: NewOrderCustomer = {
+          uid_customer: created.uid_customer, customer_no: created.customer_no ?? null,
+          cal_name_list: created.cal_name_list ?? "", street_address: created.street_address ?? "",
+          city: created.city ?? "", category_customer: created.category_customer,
+        };
+        setCustomers((items) => [selected, ...items.filter(item => item.uid_customer !== selected.uid_customer)]);
+        setCustomer(selected); setQuery("");
+      }} />}
     </div>
   );
 }

@@ -68,7 +68,7 @@ export default function CreditnotePage() {
         </div>
         <HLine />
         <div className="max-h-60 overflow-auto">
-          <DataTable columns={columns} data={creditPositions} columnVisibility={{ customer_category_no: false }} />
+          <DataTable fixedColumnLayout tableClassName="min-w-[640px]" columns={columns} data={creditPositions} columnVisibility={{ customer_category_no: false }} />
         </div>
         <HLine />
         <div className="grid gap-2">

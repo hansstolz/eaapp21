@@ -40,6 +40,7 @@ interface DataTableProps<TData> {
   updateData?: (rowIndex: number, columnId: string, value: unknown) => void;
   showHeader?: boolean;
   enableColumnResizing?: boolean;
+  fixedColumnLayout?: boolean;
   columnVisibility?: Record<string, boolean>;
 
   /** optional: initial sorting */
@@ -58,6 +59,7 @@ export function DataTable<TData>({
   initialSorting,
   showHeader = true,
   enableColumnResizing = false,
+  fixedColumnLayout = false,
 }: DataTableProps<TData>) {
   const [activeCell, setActiveCell] = useState<ActiveCell | null>(null);
   const prevDataRef = useRef(data);
@@ -139,13 +141,13 @@ export function DataTable<TData>({
   return (
     <div ref={containerRef} className="min-w-0 border rounded-lg">
       <Table
-        className={cn(tableClassName, enableColumnResizing && "table-fixed")}
+        className={cn(tableClassName, (enableColumnResizing || fixedColumnLayout) && "table-fixed")}
         style={enableColumnResizing ? { width: table.getTotalSize() } : undefined}
       >
-        {enableColumnResizing && (
+        {(enableColumnResizing || fixedColumnLayout) && (
           <colgroup>
             {table.getVisibleLeafColumns().map((column) => (
-              <col key={column.id} style={{ width: column.getSize() }} />
+              <col key={column.id} style={{ width: enableColumnResizing ? column.getSize() : column.columnDef.size }} />
             ))}
           </colgroup>
         )}
@@ -169,7 +171,7 @@ export function DataTable<TData>({
                             : "none"
                       }
                       style={{
-                        width: header.getSize(),
+                        width: fixedColumnLayout ? header.column.columnDef.size : header.getSize(),
                       }}
                     >
                       <div className={enableColumnResizing ? "relative flex h-10 items-center px-2" : undefined} style={enableColumnResizing ? { position: "relative", height: 40 } : undefined}>
@@ -179,6 +181,7 @@ export function DataTable<TData>({
                             className={[
                               "w-full overflow-hidden text-left inline-flex items-center gap-2",
                               enableColumnResizing ? "pr-2" : "",
+                              fixedColumnLayout && header.column.columnDef.meta?.align === "right" ? "justify-end text-right" : "",
                               canSort
                                 ? "cursor-pointer select-none"
                                 : "cursor-default",
@@ -281,9 +284,9 @@ export function DataTable<TData>({
                         ? "ignore"
                         : undefined
                     }
-                    className={cn(cell.column.columnDef.meta?.className, enableColumnResizing && "overflow-hidden text-ellipsis [&_*]:max-w-full [&_*]:overflow-hidden [&_*]:text-ellipsis")}
+                    className={cn(cell.column.columnDef.meta?.className, (enableColumnResizing || fixedColumnLayout) && "overflow-hidden text-ellipsis [&_*]:max-w-full [&_*]:overflow-hidden [&_*]:text-ellipsis")}
                     style={{
-                      width: cell.column.getSize(),
+                      width: fixedColumnLayout ? cell.column.columnDef.size : cell.column.getSize(),
                       textAlign: cell.column.columnDef.meta?.align,
                     }}
                     onClick={() =>

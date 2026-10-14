@@ -6,6 +6,17 @@ import { getAuthSession } from "@/lib/auth-session";
 import { getSalesStatistics, getStatisticPeriod } from "@/lib/statistics-data";
 import { redirect } from "next/navigation";
 
+const forkColumns = [
+  { id: "count", title: "Count" },
+  { id: "forkModel", title: "Fork Model" },
+  { id: "invoices", title: "Invoice" },
+  { id: "warranties", title: "Warranty" },
+  { id: "warrantyAndInvoice", title: "W+I" },
+  { id: "invoiceRevenue", title: "Dealer+Private" },
+  { id: "warrantyRevenue", title: "Warranty" },
+  { id: "revenue", title: "Sum" },
+];
+
 export default async function Page({ searchParams }: { searchParams: Promise<{ year?: string; startMonth?: string; endMonth?: string }> }) {
   const session = await getAuthSession();
   if (!session) redirect("/login");
@@ -25,7 +36,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ y
 
       <Card className="h-50"><CardContent><Section no={4} title="Warranties(netto)"><div className="grid grid-cols-2"><div><Metric label="Warranties" value={String(result.warranty.count)} /><Metric label="Warranties Sum" value={currency(result.warranty.sum)} /></div><div><Metric label="Labor" value={currency(result.warranty.labour)} /><Metric label="Material" value={currency(result.warranty.material)} /><Metric label="Freight" value={currency(result.warranty.freight)} /></div></div></Section></CardContent></Card>
 
-      <Card><CardContent><Section no={4} title="Forks"><LineLR><div className="flex gap-6"><span>Forks total</span><strong>{result.forks.reduce((sum, fork) => sum + fork.count, 0)}</strong></div><div className="mr-4 flex gap-6"><span>Warranty <strong>{currency(result.warranty.sum)}</strong></span><span>Revenue <strong>{currency(invoiceTotal)}</strong></span></div></LineLR><div className="overflow-auto rounded-lg border"><table className="w-full text-sm"><thead className="bg-muted"><tr>{["Count", "Fork Model", "Invoice", "Warranty", "W+I", "Dealer+Private", "Warranty", "Sum"].map((title) => <th key={title} className="px-3 py-2 text-left">{title}</th>)}</tr></thead><tbody>{result.forks.map((fork) => <tr key={fork.forkModel} className="border-t"><td className="px-3 py-2 text-right">{fork.count}</td><td className="px-3 py-2">{fork.forkModel}</td><td className="px-3 py-2 text-right">{fork.invoices}</td><td className="px-3 py-2 text-right">{fork.warranties}</td><td className="px-3 py-2 text-right">0</td><td className="px-3 py-2 text-right">{currency(fork.invoiceRevenue)}</td><td className="px-3 py-2 text-right">{currency(fork.warrantyRevenue)}</td><td className="px-3 py-2 text-right">{currency(fork.revenue)}</td></tr>)}</tbody></table></div></Section></CardContent></Card>
+      <Card><CardContent><Section no={4} title="Forks"><LineLR><div className="flex gap-6"><span>Forks total</span><strong>{result.forks.reduce((sum, fork) => sum + fork.count, 0)}</strong></div><div className="mr-4 flex gap-6"><span>Warranty <strong>{currency(result.warranty.sum)}</strong></span><span>Revenue <strong>{currency(invoiceTotal)}</strong></span></div></LineLR><div className="overflow-auto rounded-lg border"><table className="w-full text-sm"><thead className="bg-muted"><tr>{forkColumns.map((column) => <th key={column.id} className="px-3 py-2 text-left">{column.title}</th>)}</tr></thead><tbody>{result.forks.map((fork) => <tr key={fork.forkModel} className="border-t"><td className="px-3 py-2 text-right">{fork.count}</td><td className="px-3 py-2">{fork.forkModel}</td><td className="px-3 py-2 text-right">{fork.invoices}</td><td className="px-3 py-2 text-right">{fork.warranties}</td><td className="px-3 py-2 text-right">0</td><td className="px-3 py-2 text-right">{currency(fork.invoiceRevenue)}</td><td className="px-3 py-2 text-right">{currency(fork.warrantyRevenue)}</td><td className="px-3 py-2 text-right">{currency(fork.revenue)}</td></tr>)}</tbody></table></div></Section></CardContent></Card>
 
       <Card><CardContent><Section no={5} title="Reference Forks"><LineLR><div className="flex gap-6"><span>Forks total</span><strong>{result.models.reduce((sum, row) => sum + row.count, 0)}</strong></div><div /></LineLR><div className="grid grid-cols-2"><CountTable header="Fork Category" rows={result.categories} /><CountTable header="Fork Model" rows={result.models} /></div></Section></CardContent></Card>
     </div>

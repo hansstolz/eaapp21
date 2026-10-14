@@ -19,8 +19,8 @@ export default function InvoicePositionsColumns(
   };
 
   return [
-    { accessorKey: "article_no", header: "No" },
-    { accessorKey: "articlecode", header: "Code" },
+    { accessorKey: "article_no", size: 56, header: "No" },
+    { accessorKey: "articlecode", size: 120, header: "Code" },
     {
       accessorKey: "articlecharacter",
       header: "Character",
@@ -31,13 +31,23 @@ export default function InvoicePositionsColumns(
     },
     {
       id: "price",
+      size: 112,
+      meta: { align: "right" },
       header: "Price",
       cell: ({ row }) => <div className="text-right">{currency.format(price(row.original))}</div>,
     },
-    { accessorKey: "quantity", header: "Quantity" },
+    {
+      accessorKey: "quantity",
+      size: 88,
+      header: "Quantity",
+      cell: ({ row }) => <div className="text-right">{row.original.quantity}</div>,
+      meta: { align: "right" },
+    },
     {
       accessorKey: "article_creditnote_int",
       header: "CN",
+      size: 40,
+      enableSorting: false,
       cell: ({ row }) => (
         <Checkbox
           checked={row.original.article_creditnote_int === 1}

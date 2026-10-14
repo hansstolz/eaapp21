@@ -24,6 +24,8 @@ import { useWarrantyStore } from "@/app/stores/warranty/warranty_store";
 
 import { TabNamesOrder } from "../../order-tabs";
 
+const paymentCurrency = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
+
 export default function OrderTabView({ activeTab, onTabChange }: {
   activeTab: TabNamesOrder;
   onTabChange: (tab: TabNamesOrder) => void;
@@ -32,7 +34,10 @@ export default function OrderTabView({ activeTab, onTabChange }: {
   const { warranty } = useWarrantyStore();
   const warrantyAccepted = warranty?.uid_order === order?.uid_order
     && warranty?.warranty_request === "accept";
-  const { getPayments, paymentCount } = usePaymentStore();
+  const { getPayments, payments } = usePaymentStore();
+  const paid = payments.filter(payment => payment.uid_order === order?.uid_order)
+    .reduce((sum, payment) => sum + Math.round(Number(payment.payment_amount ?? 0) * 100), 0) / 100;
+  const paidLabel = paymentCurrency.format(paid);
 
   useEffect(() => {
     if (order) {
@@ -75,7 +80,7 @@ export default function OrderTabView({ activeTab, onTabChange }: {
       items.push({ label: TabNamesOrder.Warranty, value: TabNamesOrder.Warranty, icon: FaFileInvoice });
     }
     items.push({
-      label: `Payments[${paymentCount}]`,
+      label: `Payments[${paidLabel}]`,
       value: TabNamesOrder.Payments,
       icon: FaEuroSign,
     });

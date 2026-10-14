@@ -33,6 +33,7 @@ export default function PositionsColumns() {
   const columns: ColumnDef<EaOrdersPositions>[] = [
       {
         accessorKey: "article_no",
+        size: 56,
         header: () => "No",
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id,
@@ -45,6 +46,7 @@ export default function PositionsColumns() {
 
       {
         accessorKey: "articlecode",
+        size: 120,
         header: () => "Code",
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id,
@@ -60,6 +62,7 @@ export default function PositionsColumns() {
 
       {
         accessorKey: "price_single_categ2",
+        size: 112,
         header: () => "Private",
         cell: (info) => showPrice(info, CustomerCategory.private),
         footer: (props) => props.column.id,
@@ -69,6 +72,7 @@ export default function PositionsColumns() {
       },
       {
         accessorKey: "price_single_categ1",
+        size: 112,
         header: () => "dealer",
         cell: (info) => showPrice(info, CustomerCategory.dealer),
         footer: (props) => props.column.id,
@@ -78,6 +82,7 @@ export default function PositionsColumns() {
       },
       {
         accessorKey: "price_single_categ3",
+        size: 112,
         header: () => "Warranty",
         cell: (info) => showPrice(info, CustomerCategory.warranty),
         footer: (props) => props.column.id,
@@ -87,6 +92,7 @@ export default function PositionsColumns() {
       },
       {
         accessorKey: "quantity",
+        size: 96,
         header: () => "Quantity",
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id,
@@ -97,6 +103,7 @@ export default function PositionsColumns() {
 
       {
         accessorKey: "uid_orders_position",
+        size: 48,
         header: () => "Del",
         footer: (props) => props.column.id,
         cell: () => (

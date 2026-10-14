@@ -50,6 +50,8 @@ export default function OrderPositions() {
       </Button>
       <div className="h-60 overflow-scroll">
         <DataTable
+          fixedColumnLayout
+          tableClassName="min-w-[800px]"
           onDoubleClick={onPositionClick}
           columns={columns}
           data={positions}

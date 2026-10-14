@@ -13,6 +13,7 @@ export async function GET(
   const orders = await prisma.ea_orders.findMany({
     where: { uid_customer: uidCustomer, user_group: session.userGroup },
     select: {
+      uid_order: true,
       invoice_date: true, uid_customer: true, order_no: true,
       fork_no: true, fork_model: true,
     },

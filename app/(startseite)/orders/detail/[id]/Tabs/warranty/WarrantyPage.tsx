@@ -28,14 +28,14 @@ import OrderTextList from "@/app/dialogs/texts/OrderTextList";
 
 const currency = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 const columns: ColumnDef<EaOrdersPosition>[] = [
-  { accessorKey: "article_no", header: "No" },
-  { accessorKey: "articlecode", header: "Code" },
+  { accessorKey: "article_no", size: 56, header: "No" },
+  { accessorKey: "articlecode", size: 120, header: "Code" },
   { accessorKey: "articlecharacter", header: "Character", cell: ({ row }) => {
     const character = row.original.articlecharacter ?? "";
     return character.length > 50 ? `${character.slice(0, 49)}...` : character;
   } },
-  { accessorKey: "price_single_categ3", header: "Price", cell: ({ row }) => currency.format(row.original.price_single_categ3 ?? 0), meta: { align: "right" } },
-  { accessorKey: "quantity", header: "Quantity", meta: { align: "right" } },
+  { accessorKey: "price_single_categ3", size: 112, header: "Price", cell: ({ row }) => currency.format(row.original.price_single_categ3 ?? 0), meta: { align: "right" } },
+  { accessorKey: "quantity", size: 96, header: "Quantity", meta: { align: "right" } },
 ];
 
 export default function WarrantyPage() {
@@ -101,7 +101,7 @@ export default function WarrantyPage() {
         </div>
         <HLine />
         <div className="max-h-60 overflow-auto">
-          <DataTable columns={columns} data={warrantyPositions} />
+          <DataTable fixedColumnLayout tableClassName="min-w-[600px]" columns={columns} data={warrantyPositions} />
         </div>
         <div className="mt-6 flex flex-col gap-3">
           <LabeledInput name="warranty_reason" label="Warranty reason" type="textarea" rows={3} control={control} />

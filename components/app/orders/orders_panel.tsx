@@ -4,8 +4,10 @@ import { useCustomerBoundStore } from "@/app/stores/customer/CustomerStore";
 import React, { useEffect, useState } from "react";
 import { DataTable } from "../tanstack_table/data_table";
 import { _getOrdersByCustomer } from "@/app/api/customers/customers_crud";
+import { useRouter } from "next/navigation";
 
 export default function OrdersPanel() {
+  const router = useRouter();
   const columns = CustomerOrdersColumns();
   const [orders, setOrders] = useState<EaOrdersCustomer[]>([]);
   const uid_customer = useCustomerBoundStore(
@@ -20,5 +22,5 @@ export default function OrdersPanel() {
     };
     getOrders();
   }, [uid_customer]);
-  return <DataTable columns={columns} data={orders} />;
+  return <DataTable columns={columns} data={orders} onDoubleClick={(row) => router.push(`/orders/detail/${row.original.uid_order}`)} />;
 }

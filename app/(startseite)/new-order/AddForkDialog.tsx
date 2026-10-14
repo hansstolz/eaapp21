@@ -27,6 +27,7 @@ type References = {
   ref_forks: FormSelectOption[];
   ref_categories: FormSelectOption[];
   ref_colors: FormSelectOption[];
+  ref_wheelsizes: FormSelectOption[];
 };
 
 export default function AddForkDialog({
@@ -42,6 +43,7 @@ export default function AddForkDialog({
 }) {
   const [refs, setRefs] = useState<References | null>(null);
   const modelId = useId();
+  const wheelsizeId = useId();
   const form = useForm<Form>({
     resolver: zodResolver(schema),
     defaultValues: { uid_ref_fork: "", fork_model: "", category_fork: "", colour: "", wheelsize: "", client_name: "" },
@@ -90,7 +92,17 @@ export default function AddForkDialog({
           )} />
           <FormSelect label="Category" name="category_fork" control={form.control} options={refs?.ref_categories ?? []} />
           <FormSelect label="Color" name="colour" control={form.control} options={refs?.ref_colors ?? []} />
-          <LabeledInput name="wheelsize" label="Wheelsize" control={form.control} />
+          <Controller name="wheelsize" control={form.control} render={({ field, fieldState }) => (
+            <Field className="gap-2" data-invalid={fieldState.invalid}>
+              <Label htmlFor={wheelsizeId}>WHEELSIZE</Label>
+              <Input {...field} id={wheelsizeId} list={`${wheelsizeId}-references`} autoComplete="off"
+                placeholder="Wheelsize auswählen oder eingeben" aria-invalid={fieldState.invalid} />
+              <datalist id={`${wheelsizeId}-references`}>
+                {refs?.ref_wheelsizes?.map(reference => <option key={reference.value} value={reference.value} />)}
+              </datalist>
+              <FieldError errors={[fieldState.error]} />
+            </Field>
+          )} />
           <LabeledInput name="client_name" label="Client Name" control={form.control} />
           <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>Close</Button>

@@ -1,4 +1,5 @@
 export type EaOrdersCustomer = {
+  uid_order: number;
   invoice_date: Date | null;
   uid_customer: number | null;
   order_no: number | null;

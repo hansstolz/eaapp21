@@ -60,6 +60,8 @@ export default function InvoicePage() {
         <HLine />
         <div className="max-h-60 overflow-auto">
           <DataTable
+            fixedColumnLayout
+            tableClassName="min-w-[640px]"
             columns={columns}
             data={positions}
             columnVisibility={{ customer_category_no: false }}
