@@ -1,8 +1,9 @@
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
-import { PrismaClient } from "@/generated/prisma/client";
+import { Prisma, PrismaClient } from "@/generated/prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
+  prismaSchema?: string;
 };
 
 function createPrismaClient(): PrismaClient {
@@ -20,8 +21,22 @@ function createPrismaClient(): PrismaClient {
   return new PrismaClient({ adapter });
 }
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+// Fast Refresh preserves globalThis even after regenerating the Prisma client.
+// Reuse a connection pool only when its generated models still match.
+const schema = JSON.stringify(Prisma.ModelName);
+const cachedPrisma = globalForPrisma.prismaSchema === schema
+  ? globalForPrisma.prisma
+  : undefined;
+
+export const prisma = cachedPrisma ?? createPrismaClient();
+
+if (globalForPrisma.prisma && globalForPrisma.prisma !== prisma) {
+  void globalForPrisma.prisma.$disconnect().catch((error: unknown) => {
+    console.error("Veralteter Prisma-Client konnte nicht geschlossen werden.", error);
+  });
+}
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
+  globalForPrisma.prismaSchema = schema;
 }

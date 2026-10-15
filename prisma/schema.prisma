@@ -1964,7 +1964,7 @@ view ea_ordersnew_overview {
 }
 
 
-view ea_warranty_overview {
+view ea_warranty_report {
   uid_order             Int       @unique
   
   user_group            String?
