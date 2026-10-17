@@ -30,7 +30,12 @@ export default function DocumentCard() {
   return (
     <Card className="h-full">
       <Section no={3} title={"Documents"} actions={undefined}>
-        <div className="w-full flex flex-col gap-3">
+        <div
+          className={documents.length > 10 ? "max-h-[370px] w-full overflow-y-auto" : "w-full"}
+          tabIndex={documents.length > 10 ? 0 : undefined}
+          role="region"
+          aria-label="Dokumentliste"
+        >
           <DataTable showHeader={false} columns={columns} data={orderNo ? documents : []} />
         </div>
       </Section>

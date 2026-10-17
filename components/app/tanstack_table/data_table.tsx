@@ -139,7 +139,7 @@ export function DataTable<TData>({
   }, [enableColumnResizing, columnVisibility, table]);
 
   return (
-    <div ref={containerRef} className="min-w-0 border rounded-lg">
+    <div ref={containerRef} className="w-full min-w-0 max-w-full border rounded-lg [contain:inline-size]">
       <Table
         className={cn(tableClassName, (enableColumnResizing || fixedColumnLayout) && "table-fixed")}
         style={enableColumnResizing ? { width: table.getTotalSize() } : undefined}
