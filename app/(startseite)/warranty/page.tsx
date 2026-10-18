@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import type { EaWarrantyOverview } from "@/app/data_types/warranty/ea_warranty_overview";
 import { warrantyOverviewColumns } from "@/app/columns/warranty/warranty_overview_columns";
 import { DataTable } from "@/components/app/tanstack_table/data_table";
@@ -48,7 +50,9 @@ export default function WarrantyPage() {
   }, [paginated.page, paginated.per_page, search, setPaginated]);
 
   return <>
-    <LineLR><Searchbar value={typing} setQuery={onChange} placeHolder={placeHolder} /></LineLR>
+    <LineLR className="gap-3 flex-wrap"><Searchbar value={typing} setQuery={onChange} placeHolder={placeHolder} />
+      <Link href="/warranty/new" className={buttonVariants()}>Create New Warranty</Link>
+    </LineLR>
     {error && <p role="alert" className="p-2 text-red-600">{error}</p>}
     {loading && <p role="status" className="p-2 text-muted-foreground">Loading warranty invoices…</p>}
     <DataTable onDoubleClick={row => {
