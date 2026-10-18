@@ -1,4 +1,5 @@
 import { getAuthSession } from "@/lib/auth-session";
+import { findOwnedOrder } from "@/lib/order-detail";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, parsePositiveId } from "@/lib/route-utils";
 
@@ -11,9 +12,14 @@ export async function DELETE(
   const uidPayment = parsePositiveId((await params).uid_payment);
   if (!uidPayment) return errorResponse("Ungültige Zahlungs-ID.", 400);
   const payment = await prisma.ea_payments.findFirst({
-    where: { uid_payment: uidPayment, user_group: session.userGroup },
+    where: {
+      uid_payment: uidPayment,
+      OR: [{ user_group: session.userGroup }, { user_group: "" }, { user_group: null }],
+    },
   });
   if (!payment) return errorResponse("Zahlung nicht gefunden.", 404);
+  if (!await findOwnedOrder(payment.uid_order, session.userGroup))
+    return errorResponse("Zahlung nicht gefunden.", 404);
   await prisma.ea_payments.delete({ where: { uid_payment: uidPayment } });
   return Response.json(payment);
 }

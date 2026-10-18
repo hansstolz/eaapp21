@@ -14,7 +14,11 @@ export async function GET(
   if (!await findOwnedOrder(uidOrder, session.userGroup))
     return errorResponse("Auftrag nicht gefunden.", 404);
   const payments = await prisma.ea_payments.findMany({
-    where: { uid_order: uidOrder, user_group: session.userGroup },
+    // Legacy payments may have no group; access is checked via the order above.
+    where: {
+      uid_order: uidOrder,
+      OR: [{ user_group: session.userGroup }, { user_group: "" }, { user_group: null }],
+    },
     orderBy: { payment_date: "desc" },
   });
   return Response.json(payments);

@@ -62,7 +62,7 @@ export default function OrderCalc({ activeTab }: { activeTab: TabNamesOrder }) {
                 <tr key={position.uid_orders_position}>
                   <td className={cell}>{position.article_no}</td>
                   <td className={`${cell} break-words`}>{position.articlecode}</td>
-                  <td className={`${cell} break-words`}>{position.articlecharacter}</td>
+                  <td className={`${cell} truncate`} title={position.articlecharacter ?? undefined}>{position.articlecharacter}</td>
                   {[position.price_single_categ2, position.price_single_categ1, position.price_single_categ3].map((price, index) => <td key={index} className={numericCell}>{number.format(price ?? 0)}</td>)}
                   <td className={numericCell}>{position.quantity}</td>
                 </tr>
