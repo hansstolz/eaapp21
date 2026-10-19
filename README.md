@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Datenbank übertragen
+
+`npm run db:replace-remote` zeigt eine Vorschau für das vollständige Ersetzen
+einer externen Datenbank durch die lokale Datenbank. Konfiguration, Ausführung
+und Wiederherstellung: [Anleitung](scripts/replace-remote-db.md).
+
 ## Getting Started
 
 First, run the development server:
