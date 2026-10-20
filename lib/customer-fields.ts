@@ -21,14 +21,13 @@ export function calculatedCustomerFields(body: Record<string, unknown>) {
   const text = (value: unknown) => (typeof value === "string" ? value : "");
   const company = text(body.company);
   const calNameList = company || `${text(body.last_name)} ${text(body.first_name)}`.trim();
-  const vatNo = text(body.vat_no);
   const email = [body.mail1, body.mail2, body.mail3].map(text).join(";");
   return {
     cal_name_list: calNameList,
     cal_address: `${calNameList}\n${text(body.street_address)}\n${text(body.zip_postal_code)} ${text(body.city)}`,
     email,
     customer_category_no: body.category_customer === "Dealer" ? 2 : 1,
-    no_vat: vatNo ? 1 : 0,
+    no_vat: Number(body.no_vat) === 1 ? 1 : 0,
   };
 }
 

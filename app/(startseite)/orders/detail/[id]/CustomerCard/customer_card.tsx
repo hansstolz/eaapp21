@@ -58,7 +58,7 @@ export default function CustomerCard() {
                 {order?.vat_no_customer}
               </DisabledInput>
               <DisabledInput label={"Value tax?"}>
-                {order?.no_vat === "0" ? "Yes" : "No"}
+                {Number(order?.no_vat) === 1 ? "No" : "Yes"}
               </DisabledInput>
             </LineRow>
             <DisabledInput label={"Mail"}>{order?.mails}</DisabledInput>

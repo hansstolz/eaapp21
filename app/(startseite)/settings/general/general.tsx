@@ -32,7 +32,7 @@ export default function General({
 
     defaultValues: data[0],
   });
-  const { isDirty } = form.formState;
+  const { isDirty, isSubmitting } = form.formState;
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [cacheBust, setCacheBust] = useState("");
   const firstInput = useAutoFocus();
@@ -56,9 +56,13 @@ export default function General({
 
   return (
     <>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit, () => {
+          toast.error("Bitte die markierten Felder prüfen.");
+        })}
+      >
         <LineLR>
-          <Button disabled={!isDirty} type="submit">
+          <Button disabled={!isDirty || isSubmitting} type="submit">
             <SaveIcon className="h-4 w-4" /> Save
           </Button>
         </LineLR>
@@ -139,6 +143,7 @@ export default function General({
                     }}
                   />
                   <Button
+                    type="button"
                     onClick={() => {
                       fileInputRef.current?.click();
                     }}

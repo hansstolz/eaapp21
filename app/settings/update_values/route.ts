@@ -1,3 +1,4 @@
+import { getAuthSession } from "@/lib/auth-session";
 import type { ea_settingsUpdateInput } from "@/generated/prisma/models/ea_settings";
 import {
   GENERAL_SETTINGS_SELECT,
@@ -12,6 +13,9 @@ import {
 } from "@/lib/route-utils";
 
 export async function PUT(request: Request) {
+  const session = await getAuthSession();
+  if (!session) return errorResponse("Nicht angemeldet.", 401);
+
   const body = await readJsonObject(request);
 
   if (!body) return errorResponse("Ungültiger JSON-Body.", 400);
@@ -20,8 +24,8 @@ export async function PUT(request: Request) {
 
   if (!uidSetting) return errorResponse("Ungültige Settings-ID.", 400);
 
-  const existing = await prisma.ea_settings.findUnique({
-    where: { uid_setting: uidSetting },
+  const existing = await prisma.ea_settings.findFirst({
+    where: { uid_setting: uidSetting, user_group: session.userGroup },
     select: { uid_setting: true },
   });
 
@@ -32,8 +36,8 @@ export async function PUT(request: Request) {
     GENERAL_SETTINGS_UPDATE_FIELDS,
   );
   const settings = await prisma.ea_settings.update({
-    where: { uid_setting: uidSetting },
-    data,
+    where: { uid_setting: uidSetting, user_group: session.userGroup },
+    data: { ...data, user_group: session.userGroup },
     select: GENERAL_SETTINGS_SELECT,
   });
 

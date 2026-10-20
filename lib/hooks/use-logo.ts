@@ -1,18 +1,13 @@
-export default async function getLogo() {
-  const user_group = "88+DE"; // Replace this with the actual logic to get the user group
+import { getAuthSession } from "@/lib/auth-session";
 
-  switch (user_group) {
-    case "88+DE":
-      return "/_images/88+DE_logo.png";
-    /*
-    case "88+AU":
-      return "/_images/88+AU_logo.png";
-    case "88_shop":
-      return "/_images/88_shop_logo.png";
-    case "88+demo":
-      return "/_images/88+demo_logo.png";
-      */
-    default:
-      return "/_images/88+demo_logo.png";
+export default async function getLogo() {
+  const session = await getAuthSession();
+  if (!session) throw new Error("Nicht angemeldet.");
+
+  const userGroup = session.userGroup;
+  if (!["88+DE", "88+AU", "88_shop", "88+demo"].includes(userGroup)) {
+    throw new Error("Kein Logo für diese Benutzergruppe konfiguriert.");
   }
+
+  return `/_images/${userGroup}_logo.png`;
 }
