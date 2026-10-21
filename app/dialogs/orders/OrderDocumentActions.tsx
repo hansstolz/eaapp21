@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useDocumentRefreshStore } from "@/app/stores/documents/document_store";
@@ -24,7 +25,7 @@ const documentEndpoints: Partial<Record<DocumentType, string>> = {
 };
 
 type Props = { documentType: DocumentType; documentNo?: number | null; documentId?: number | null; disabled?: boolean; beforeRequest?: () => Promise<void> };
-type Context = Props & { orderId: number; customer: string; recipient: string; language: string; emailSubject?: string; emailText?: string; onClose: () => void };
+type Context = Props & { orderId: number; customer: string; recipient: string; language: string; isDealer?: boolean; emailSubject?: string; emailText?: string; onClose: () => void };
 
 function DocumentInfo({ documentType, documentNo, orderId, customer }: Context) {
   return <div className="rounded-lg border bg-muted/40 px-3 py-2">
@@ -97,7 +98,7 @@ function useDocumentRequest(props: Context) {
   const refreshDocuments = useDocumentRefreshStore((state) => state.refreshDocuments);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  async function submit(action: "print" | "mail", email?: { to: string; subject: string; text: string }) {
+  async function submit(action: "print" | "mail", email?: { to: string; subject: string; text: string }, eInvoice?: boolean) {
     if (busy) return;
     const option = (name: string) => container.current?.querySelector<HTMLSelectElement>(`select[name="${name}"]`)?.value;
     if (!option("language")) { setError("Bitte eine Sprache auswählen."); return; }
@@ -110,7 +111,8 @@ function useDocumentRequest(props: Context) {
       await props.beforeRequest?.();
       const response = await fetch(documentEndpoints[props.documentType]!, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: props.documentId, action, language: option("language"), version: option("version"), documents: option("documents") ?? "document", email }),
+        body: JSON.stringify({ id: props.documentId, action, language: option("language"), version: option("version"), documents: option("documents") ?? "document", email,
+          ...(action === "mail" && props.documentType === "Invoice" ? { eInvoice } : {}) }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Dokumentanfrage fehlgeschlagen.");
@@ -175,22 +177,24 @@ function MailDialog(props: Context) {
   const { container, busy, submit, errorDialog } = useDocumentRequest(props);
   const id = useId();
   const [recipient, setRecipient] = useState(props.recipient);
-  const [cc, setCc] = useState("");
   const [subject, setSubject] = useState(props.emailSubject ?? `${props.documentType}${props.documentNo ? ` #${props.documentNo}` : ""} · Order #${props.orderId}`);
   const [message, setMessage] = useState(props.emailText ?? "");
+  const [eInvoice, setEInvoice] = useState(props.isDealer ?? false);
   return <><MovableDialog open setOpen={(open) => { if (!open && !busy) props.onClose(); }} title={`Mail ${props.documentType}`} className="min-w-xl max-w-xl">
     <div ref={container} className="grid max-h-[75vh] gap-4 overflow-y-auto">
       <DialogDescription>Prepare an email with this document as a PDF attachment.</DialogDescription>
       <DocumentInfo {...props} />
       <DocumentOptions documentType={props.documentType} language={props.language} />
+      {props.documentType === "Invoice" && (
+        <div className="flex items-center gap-2">
+          <Switch id={`${id}-e-invoice`} checked={eInvoice} onCheckedChange={setEInvoice} disabled={busy} />
+          <Label htmlFor={`${id}-e-invoice`}>E-Invoice</Label>
+        </div>
+      )}
       <div className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor={`${id}-to`}>To</Label>
           <Input id={`${id}-to`} type="text" inputMode="email" placeholder="mail@example.com; second@example.com;" value={recipient} onChange={(event) => setRecipient(event.target.value)} />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-cc`}>CC</Label>
-          <Input disabled={Boolean(documentEndpoints[props.documentType])} placeholder={Boolean(documentEndpoints[props.documentType]) ? "CC is not supported by the templates API" : undefined} id={`${id}-cc`} type="email" multiple value={cc} onChange={(event) => setCc(event.target.value)} />
         </div>
         <div className="grid gap-2">
           <Label htmlFor={`${id}-subject`}>Subject</Label>
@@ -204,7 +208,7 @@ function MailDialog(props: Context) {
       {!documentEndpoints[props.documentType] && <p className="text-sm text-muted-foreground">Sending email will be available in the next step.</p>}
       <DialogFooter>
         <Button type="button" variant="outline" disabled={busy} onClick={props.onClose}>Close</Button>
-        <Button type="button" disabled={busy || (!documentEndpoints[props.documentType]) || !props.documentId || !recipient.trim() || !subject.trim()} onClick={() => void submit("mail", { to: recipient.trim(), subject, text: message })}><FiMail /> {busy ? "Sending…" : "Send"}</Button>
+        <Button type="button" disabled={busy || (!documentEndpoints[props.documentType]) || !props.documentId || !recipient.trim() || !subject.trim()} onClick={() => void submit("mail", { to: recipient.trim(), subject, text: message }, eInvoice)}><FiMail /> {busy ? "Sending…" : "Send"}</Button>
       </DialogFooter>
     </div>
   </MovableDialog>{errorDialog}</>;
@@ -239,6 +243,7 @@ export default function OrderDocumentActions(props: Props) {
     customer: data?.customer_name ?? "",
     recipient: data?.customer_email ?? "",
     language: data?.user_print_language ?? "de",
+    isDealer: data?.customer_category_no === 2,
     onClose: () => setDialog(null),
   };
   return <>

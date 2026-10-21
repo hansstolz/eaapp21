@@ -4,6 +4,7 @@ import type {
 } from "@/generated/prisma/models/ea_customer";
 
 export const CUSTOMER_FIELDS = [
+  "exemption_category", "exemption_reason",
   "region", "customer_no", "mobile", "fax", "customer_no_rel", "order_no",
   "fork_no", "check_export_ups", "city", "company", "zip_postal_code",
   "weight", "height", "first_name", "bank_name", "birthday", "country",

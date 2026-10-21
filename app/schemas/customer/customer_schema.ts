@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+export const customerCountrySchema = z.string().nullable().refine(
+  value => Boolean(value?.trim()),
+  { message: "Country is required." },
+);
+
+export const customerExemptionSchema = z.object({
+  exemption_category: z.enum(["", "E", "AE", "K", "G"]).nullable().optional(),
+  exemption_reason: z.string().max(500, "Exemption reason must not exceed 500 characters.").nullable().optional(),
+});
+
 export const customerSchema = z
   .object({
     uid_customer: z.number().nullable(),
@@ -39,7 +49,7 @@ export const customerSchema = z
 
     bank_name: z.string().nullable().default(""),
 
-    country: z.string().nullable().default(""),
+    country: customerCountrySchema,
 
     memo: z.string().nullable().default(""),
 
@@ -74,6 +84,8 @@ export const customerSchema = z
       .string()
       .nullable()
       .transform((v) => v ?? ""),
+
+    ...customerExemptionSchema.shape,
 
     no_vat: z.number().default(0),
   })
@@ -148,6 +160,9 @@ export const customerDefault = {
   customer_cannondale_no: "",
 
   vat_no: "",
+
+  exemption_category: "" as const,
+  exemption_reason: "",
 
   no_vat: 0,
 };

@@ -1,0 +1,696 @@
+{
+  "columns": [
+    {
+      "COLUMN_NAME": "uid_order",
+      "COLUMN_TYPE": "int unsigned",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "NO",
+      "EXTRA": "auto_increment"
+    },
+    {
+      "COLUMN_NAME": "bank_account",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "bank_id",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "bank_name",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "bank_payment",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "cal_amount_price_categ3",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "cal_outstanding_money",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "check_extras",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "customer_address",
+      "COLUMN_TYPE": "varchar(200)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "customer_address_alt",
+      "COLUMN_TYPE": "varchar(200)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "costestimates_numbers",
+      "COLUMN_TYPE": "varchar(200)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "customer_category_no",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "customer_client_height",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "customer_client_name",
+      "COLUMN_TYPE": "varchar(150)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "customer_client_weight",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "customer_email",
+      "COLUMN_TYPE": "varchar(100)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "customer_fon",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "customer_name",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "customer_no",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "date_modifikation",
+      "COLUMN_TYPE": "datetime",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "dealers_client_form",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "fork_color",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "fork_freight_forwarder",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "fork_freight_no",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "fork_in_carrier",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "fork_in_date",
+      "COLUMN_TYPE": "datetime",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "fork_invoice_no",
+      "COLUMN_TYPE": "varchar(100)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "fork_model",
+      "COLUMN_TYPE": "varchar(150)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "fork_no",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "fork_pickup_time",
+      "COLUMN_TYPE": "datetime",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "fork_shipped_date",
+      "COLUMN_TYPE": "datetime",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "invoice_date",
+      "COLUMN_TYPE": "datetime",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "invoice_no",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "notes_costestimate_extern",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "notes_intern",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "notes_invoice_extern",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "order_modifikation",
+      "COLUMN_TYPE": "varchar(100)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "order_no",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "order_status",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ1_subtotal",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ1_total",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ1_valuetax",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ2_subtotal",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ2_total",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ2_valuetax",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ3_freight_subtotal",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ3_labor_subtotal",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ3_material_subtotal",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ3_subtotal",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ3_total",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_categ3_valuetax",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_outstanding_money",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "price_payments_total",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "number",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": "",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "printstatus_articlesales",
+      "COLUMN_TYPE": "varchar(200)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "printstatus_costestimate",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "printstatus_invoice",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "reason_air",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "reason_oil",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "reason_other",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "reason_telescope",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "reminder_date",
+      "COLUMN_TYPE": "datetime",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "reminder_level",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "sold_units_reserved",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "text_payments",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "user_print_language",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "value_tax",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "vat_no_customer",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "worker_invoice",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "worker_invoice_no",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "user_group",
+      "COLUMN_TYPE": "varchar(50)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "uid_ref_fork",
+      "COLUMN_TYPE": "int unsigned",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "uid_customer",
+      "COLUMN_TYPE": "int unsigned",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "uid_client",
+      "COLUMN_TYPE": "int unsigned",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "uid_fork",
+      "COLUMN_TYPE": "int unsigned",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "NO",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "created_at",
+      "COLUMN_TYPE": "datetime",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_TYPE": "datetime",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "wheelsize",
+      "COLUMN_TYPE": "varchar(20)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "value_tax2",
+      "COLUMN_TYPE": "float(10,2)",
+      "COLUMN_DEFAULT": "0.00",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "no_vat",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "ea_orderscol",
+      "COLUMN_TYPE": "varchar(45)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "ftsearch",
+      "COLUMN_TYPE": "varchar(200)",
+      "COLUMN_DEFAULT": null,
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "diagnosis_no",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    },
+    {
+      "COLUMN_NAME": "worksheet_no",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "0",
+      "IS_NULLABLE": "YES",
+      "EXTRA": ""
+    }
+  ],
+  "views": [
+    {
+      "TABLE_NAME": "ea_articles_overview",
+      "VIEW_DEFINITION": "select `ef`.`ea_articles`.`uid_article` AS `uid_article`,`ef`.`ea_articles`.`user_group` AS `user_group`,`ef`.`ea_articles`.`article_no` AS `article_no`,`ef`.`ea_articles`.`articlecode` AS `articlecode`,`ef`.`ea_articles`.`articlecharacter` AS `articlecharacter`,`ef`.`ea_articles`.`article_group` AS `article_group`,`ef`.`ea_articles`.`company_article_no` AS `company_article_no`,`ef`.`ea_articles`.`category_article` AS `category_article`,`ef`.`ea_articles`.`quantity` AS `quantity`,`ef`.`ea_articles`.`cost_price` AS `cost_price`,`ef`.`ea_articles`.`price_netto_categ1` AS `price_netto_categ1`,`ef`.`ea_articles`.`price_netto_categ2` AS `price_netto_categ2`,`ef`.`ea_articles`.`active` AS `active` from `ef`.`ea_articles`"
+    },
+    {
+      "TABLE_NAME": "ea_articles_ref",
+      "VIEW_DEFINITION": "select `ef`.`ea_articles`.`uid_article` AS `uid_article`,`ef`.`ea_articles`.`user_group` AS `user_group`,`ef`.`ea_articles`.`article_no` AS `article_no`,`ef`.`ea_articles`.`articlecode` AS `articlecode` from `ef`.`ea_articles`"
+    },
+    {
+      "TABLE_NAME": "ea_customer_tv",
+      "VIEW_DEFINITION": "select concat_ws(' ',`ef`.`ea_customer`.`first_name`,`ef`.`ea_customer`.`last_name`,`ef`.`ea_customer`.`customer_no`,`ef`.`ea_customer`.`city`) AS `CONCAT_WS(' ', first_name, last_name, customer_no, city)` from `ef`.`ea_customer`"
+    },
+    {
+      "TABLE_NAME": "ea_customers_overview",
+      "VIEW_DEFINITION": "select `ef`.`ea_customer`.`uid_customer` AS `uid_customer`,`ef`.`ea_customer`.`user_group` AS `user_group`,`ef`.`ea_customer`.`customer_no` AS `customer_no`,`ef`.`ea_customer`.`cal_name_list` AS `cal_name_list`,`ef`.`ea_customer`.`street_address` AS `street_address`,`ef`.`ea_customer`.`zip_postal_code` AS `zip_postal_code`,`ef`.`ea_customer`.`city` AS `city`,`ef`.`ea_customer`.`fon` AS `fon`,`ef`.`ea_customer`.`email` AS `email`,`ef`.`ea_customer`.`ftsearch` AS `ftsearch`,`ef`.`ea_customer`.`category_customer` AS `category_customer` from `ef`.`ea_customer`"
+    },
+    {
+      "TABLE_NAME": "ea_forks_overview",
+      "VIEW_DEFINITION": "select `ef`.`ea_forks`.`fork_no` AS `fork_no`,`ef`.`ea_forks`.`fork_model` AS `fork_model`,`ef`.`ea_forks`.`colour` AS `colour`,`ef`.`ea_forks`.`customer_name` AS `customer_name`,`ef`.`ea_forks`.`customer_no` AS `customer_no`,`ef`.`ea_forks`.`client_name` AS `client_name`,`ef`.`ea_forks`.`category_fork` AS `category_fork`,`ef`.`ea_forks`.`user_group` AS `user_group`,`ef`.`ea_forks`.`uid_fork` AS `uid_fork` from `ef`.`ea_forks`"
+    },
+    {
+      "TABLE_NAME": "ea_forks_sales",
+      "VIEW_DEFINITION": "select `ef`.`ea_forks`.`fork_no` AS `fork_no`,`ef`.`ea_forks`.`fork_model` AS `fork_model`,`ef`.`ea_forks`.`fork_id` AS `fork_id`,`ef`.`ea_forks`.`colour` AS `colour`,`ef`.`ea_forks`.`wheelsize` AS `wheelsize`,`ef`.`ea_forks`.`customer_name` AS `customer_name`,`ef`.`ea_forks`.`customer_no` AS `customer_no`,`ef`.`ea_forks`.`customer` AS `customer`,`ef`.`ea_forks`.`client_name` AS `client_name`,`ef`.`ea_forks`.`uid_client` AS `uid_client`,`ef`.`ea_forks`.`category_fork` AS `category_fork`,`ef`.`ea_forks`.`user_group` AS `user_group`,`ef`.`ea_forks`.`uid_fork` AS `uid_fork` from `ef`.`ea_forks`"
+    },
+    {
+      "TABLE_NAME": "ea_forms_items_overview",
+      "VIEW_DEFINITION": "select `ef`.`ea_forms_items`.`uid_forms_item` AS `uid_forms_item`,`ef`.`ea_forms_items`.`user_group` AS `user_group`,`ef`.`ea_forms_items`.`user_print_language` AS `user_print_language` from `ef`.`ea_forms_items`"
+    },
+    {
+      "TABLE_NAME": "ea_mails_overview",
+      "VIEW_DEFINITION": "select `ef`.`ea_mails`.`uid_mail` AS `uid_mail`,`ef`.`ea_mails`.`user_group` AS `user_group`,`ef`.`ea_mails`.`mail_date` AS `mail_date`,`ef`.`ea_mails`.`customer` AS `customer`,`ef`.`ea_mails`.`subject` AS `subject`,`ef`.`ea_mails`.`mail_status` AS `mail_status`,`ef`.`ea_mails`.`company` AS `company` from `ef`.`ea_mails`"
+    },
+    {
+      "TABLE_NAME": "ea_open_items",
+      "VIEW_DEFINITION": "select `ef`.`ea_orders`.`invoice_date` AS `invoice_date`,`ef`.`ea_orders`.`invoice_no` AS `invoice_no`,`ef`.`ea_orders`.`user_group` AS `user_group`,`ef`.`ea_orders`.`order_no` AS `order_no`,`ef`.`ea_orders`.`uid_customer` AS `uid_customer`,`ef`.`ea_orders`.`uid_order` AS `uid_order`,`ef`.`ea_orders`.`customer_no` AS `customer_no`,`ef`.`ea_orders`.`customer_address` AS `customer_address`,`ef`.`ea_orders`.`cal_outstanding_money` AS `cal_outstanding_money`,`ef`.`ea_orders`.`cal_amount_price_categ3` AS `cal_amount_price` from `ef`.`ea_orders` where ((`ef`.`ea_orders`.`order_status` = 'Invoice||#EF717A') and (`ef`.`ea_orders`.`invoice_date` > '2018-04-30')) order by `ef`.`ea_orders`.`invoice_date`"
+    },
+    {
+      "TABLE_NAME": "ea_orders_customer",
+      "VIEW_DEFINITION": "select `ef`.`ea_orders`.`invoice_date` AS `invoice_date`,`ef`.`ea_orders`.`user_group` AS `user_group`,`ef`.`ea_orders`.`order_no` AS `order_no`,`ef`.`ea_orders`.`fork_no` AS `fork_no`,`ef`.`ea_orders`.`uid_customer` AS `uid_customer`,`ef`.`ea_orders`.`uid_order` AS `uid_order`,`ef`.`ea_orders`.`customer_no` AS `customer_no`,`ef`.`ea_orders`.`fork_model` AS `fork_model`,`ef`.`ea_orders`.`cal_amount_price_categ3` AS `cal_amount_price` from `ef`.`ea_orders`"
+    },
+    {
+      "TABLE_NAME": "ea_orders_forkview",
+      "VIEW_DEFINITION": "select `ef`.`ea_orders`.`uid_order` AS `uid_order`,`ef`.`ea_orders`.`uid_fork` AS `uid_fork`,`ef`.`ea_orders`.`customer_no` AS `customer_no`,`ef`.`ea_orders`.`customer_name` AS `customer_name`,`ef`.`ea_orders`.`customer_client_name` AS `customer_client_name`,`ef`.`ea_orders`.`fork_in_date` AS `fork_in_date`,`ef`.`ea_orders`.`created_at` AS `created_at` from `ef`.`ea_orders`"
+    },
+    {
+      "TABLE_NAME": "ea_orders_list",
+      "VIEW_DEFINITION": "select `ef`.`ea_orders`.`invoice_date` AS `invoice_date`,`ef`.`ea_orders`.`order_no` AS `order_no`,`ef`.`ea_orders`.`fork_no` AS `fork_no`,`ef`.`ea_orders`.`fork_model` AS `fork_model`,`ef`.`ea_orders`.`uid_customer` AS `uid_customer`,`ef`.`ea_orders`.`uid_order` AS `uid_order`,`ef`.`ea_orders`.`customer_no` AS `customer_no` from `ef`.`ea_orders`"
+    },
+    {
+      "TABLE_NAME": "ea_orders_overview",
+      "VIEW_DEFINITION": "select `ef`.`ea_orders`.`uid_order` AS `uid_order`,`ef`.`ea_orders`.`user_group` AS `user_group`,`ef`.`ea_orders`.`fork_model` AS `fork_model`,`ef`.`ea_orders`.`created_at` AS `created_At`,`ef`.`ea_warranty`.`warranty_request` AS `warranty_request`,`ef`.`ea_warranty`.`warranty_no` AS `warranty_no`,`ef`.`ea_orders`.`customer_address` AS `customer_address`,`ef`.`ea_orders`.`customer_no` AS `customer_no`,`ef`.`ea_orders`.`costestimates_numbers` AS `costestimates_numbers` from (`ef`.`ea_orders` join `ef`.`ea_warranty`) where (`ef`.`ea_orders`.`uid_order` = `ef`.`ea_warranty`.`uid_order`)"
+    },
+    {
+      "TABLE_NAME": "ea_ordersnew_overview",
+      "VIEW_DEFINITION": "select `ef`.`ea_orders`.`uid_order` AS `uid_order`,`ef`.`ea_orders`.`number` AS `number`,`ef`.`ea_orders`.`invoice_no` AS `invoice_no`,`ef`.`ea_orders`.`user_group` AS `user_group`,`ef`.`ea_orders`.`fork_model` AS `fork_model`,`ef`.`ea_orders`.`fork_no` AS `fork_no`,`ef`.`ea_warranty`.`warranty_no` AS `warranty_no`,`ef`.`ea_warranty`.`warranty_request` AS `warranty_request`,`ef`.`ea_orders`.`created_at` AS `created_at`,`ef`.`ea_orders`.`customer_address` AS `customer_address`,`ef`.`ea_orders`.`customer_no` AS `customer_no`,`ef`.`ea_orders`.`worksheet_no` AS `worksheet_no`,`ef`.`ea_orders`.`diagnosis_no` AS `diagnosis_no`,`ef`.`ea_orders`.`order_status` AS `order_status`,`ef`.`ea_orders`.`fork_in_date` AS `fork_in_date`,`ef`.`ea_orders`.`customer_client_name` AS `customer_client_name`,`ef`.`ea_orders`.`costestimates_numbers` AS `costestimates_numbers`,`ef`.`ea_orders`.`ftsearch` AS `ftsearch` from (`ef`.`ea_orders` join `ef`.`ea_warranty`) where (`ef`.`ea_orders`.`uid_order` = `ef`.`ea_warranty`.`uid_order`)"
+    },
+    {
+      "TABLE_NAME": "ea_purchases_overview",
+      "VIEW_DEFINITION": "select `ef`.`ea_purchases`.`uid_purchase` AS `uid_purchase`,`ef`.`ea_purchases`.`user_group` AS `user_group`,`ef`.`ea_purchases`.`purchase_no` AS `purchase_no`,`ef`.`ea_purchases`.`purchase_date` AS `purchase_date`,`ef`.`ea_purchases`.`company_name` AS `company_name`,`ef`.`ea_purchases`.`freight_forw` AS `freight_forw`,`ef`.`ea_purchases`.`address_partner` AS `address_partner`,`ef`.`ea_purchases`.`company_customer_no` AS `company_customer_no` from `ef`.`ea_purchases`"
+    },
+    {
+      "TABLE_NAME": "ea_texts_overview",
+      "VIEW_DEFINITION": "select `ef`.`ea_texts`.`uid_text` AS `uid_text`,`ef`.`ea_texts`.`text_value` AS `text_value`,`ef`.`ea_texts`.`user_group` AS `user_group`,`ef`.`ea_texts`.`text_code` AS `text_code`,`ef`.`ea_texts`.`text_no` AS `text_no`,`ef`.`ea_texts`.`text_no_new` AS `text_no_new`,`ef`.`ea_texts`.`seq_no` AS `seq_no`,`ef`.`ea_texts`.`created_at` AS `created_at`,`ef`.`ea_texts`.`updated_at` AS `updated_at` from `ef`.`ea_texts` group by `ef`.`ea_texts`.`user_group`"
+    },
+    {
+      "TABLE_NAME": "ea_warranty_overview",
+      "VIEW_DEFINITION": "select `ef`.`ea_orders`.`uid_order` AS `uid_order`,`ef`.`ea_orders`.`user_group` AS `user_group`,`ef`.`ea_orders`.`fork_no` AS `fork_no`,`ef`.`ea_orders`.`fork_model` AS `fork_model`,`ef`.`ea_warranty`.`warranty_no` AS `warranty_no`,`ef`.`ea_warranty`.`warranty_date` AS `warranty_date`,`ef`.`ea_warranty`.`warranty_reason` AS `warranty_reason`,`ef`.`ea_warranty`.`warranty_invoice_date` AS `warranty_invoice_date`,`ef`.`ea_orders`.`customer_address` AS `customer_address`,`ef`.`ea_orders`.`customer_no` AS `customer_no`,`ef`.`ea_warranty`.`warranty_invoice_no` AS `warranty_invoice_no` from (`ef`.`ea_orders` join `ef`.`ea_warranty`) where ((`ef`.`ea_orders`.`uid_order` = `ef`.`ea_warranty`.`uid_order`) and (`ef`.`ea_warranty`.`warranty_no` > 0) and (`ef`.`ea_warranty`.`warranty_invoice_no` = 0))"
+    },
+    {
+      "TABLE_NAME": "ea_warranty_report",
+      "VIEW_DEFINITION": "select `ef`.`ea_orders`.`uid_order` AS `uid_order`,`ef`.`ea_orders`.`user_group` AS `user_group`,`ef`.`ea_orders`.`fork_no` AS `fork_no`,`ef`.`ea_orders`.`fork_model` AS `fork_model`,`ef`.`ea_warranty`.`warranty_no` AS `warranty_no`,`ef`.`ea_warranty`.`warranty_date` AS `warranty_date`,`ef`.`ea_warranty`.`warranty_reason` AS `warranty_reason`,`ef`.`ea_warranty`.`warranty_invoice_date` AS `warranty_invoice_date`,`ef`.`ea_orders`.`customer_address` AS `customer_address`,`ef`.`ea_orders`.`customer_no` AS `customer_no`,`ef`.`ea_warranty`.`warranty_invoice_no` AS `warranty_invoice_no` from (`ef`.`ea_orders` join `ef`.`ea_warranty`) where ((`ef`.`ea_orders`.`uid_order` = `ef`.`ea_warranty`.`uid_order`) and (`ef`.`ea_warranty`.`warranty_no` > 0) and (`ef`.`ea_warranty`.`warranty_invoice_no` > 0))"
+    },
+    {
+      "TABLE_NAME": "forks_stat",
+      "VIEW_DEFINITION": "select `orders`.`created_at` AS `created_at`,`ref`.`fork_model` AS `fork_model`,`orders`.`user_group` AS `user_group` from (`ef`.`ea_orders` `orders` join `ef`.`ea_ref_forks` `ref`) where (`ref`.`uid_ref_fork` = `orders`.`uid_ref_fork`)"
+    },
+    {
+      "TABLE_NAME": "ea_companies_overview",
+      "VIEW_DEFINITION": "select `ef`.`ea_companies`.`uid_company` AS `uid_company`,`ef`.`ea_companies`.`email` AS `email`,`ef`.`ea_companies`.`zip_postal_code` AS `zip_postal_code`,`ef`.`ea_companies`.`city` AS `city`,`ef`.`ea_companies`.`company_customer_no` AS `company_customer_no`,`ef`.`ea_companies`.`cal_name_list` AS `company`,`ef`.`ea_companies`.`street_address` AS `street_address`,`ef`.`ea_companies`.`user_group` AS `user_group` from `ef`.`ea_companies`"
+    },
+    {
+      "TABLE_NAME": "ea_costestimate_view",
+      "VIEW_DEFINITION": "select `c`.`uid_costestimates` AS `uid_costestimates`,`c`.`worker_costestimate` AS `worker_costestimate`,`c`.`worker_costestimate_no` AS `worker_costestimate_no`,`c`.`price_costestimate_total` AS `price_costestimate_total`,`c`.`printstatus_costestimate` AS `printstatus_costestimate`,`c`.`price_costestimate_subtotal` AS `price_costestimate_subtotal`,date_format(`c`.`costestimate_date`,'%d.%m.%y') AS `costestimate_date`,`c`.`text_consult_costestimate` AS `text_consult_costestimate`,`c`.`notes_costestimate_extern` AS `notes_costestimate_extern`,`c`.`price_costestimate_valuetax` AS `price_costestimate_valuetax`,`c`.`costestimate_confirm_check` AS `costestimate_confirm_check`,`c`.`costestimate_no` AS `costestimate_no`,`c`.`uid_order` AS `uid_order`,`c`.`created_at` AS `created_at`,`c`.`updated_at` AS `updated_at`,`c`.`confirmed_when` AS `confirmed_when`,`c`.`confirmed_how` AS `confirmed_how`,`c`.`confirmed_by` AS `confirmed_by`,`c`.`price_categ1_subtotal` AS `price_categ1_subtotal`,`c`.`price_categ1_total` AS `price_categ1_total`,`c`.`price_categ1_valuetax` AS `price_categ1_valuetax`,`c`.`price_categ2_subtotal` AS `price_categ2_subtotal`,`c`.`price_categ2_total` AS `price_categ2_total`,`c`.`price_categ2_valuetax` AS `price_categ2_valuetax`,`c`.`price_categ3_freight_subtotal` AS `price_categ3_freight_subtotal`,`c`.`price_categ3_labor_subtotal` AS `price_categ3_labor_subtotal`,`c`.`price_categ3_material_subtotal` AS `price_categ3_material_subtotal`,`c`.`price_categ3_subtotal` AS `price_categ3_subtotal`,`c`.`price_categ3_total` AS `price_categ3_total`,`c`.`price_categ3_valuetax` AS `price_categ3_valuetax`,`c`.`price_outstanding_money` AS `price_outstanding_money`,`c`.`price_payments_total` AS `price_payments_total`,`c`.`customer_category_no` AS `customer_category_no`,`c`.`user_group` AS `user_group`,(case when (`o`.`uid_order` is null) then NULL else json_object('uid_order',`o`.`uid_order`,'order_no',`o`.`order_no`,'order_status',`o`.`order_status`,'customer_no',`o`.`customer_no`,'customer_name',`o`.`customer_name`,'customer_address',`o`.`customer_address`,'customer_email',`o`.`customer_email`,'customer_fon',`o`.`customer_fon`,'fork_no',`o`.`fork_no`,'fork_model',`o`.`fork_model`,'fork_color',`o`.`fork_color`,'bank_payment',`o`.`bank_payment`,'wheelsize',`o`.`wheelsize`,'value_tax',`o`.`value_tax`,'value_tax2',`o`.`value_tax2`,'vat_no_customer',`o`.`vat_no_customer`,'costestimates_numbers',`o`.`costestimates_numbers`,'notes_costestimate_extern',`o`.`notes_costestimate_extern`,'created_at',`o`.`created_at`,'updated_at',`o`.`updated_at`) end) AS `ea_order`,(case when (count(`op`.`uid_orders_position`) = 0) then json_array() else json_arrayagg(json_object('uid_orders_position',`op`.`uid_orders_position`,'uid_costestimates',`op`.`uid_costestimates`,'uid_order',`op`.`uid_order`,'order_no',`op`.`order_no`,'order_no_rel',`op`.`order_no_rel`,'uid_article',`op`.`uid_article`,'article_no',`op`.`article_no`,'article_no_rel',`op`.`article_no_rel`,'articlecode',`op`.`articlecode`,'articlediscription',`op`.`articlediscription`,'article_group',`op`.`article_group`,'articlecharacter',`op`.`articlecharacter`,'quantity',`op`.`quantity`,'units',`op`.`units`,'price_single_categ1',`op`.`price_single_categ1`,'price_single_categ2',`op`.`price_single_categ2`,'price_single_categ3',`op`.`price_single_categ3`,'amount_price_categ1',`op`.`amount_price_categ1`,'amount_price_categ2',`op`.`amount_price_categ2`,'amount_price_categ3',`op`.`amount_price_categ3`,'amount_price_categ3_freight',`op`.`amount_price_categ3_freight`,'amount_price_categ3_labor',`op`.`amount_price_categ3_labor`,'amount_price_categ3_material',`op`.`amount_price_categ3_material`,'cal_price',`op`.`cal_price`,'cal_price_categ1',`op`.`cal_price_categ1`,'cal_price_categ2',`op`.`cal_price_categ2`,'cal_price_categ3',`op`.`cal_price_categ3`,'cal_value_tax',`op`.`cal_value_tax`,'cal_value_tax2',`op`.`cal_value_tax2`,'currency',`op`.`currency`,'created_at',`op`.`created_at`,'updated_at',`op`.`updated_at`)) end) AS `ea_orders_positions`,(select (case when (count(`ot`.`uid_orders_texts`) = 0) then json_array() else json_arrayagg(json_object('uid_orders_texts',`ot`.`uid_orders_texts`,'type',`ot`.`type`,'text_no',`ot`.`text_no`,'text',`ot`.`text`,'uid_order',`ot`.`uid_order`,'created_at',`ot`.`created_at`,'updated_at',`ot`.`updated_at`,'uid_costestimates',`ot`.`uid_costestimates`)) end) from `ef`.`ea_orders_texts` `ot` where ((`ot`.`uid_costestimates` = `c`.`uid_costestimates`) and (`ot`.`type` = 0))) AS `ea_orders_texts` from ((`ef`.`ea_orders_costestimates` `c` left join `ef`.`ea_orders` `o` on((`o`.`uid_order` = `c`.`uid_order`))) left join `ef`.`ea_orders_positions` `op` on((`op`.`uid_costestimates` = `c`.`uid_costestimates`))) where (`c`.`costestimate_confirm_check` = 1) group by `c`.`uid_costestimates`,`c`.`worker_costestimate`,`c`.`worker_costestimate_no`,`c`.`price_costestimate_total`,`c`.`printstatus_costestimate`,`c`.`price_costestimate_subtotal`,`c`.`costestimate_date`,`c`.`text_consult_costestimate`,`c`.`notes_costestimate_extern`,`c`.`price_costestimate_valuetax`,`c`.`costestimate_confirm_check`,`c`.`costestimate_no`,`c`.`uid_order`,`c`.`created_at`,`c`.`updated_at`,`c`.`confirmed_when`,`c`.`confirmed_how`,`c`.`confirmed_by`,`c`.`price_categ1_subtotal`,`c`.`price_categ1_total`,`c`.`price_categ1_valuetax`,`c`.`price_categ2_subtotal`,`c`.`price_categ2_total`,`c`.`price_categ2_valuetax`,`c`.`price_categ3_freight_subtotal`,`c`.`price_categ3_labor_subtotal`,`c`.`price_categ3_material_subtotal`,`c`.`price_categ3_subtotal`,`c`.`price_categ3_total`,`c`.`price_categ3_valuetax`,`c`.`price_outstanding_money`,`c`.`price_payments_total`,`c`.`customer_category_no`,`c`.`user_group`,`o`.`uid_order`,`o`.`order_no`,`o`.`order_status`,`o`.`customer_no`,`o`.`customer_name`,`o`.`customer_address`,`o`.`customer_email`,`o`.`customer_fon`,`o`.`fork_no`,`o`.`fork_model`,`o`.`fork_color`,`o`.`bank_payment`,`o`.`wheelsize`,`o`.`costestimates_numbers`,`o`.`notes_costestimate_extern`,`o`.`created_at`,`o`.`updated_at`"
+    }
+  ],
+  "triggers": [],
+  "routines": [],
+  "events": [],
+  "foreignKeys": [
+    {
+      "TABLE_NAME": "ea_orders",
+      "COLUMN_NAME": "uid_order",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    }
+  ],
+  "size": [
+    {
+      "TABLE_ROWS": "37100",
+      "DATA_LENGTH": "38354944",
+      "INDEX_LENGTH": "11780096"
+    }
+  ]
+}

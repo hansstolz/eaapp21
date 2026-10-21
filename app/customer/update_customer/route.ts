@@ -3,12 +3,17 @@ import { calculatedCustomerFields, CUSTOMER_FIELDS, mailParts } from "@/lib/cust
 import { getAuthSession } from "@/lib/auth-session";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, parsePositiveId, pickDefinedFields, readJsonObject } from "@/lib/route-utils";
+import { customerCountrySchema, customerExemptionSchema } from "@/app/schemas/customer/customer_schema";
 
 export async function PUT(request: Request) {
   const session = await getAuthSession();
   if (!session) return errorResponse("Nicht authentifiziert.", 401);
   const body = await readJsonObject(request);
   if (!body) return errorResponse("Ungültige Kundendaten.", 400);
+  const country = customerCountrySchema.safeParse(body.country);
+  if (!country.success) return errorResponse("Country is required.", 400);
+  const exemption = customerExemptionSchema.safeParse(body);
+  if (!exemption.success) return errorResponse(exemption.error.issues[0]?.message ?? "Ungültige Steuerbefreiung.", 400);
   const uidCustomer = parsePositiveId(body.uid_customer);
   if (!uidCustomer) return errorResponse("Ungültige Kunden-ID.", 400);
   const uidOrder = body.uid_order === undefined ? null : parsePositiveId(body.uid_order);

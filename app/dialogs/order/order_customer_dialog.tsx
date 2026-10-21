@@ -16,6 +16,8 @@ import { FormSelect } from "@/components/app/form_select";
 import { FormSwitch } from "@/components/app/form_switch";
 import { FormSelectOption } from "@/components/app/FormSelect";
 import { LabeledInput } from "@/components/app/LabeledInput";
+import { CustomerExemptionFields } from "@/components/app/CustomerExemptionFields";
+import { CustomerCountryInput } from "@/components/app/CustomerCountryInput";
 import MovableDialog from "@/components/app/movable_dialog";
 import Section from "@/components/app/Section";
 
@@ -174,11 +176,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen, mode = "edit", 
                       label={"Region"}
                       control={control}
                     />
-                    <LabeledInput
-                      name={"country"}
-                      label={"country"}
-                      control={control}
-                    />
+                    <CustomerCountryInput control={control} />
                     <LabeledInput
                       type="textarea"
                       rows={4}
@@ -225,6 +223,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen, mode = "edit", 
                       label={"vat_no"}
                       control={control}
                     />
+                    <CustomerExemptionFields control={control} />
                     {showVat && (
                       <FormSwitch
                         name={"no_vat"}

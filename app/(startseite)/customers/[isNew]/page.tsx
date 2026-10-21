@@ -11,6 +11,8 @@ import DetailButtons from "@/components/app/DetailButtons";
 import ForksPanel from "@/components/app/forks/fork_panel";
 import { FormSelect } from "@/components/app/form_select";
 import { LabeledInput } from "@/components/app/LabeledInput";
+import { CustomerExemptionFields } from "@/components/app/CustomerExemptionFields";
+import { CustomerCountryInput } from "@/components/app/CustomerCountryInput";
 import LineLR from "@/components/app/LineLR";
 import LineRow from "@/components/app/LineRow";
 import MailsPanel from "@/components/app/mails/mail_panel";
@@ -164,11 +166,7 @@ export default function CustomerDetailPage() {
                   name={"region"}
                   label={"region"}
                 />
-                <LabeledInput
-                  control={control}
-                  name={"country"}
-                  label={"county"}
-                />
+                <CustomerCountryInput control={control} />
                 <TwoColumn>
                   <div className="w-1/2">
                     <LabeledInput
@@ -265,6 +263,7 @@ export default function CustomerDetailPage() {
                   name={"vat_no"}
                   label={"vat no"}
                 />
+                <CustomerExemptionFields control={control} />
                 <FormSelect
                   placeholder=""
                   options={payments}

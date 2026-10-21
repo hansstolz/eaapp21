@@ -22,6 +22,8 @@ export type EaCustomer = {
   order_no: number | null;
   check_export_ups: number | null;
   company: string | null;
+  exemption_category?: string | null;
+  exemption_reason?: string | null;
   no_vat: number | null;
   bank_account: string | null;
   bank_name: string | null;

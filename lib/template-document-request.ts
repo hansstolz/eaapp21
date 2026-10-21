@@ -16,6 +16,8 @@ export async function handleDocumentRequest(request: Request, type: "costestimat
     || !["original", "copy"].includes(String(body.version))
     || !["document", "document-and-client", "client"].includes(String(body.documents)))
     return errorResponse("Ungültige Dokumentoptionen.", 400);
+  if (body.eInvoice !== undefined && (typeof body.eInvoice !== "boolean" || type !== "invoice" || body.action !== "mail"))
+    return errorResponse("E-Invoice ist nur als Boolean für Rechnungs-E-Mails verfügbar.", 400);
   if (type === "creditnote" && body.documents !== "document")
     return errorResponse("Für Gutschriften ist nur das Gutschrift-Dokument verfügbar.", 400);
   if (type === "reminder" && body.documents !== "document")
@@ -76,6 +78,7 @@ export async function handleDocumentRequest(request: Request, type: "costestimat
       method: "POST",
       headers: { "Content-Type": "application/json", ...(process.env.TEMPLATES_API_KEY ? { Authorization: `Bearer ${process.env.TEMPLATES_API_KEY}` } : {}) },
       body: JSON.stringify({ type, id, userGroup: session.userGroup, language: body.language, versions,
+        ...(body.eInvoice !== undefined ? { eInvoice: body.eInvoice } : {}),
         ...(email ? { email } : {}) }),
       cache: "no-store",
       signal: AbortSignal.timeout(90_000),
