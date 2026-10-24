@@ -56,7 +56,7 @@ const menuItems = [
   {
     label: "Settings",
     icon: Settings,
-    submenus: ["Forms", "General", "User"],
+    submenus: ["Forms", "General", "E-General", "User"],
   },
   { label: "Reference Fork", icon: Share2 },
 ];
@@ -92,7 +92,8 @@ export default function DashboardShell({
     .filter(Boolean)
     .map((segment) => fromSlug(segment));
   const activeLabel = segments[0] || "Orders";
-  const activeSubmenu = segments[1];
+  const activeSubmenu = menuItems.find(item => item.label === activeLabel)?.submenus
+    ?.find(submenu => toSlug(submenu) === decodedPath.split("/").filter(Boolean)[1]) ?? segments[1];
   const hasActiveLabel = visibleMenuItems.some(
     (item) => item.label === activeLabel,
   );
