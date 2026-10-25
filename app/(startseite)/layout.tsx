@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import DashboardShell from "../dashboard-shell";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getAuthSession } from "@/lib/auth-session";
+import { AuthSessionProvider } from "@/components/app/auth-session-provider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -27,7 +28,9 @@ export default async function StartseiteLayout({
     >
       <body className="min-h-full">
         <TooltipProvider>
-          <DashboardShell session={session}>{children}</DashboardShell>
+          <AuthSessionProvider username={session?.username ?? ""}>
+            <DashboardShell session={session}>{children}</DashboardShell>
+          </AuthSessionProvider>
         </TooltipProvider>
       </body>
     </html>

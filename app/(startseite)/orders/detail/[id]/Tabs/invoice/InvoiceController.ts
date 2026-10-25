@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useSessionUsername } from "@/components/app/auth-session-provider";
 import { useCallback, useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -9,7 +9,7 @@ import { createOrderStore, useOrderStore } from "@/app/stores/order/order_store"
 import { invoiceSchema, type InvoiceForm } from "./InvoiceSchema";
 
 export default function InvoiceController() {
-  const username = useAuthStore((state) => state.user?.username ?? "");
+  const username = useSessionUsername();
   const { order, getOrderById } = useOrderStore();
   const {
     positions,

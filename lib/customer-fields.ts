@@ -23,12 +23,15 @@ export function calculatedCustomerFields(body: Record<string, unknown>) {
   const company = text(body.company);
   const calNameList = company || `${text(body.last_name)} ${text(body.first_name)}`.trim();
   const email = [body.mail1, body.mail2, body.mail3].map(text).join(";");
+  const noVat = Boolean(text(body.vat_no).trim()) && Number(body.no_vat) === 1;
   return {
     cal_name_list: calNameList,
     cal_address: `${calNameList}\n${text(body.street_address)}\n${text(body.zip_postal_code)} ${text(body.city)}`,
     email,
     customer_category_no: body.category_customer === "Dealer" ? 2 : 1,
-    no_vat: Number(body.no_vat) === 1 ? 1 : 0,
+    no_vat: noVat ? 1 : 0,
+    exemption_category: noVat ? text(body.exemption_category) || null : null,
+    exemption_reason: noVat ? text(body.exemption_reason) || null : null,
   };
 }
 

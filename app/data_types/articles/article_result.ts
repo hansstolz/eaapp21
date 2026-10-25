@@ -6,7 +6,7 @@ export interface TArticleResult {
   uid_ref_fork: number;
   price_categ3_rel: string;
   articlecharacter: string;
-  memo: string;
+  memo: string | null;
   price_netto_categ3: number;
   file_name: string;
   article_no_rel: string;
@@ -33,7 +33,7 @@ export interface TArticleResult {
   storage_location2: string;
   selforder_only: string;
   storage_location1: string;
-  manufacturer: string;
+  manufacturer: string | null;
   company_article_no: string;
   quantity: number;
   unit: number;

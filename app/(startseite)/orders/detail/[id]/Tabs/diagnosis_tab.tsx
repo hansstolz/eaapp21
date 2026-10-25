@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useSessionUsername } from "@/components/app/auth-session-provider";
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaStethoscope } from "react-icons/fa";
@@ -30,7 +30,7 @@ import { DropdownItem } from "@/components/app/DropDown";
 import { DiagnoseValues } from "@/app/data_types/diagnosis/diagnose_values";
 
 export default function DiagnosisTab() {
-  const username = useAuthStore((state) => state.user?.username ?? "");
+  const username = useSessionUsername();
   const { order } = useOrderStore();
   const { diagnosis, values, uses, settings, submitDiagnosis } =
     useDiagnosisStore();

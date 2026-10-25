@@ -11,7 +11,7 @@ import MovableDialog from "@/components/app/movable_dialog";
 import { PageColumns } from "@/components/app/TwoPageColumns";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useSessionUsername } from "@/components/app/auth-session-provider";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo } from "react";
@@ -25,7 +25,7 @@ type Props = {
 
 export default function ConfirmCostDialog({ isOpen, setIsOpen }: Props) {
   const { costestimate, updateCostestimate } = useCostestimateStore();
-  const { user } = useAuthStore();
+  const username = useSessionUsername();
 
   const options: FormRadioOption[] = useMemo(
     () => [
@@ -51,7 +51,7 @@ export default function ConfirmCostDialog({ isOpen, setIsOpen }: Props) {
       const alreadyConfirmed = costestimate.costestimate_confirm_check === 1;
       const conf: EaConfirmCost = {
         confirmed_how: alreadyConfirmed ? costestimate.confirmed_how?.toString() ?? "0" : "0",
-        confirmed_by: user?.username ?? "",
+        confirmed_by: costestimate.confirmed_by?.trim() ? costestimate.confirmed_by : username,
         costestimate_confirm_check: "1",
         confirmed_when: alreadyConfirmed && costestimate.confirmed_when
           ? costestimate.confirmed_when
@@ -59,7 +59,7 @@ export default function ConfirmCostDialog({ isOpen, setIsOpen }: Props) {
       };
       reset({ ...conf });
     }
-  }, [costestimate, isOpen, reset, user?.username]);
+  }, [costestimate, isOpen, reset, username]);
 
   const onSubmit = async (data: EaConfirmCost) => {
     try {

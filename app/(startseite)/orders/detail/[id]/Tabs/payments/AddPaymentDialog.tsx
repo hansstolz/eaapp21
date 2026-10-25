@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useSessionUsername } from "@/components/app/auth-session-provider";
 import { useOrderStore } from "@/app/stores/order/order_store";
 import { usePaymentStore } from "@/app/stores/order/PaymentSlice";
 import { InputDate } from "@/components/app/inputdate";
@@ -26,7 +26,7 @@ type PaymentForm = z.input<typeof paymentSchema>;
 export default function AddPaymentDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
   const { order } = useOrderStore();
   const addPayment = usePaymentStore((state) => state.addPayment);
-  const username = useAuthStore((state) => state.user?.username ?? "");
+  const username = useSessionUsername();
   const form = useForm<PaymentForm>({
     resolver: zodResolver(paymentSchema),
     defaultValues: { payment_date: new Date().toISOString(), payment_user: username, payment_note: "Überweisung", payment_amount: 0 },

@@ -29,7 +29,7 @@ export function DropdownMenuItems(props: Props) {
         <DropdownMenuGroup>
           {items.map((item) => (
             <DropdownMenuItem
-              onSelect={() => onSelect?.(item)}
+              onClick={() => onSelect?.(item)}
               key={item.uid}
             >
               {item.label}

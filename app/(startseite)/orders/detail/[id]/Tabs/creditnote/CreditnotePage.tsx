@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useSessionUsername } from "@/components/app/auth-session-provider";
 
 import { useEffect, useState } from "react";
 import { FaFileInvoice } from "react-icons/fa";
@@ -21,7 +21,7 @@ import AddTextDialog from "@/app/dialogs/texts/AddTextDialog";
 import OrderTextList from "@/app/dialogs/texts/OrderTextList";
 
 export default function CreditnotePage() {
-  const username = useAuthStore((state) => state.user?.username ?? "");
+  const username = useSessionUsername();
   const { order } = useOrderStore();
   const { positions, texts, isConfirmed, getConfirmedCostestimate, savePosition, addText, deleteText } = useCostestimateStore();
   const { control, handleSubmit, reset, formState: { isDirty } } = useForm<CreditnoteForm>();

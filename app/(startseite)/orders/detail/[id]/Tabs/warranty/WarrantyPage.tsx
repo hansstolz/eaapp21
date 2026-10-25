@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useSessionUsername } from "@/components/app/auth-session-provider";
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -39,7 +39,7 @@ const columns: ColumnDef<EaOrdersPosition>[] = [
 ];
 
 export default function WarrantyPage() {
-  const username = useAuthStore((state) => state.user?.username ?? "");
+  const username = useSessionUsername();
   const [showAddText, setShowAddText] = useState(false);
   const { order } = useOrderStore();
   const { warranty, getWarrantyByUidOrder } = useWarrantyStore();

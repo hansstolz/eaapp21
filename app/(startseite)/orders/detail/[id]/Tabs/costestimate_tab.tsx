@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useSessionUsername } from "@/components/app/auth-session-provider";
 
 import { useCostestimateStore } from "@/app/stores/costestimate/costestimate_store";
 import HLine from "@/components/app/hline";
@@ -22,7 +22,7 @@ import OrderTextList from "@/app/dialogs/texts/OrderTextList";
 import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
 
 export default function CostestimateTab() {
-  const username = useAuthStore((state) => state.user?.username ?? "");
+  const username = useSessionUsername();
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showAddText, setShowAddText] = useState(false);

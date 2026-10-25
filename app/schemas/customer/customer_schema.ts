@@ -161,7 +161,7 @@ export const customerDefault = {
 
   vat_no: "",
 
-  exemption_category: "" as const,
+  exemption_category: null,
   exemption_reason: "",
 
   no_vat: 0,

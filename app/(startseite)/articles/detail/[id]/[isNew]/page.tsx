@@ -188,7 +188,7 @@ export default function ArticleDetailPage() {
                   <LabeledInput
                     control={control}
                     name={"price_netto_categ3"}
-                    label={"Price Warranty"}
+                    label={"Price Warr."}
                     onKeyDown={onlyDigitsPoint}
                   />
                 </LineRow>

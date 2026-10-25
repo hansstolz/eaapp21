@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useSessionUsername } from "@/components/app/auth-session-provider";
 import { useCallback, useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -12,7 +12,7 @@ import { useWorksheetStore } from "@/app/stores/worksheet/worksheet_store";
 import { worksheetSchema, type WorksheetForm } from "./WorksheetSchema";
 
 export default function WorksheetController() {
-  const username = useAuthStore((state) => state.user?.username ?? "");
+  const username = useSessionUsername();
   const { order } = useOrderStore();
   const { diagnosis, uses, settings } = useDiagnosisStore();
   const { warranty } = useWarrantyStore();
@@ -36,7 +36,13 @@ export default function WorksheetController() {
   }, [isDirty]);
 
   useEffect(() => {
-    if (worksheet) reset({ ...worksheet, worker_worksheet: username || worksheet.worker_worksheet || "" });
+    if (worksheet) {
+      reset({
+        ...worksheet,
+        worker_worksheet: username || worksheet.worker_worksheet || "",
+        work_worksheet_date: worksheet.work_worksheet_date || new Date().toISOString(),
+      });
+    }
   }, [reset, worksheet, username]);
 
   const submitHandler = useCallback(

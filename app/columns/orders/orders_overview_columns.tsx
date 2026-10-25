@@ -15,7 +15,8 @@ export const StatusMap = new Map<string, string>([
   ["default", "bg-black-700"],
 ]);
 
-const toWarranty = (value: number) => value === 0 ? "" : `WA:${value}`;
+const toWarranty = (value: number | null | undefined) =>
+  value == null || value === 0 ? "" : `WA:${value}`;
 
 const toColor = (value: string | null) => {
   if (value === null) return "bg-black-700";
@@ -79,11 +80,12 @@ export default function OrdersOverviewColumns() {
         accessorKey: "warranty_no",
         header: () => "WA",
         footer: (props) => props.column.id,
-        cell: (info) => (
-          <div className="px-2 rounded-md bg-amber-500">
-            {toWarranty(info.getValue() as number)}
-          </div>
-        ),
+        cell: (info) => {
+          const warranty = toWarranty(info.getValue() as number | null);
+          return warranty ? (
+            <div className="px-2 rounded-md bg-amber-500">{warranty}</div>
+          ) : null;
+        },
         size: 90,
         minSize: 90,
         align: "center",

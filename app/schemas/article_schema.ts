@@ -13,7 +13,7 @@ export const EaArticlesSchema = z.object({
 
   articlecharacter: z.string().min(2).optional(),
 
-  memo: z.string().default(""),
+  memo: z.string().nullable().default(""),
 
   price_netto_categ3: z.coerce.number().default(0),
 
@@ -53,7 +53,7 @@ export const EaArticlesSchema = z.object({
 
   storage_location1: z.string().default(""),
 
-  manufacturer: z.string().default(""),
+  manufacturer: z.string().nullable().default(""),
 
   company_article_no: z.string().default(""),
 
