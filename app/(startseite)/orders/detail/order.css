@@ -50,4 +50,12 @@
   .ws-third {
     grid-area: third;
   }
-  
+
+  .ws-cartridge {
+    column-gap: 20px;
+    grid-template-columns: 160px minmax(352px, 2fr) minmax(288px, 1fr);
+  }
+
+  .ws-cartridge > * {
+    min-width: 0;
+  }

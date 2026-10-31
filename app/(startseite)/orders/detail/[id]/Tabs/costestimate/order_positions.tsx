@@ -10,7 +10,7 @@ import { Row } from "@tanstack/react-table";
 import React, { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 
-export default function OrderPositions() {
+export default function OrderPositions({ controlPressed = false }: { controlPressed?: boolean }) {
   const [showArticleDialog, setShowArticleDialog] = useState(false);
   const [addArticle, setAddArticle] = useState(false);
   const { positions, getPosition, deletePosition } = useCostestimateStore();
@@ -39,14 +39,17 @@ export default function OrderPositions() {
   return (
     <div className="flex flex-col gap-3">
       <Button
+        type="button"
+        data-costestimate-shortcut="a"
+        aria-keyshortcuts="Control+a"
         onClick={() => {
           setShowArticleDialog(true);
           setAddArticle(true);
         }}
-        className="w-25"
+        className="w-fit min-w-25"
         size="sm"
       >
-        <FiPlus /> Add Article
+        <FiPlus /> Add Article{controlPressed && " (Ctrl+A)"}
       </Button>
       <div className="h-60 overflow-scroll">
         <DataTable

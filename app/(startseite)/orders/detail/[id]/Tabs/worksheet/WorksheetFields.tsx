@@ -73,7 +73,7 @@ export function InputMenu<T extends FieldValues>({
   });
 
   return (
-    <div className={cn("grid gap-1", labelStyle)}>
+    <div className={cn("grid min-w-0 gap-1", labelStyle)}>
       {label && <Label className="text-xs">{label}</Label>}
       <Controller
         control={control}
@@ -83,8 +83,8 @@ export function InputMenu<T extends FieldValues>({
             value={field.value == null ? "" : String(field.value)}
             onValueChange={field.onChange}
           >
-            <SelectTrigger className="w-full bg-gray-100">
-              <SelectValue />
+            <SelectTrigger className="w-full min-w-0 bg-gray-100">
+              <SelectValue className="min-w-0 truncate" />
             </SelectTrigger>
             <SelectContent>
               {uniqueOptions.map((option) => (

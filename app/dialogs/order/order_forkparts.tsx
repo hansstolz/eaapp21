@@ -20,6 +20,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type Props = {
   isOpen: boolean;
@@ -28,6 +29,7 @@ type Props = {
 
 export default function ForkPartDialog({ isOpen, setIsOpen }: Props) {
   const firstInput = useAutoFocus();
+  const [parts, setParts] = useState<DropdownItem[]>([]);
   const { order } = useOrderStore();
   const addForkPart = useForkPartsStore((state) => state.addForkPart);
   const updateForkPart = useForkPartsStore((state) => state.updateForkPart);
@@ -79,15 +81,43 @@ export default function ForkPartDialog({ isOpen, setIsOpen }: Props) {
   }, [forkPart]);
 
   useEffect(() => {
+    if (!isOpen || !order?.uid_ref_fork) return;
+    const controller = new AbortController();
     const getRefFork = async () => {
-      const response = await fetch(
-        `/ref_forks/get_ref_fork/${order?.uid_ref_fork ?? -1}`,
-      );
-      if (response.ok) setRefFork(await response.json());
+      try {
+        const response = await fetch(
+          `/ref_forks/get_ref_fork/${order.uid_ref_fork}`,
+          { signal: controller.signal },
+        );
+        if (!response.ok) throw new Error("Referenzgabel konnte nicht geladen werden.");
+        const fork: EaRefForksAndParts = await response.json();
+        if (!controller.signal.aborted) setRefFork(fork);
+      } catch {
+        if (!controller.signal.aborted) toast.error("Referenzgabel konnte nicht geladen werden.");
+      }
     };
-
     void getRefFork();
-  }, [order]);
+    return () => controller.abort();
+  }, [isOpen, order?.uid_ref_fork]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const controller = new AbortController();
+    const loadParts = async () => {
+      try {
+        const response = await fetch("/values/get_values_label/ea_ref_forks_parts", {
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error("Parts konnten nicht geladen werden.");
+        const items: DropdownItem[] = await response.json();
+        if (!controller.signal.aborted) setParts(items);
+      } catch {
+        if (!controller.signal.aborted) toast.error("Parts konnten nicht geladen werden.");
+      }
+    };
+    void loadParts();
+    return () => controller.abort();
+  }, [isOpen]);
 
   const updatePartname = (value: DropdownItem) => {
     setValue("forks_part_name", value.label, { shouldDirty: true });
@@ -182,7 +212,7 @@ export default function ForkPartDialog({ isOpen, setIsOpen }: Props) {
               </DisabledInput>
               <div className="h-2"></div>
               <DropdownMenuItems
-                items={refFork?.fork_parts ?? []}
+                items={parts}
                 title="Parts"
                 onSelect={updatePartname}
               />
@@ -202,6 +232,7 @@ export default function ForkPartDialog({ isOpen, setIsOpen }: Props) {
           <div className="flex gap-2 justify-end mr-4">
             <Button
               size="sm"
+              type="button"
               onClick={() => {
                 setIsOpen(false);
               }}

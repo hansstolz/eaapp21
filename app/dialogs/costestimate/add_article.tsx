@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DialogFooter, DialogTitle } from "@/components/ui/dialog";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { onlyDigits, onlyDigitsPoint } from "@/lib/utils";
@@ -35,6 +35,30 @@ type Props = {
 const to2DigitStr = (value: number) => value.toFixed(2);
 
 export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
+  const navigationPending = useRef(false);
+  const [controlPressed, setControlPressed] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const updateControl = (event: KeyboardEvent) => setControlPressed(event.ctrlKey);
+    const clearControl = () => setControlPressed(false);
+    const handleVisibility = () => {
+      if (document.hidden) clearControl();
+    };
+
+    window.addEventListener("keydown", updateControl, true);
+    window.addEventListener("keyup", updateControl, true);
+    window.addEventListener("blur", clearControl);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      window.removeEventListener("keydown", updateControl, true);
+      window.removeEventListener("keyup", updateControl, true);
+      window.removeEventListener("blur", clearControl);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      clearControl();
+    };
+  }, [isOpen]);
   const [typing, setTyping] = useState("");
   const [filteredData, setFilteredData] = useState<TArticleResult[]>([]);
   const { warranty } = useWarrantyStore();
@@ -353,7 +377,8 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
   };
 
   const navigate = async (row: number) => {
-    if (isNew || isSubmitting) return;
+    if (isNew || isSubmitting || navigationPending.current) return;
+    navigationPending.current = true;
     try {
       if (isDirty || canSave) {
         await handleSubmit(async (article) => {
@@ -365,6 +390,8 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
       }
     } catch {
       toast.error("Artikel konnte nicht gespeichert werden.");
+    } finally {
+      navigationPending.current = false;
     }
   };
 
@@ -400,7 +427,33 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
       title=""
       header={getHeader()}
     >
-      <form onSubmit={handleSubmit(submit)}>
+      <form
+        onSubmit={handleSubmit(submit)}
+        onKeyDownCapture={(event) => {
+          if (!isOpen || event.nativeEvent.isComposing || event.altKey || event.metaKey) return;
+
+          const key = event.key.toLowerCase();
+          if (event.ctrlKey && !event.shiftKey && ["c", "s", "m", "n"].includes(key)) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (event.repeat || navigationPending.current) return;
+            event.currentTarget
+              .querySelector<HTMLButtonElement>(`button[data-shortcut="${key}"]`)
+              ?.click();
+            return;
+          }
+
+          if (event.ctrlKey || event.shiftKey || isNew || !positions.length) return;
+          const direction = ["ArrowLeft", "ArrowUp"].includes(event.key)
+            ? -1
+            : ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : 0;
+          if (!direction) return;
+          event.preventDefault();
+          event.stopPropagation();
+          const row = selectedRow + direction;
+          if (!event.repeat && row >= 0 && row < positions.length) void navigate(row);
+        }}
+      >
         <div className="dialog-main ">
           <div className="h-12.5 py-3">
             {isNew && (
@@ -535,24 +588,28 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
             <Button
               size="sm"
               type="button"
+              data-shortcut="c"
+              aria-keyshortcuts="Control+c"
               onClick={() => {
                 setIsOpen(false);
               }}
             >
-              Close (C)
+              Close{controlPressed && " (Ctrl+C)"}
             </Button>
-            <Button disabled={isSubmitting || (!canSave && !isDirty)} type="submit" size="sm">
-              Save (S)
+            <Button data-shortcut="s" aria-keyshortcuts="Control+s" disabled={isSubmitting || (!canSave && !isDirty)} type="submit" size="sm">
+              Save{controlPressed && " (Ctrl+S)"}
             </Button>
             <Button
               title="Add More"
+              data-shortcut="m"
+              aria-keyshortcuts="Control+m"
               disabled={isSubmitting || (!canSave && !isDirty)}
               type="submit"
               size="sm"
             >
-              Add More (N)
+              Add More{controlPressed && " (Ctrl+M)"}
             </Button>
-            <Button type="button" size="sm" disabled={isNew || isSubmitting} onClick={startNew}>New</Button>
+            <Button data-shortcut="n" aria-keyshortcuts="Control+n" type="button" size="sm" disabled={isNew || isSubmitting} onClick={startNew}>New{controlPressed && " (Ctrl+N)"}</Button>
           </div>
         </DialogFooter>
       </form>

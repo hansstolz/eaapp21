@@ -8,7 +8,7 @@ import { InputDate } from "@/components/app/inputdate";
 import { LabeledInput } from "@/components/app/LabeledInput";
 import SelectValues from "@/components/app/select_values";
 import { Button } from "@/components/ui/button";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaEuroSign, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { FiCalendar, FiPlus } from "react-icons/fi";
@@ -23,6 +23,38 @@ import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
 
 export default function CostestimateTab() {
   const username = useSessionUsername();
+  const formRef = useRef<HTMLFormElement>(null);
+  const [controlPressed, setControlPressed] = useState(false);
+
+  useEffect(() => {
+    const clearControl = () => setControlPressed(false);
+    const onKeyDown = (event: KeyboardEvent) => {
+      setControlPressed(event.ctrlKey);
+      if (!event.ctrlKey || event.altKey || event.metaKey || event.shiftKey || event.isComposing) return;
+      const key = event.key.toLowerCase();
+      if (key !== "a" && key !== "t") return;
+      const form = formRef.current;
+      if (!form || !form.getClientRects().length || document.querySelector('[role="dialog"][aria-modal="true"], [role="alertdialog"][aria-modal="true"]')) return;
+      const button = form.querySelector<HTMLButtonElement>(`button[data-costestimate-shortcut="${key}"]`);
+      if (!button || button.disabled) return;
+      event.preventDefault();
+      if (!event.repeat) button.click();
+    };
+    const onKeyUp = (event: KeyboardEvent) => setControlPressed(event.ctrlKey);
+    const onVisibilityChange = () => {
+      if (document.hidden) clearControl();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    window.addEventListener("blur", clearControl);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+      window.removeEventListener("blur", clearControl);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, []);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showAddText, setShowAddText] = useState(false);
@@ -72,7 +104,7 @@ export default function CostestimateTab() {
   return (
     <>
       <div className={"mb-8 mt-4"}>
-        <form onSubmit={handleSubmit(submitData)}>
+        <form ref={formRef} onSubmit={handleSubmit(submitData)}>
           <div className="flex gap-2 text-md text-blue-800  mb-4 font-medium">
             <div className="w-full bg-blue-50 border-solid border border-blue-300 rounded-md flex flex-row justify-between p-2 ">
               <div className="flex flex-row gap-1 items-center">
@@ -147,7 +179,7 @@ export default function CostestimateTab() {
             </div>
           </div>
           <HLine />
-          <OrderPositions />
+          <OrderPositions controlPressed={controlPressed} />
           <HLine />
           <div className="flex flex-col gap-3">
             <h3 className="text-sm font-medium text-secondary">
@@ -155,12 +187,14 @@ export default function CostestimateTab() {
             </h3>
             <Button
               type="button"
-              className="w-25"
+              className="w-fit min-w-25"
               size="sm"
+              data-costestimate-shortcut="t"
+              aria-keyshortcuts="Control+t"
               disabled={!costestimate}
               onClick={() => setShowAddText(true)}
             >
-              <FiPlus /> Add Text
+              <FiPlus /> Add Text{controlPressed && " (Ctrl+T)"}
             </Button>
             <OrderTextList
               texts={costestimateTexts}

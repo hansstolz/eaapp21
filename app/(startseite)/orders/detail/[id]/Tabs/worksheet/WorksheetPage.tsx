@@ -79,15 +79,15 @@ export default function WorksheetPage() {
             </div>
           </div>
           <HLine />
-          <PageColumns className="grid-cols-2">
-            <div>
-              <div className="ws-values">
+          <PageColumns className="grid-cols-1 gap-8 min-[1800px]:grid-cols-2">
+            <div className="min-w-0 overflow-x-auto">
+              <div className="ws-values ws-cartridge">
                 <div className="ws-first">
                   <SmallText className="font-bold">Cartridge</SmallText>
                   <SmallText className="text-right">Compression</SmallText>
                 </div>
                 <div className="ws-second">
-                  <PageColumns className="grid-cols-2">
+                  <PageColumns className="mr-0 grid-cols-2 gap-4">
                     <div>
                       <SmallText className="text-center">in</SmallText>
                       <div className="flex flex-col gap-3">
@@ -141,30 +141,31 @@ export default function WorksheetPage() {
                   </PageColumns>
                 </div>
                 <div className="ws-third">
-                  <div className="mt-4 flex flex-col gap-3 ">
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <SmallText>neg. Spring</SmallText>
+                      <InputMenu
+                        options={neg_spring}
+                        control={control}
+                        name={"ns_negspring"}
+                      />
+                    </div>
                     <InputMenu
-                      labelStyle="flex flex-row gap-1 w-full items-center"
-                      label="neg. Spring"
-                      options={neg_spring}
-                      control={control}
-                      name={"ns_negspring"}
-                    />
-                    <InputMenu
-                      labelStyle="flex flex-row gap-1 w-full items-center"
+                      labelStyle="grid grid-cols-[6rem_minmax(0,1fr)] gap-3 w-full items-center"
                       label="Oilviscosity"
                       options={oil_viscosity}
                       control={control}
                       name={"ov_oilviscosity"}
                     />
                     <InputMenu
-                      labelStyle="flex flex-row gap-1 w-full items-center"
+                      labelStyle="grid grid-cols-[6rem_minmax(0,1fr)] gap-3 w-full items-center"
                       label="Coil Spring"
                       options={coil_spring}
                       control={control}
                       name={"cs_coilspring"}
                     />
                     <InputMenu
-                      labelStyle="flex flex-row gap-1 w-full items-center"
+                      labelStyle="grid grid-cols-[6rem_minmax(0,1fr)] gap-3 w-full items-center"
                       label="Airpressure"
                       options={air_pressure}
                       control={control}
@@ -173,12 +174,12 @@ export default function WorksheetPage() {
                   </div>
                 </div>
               </div>
-              <div className="ws-values">
+              <div className="ws-values ws-cartridge">
                 <div className="ws-first">
                   <SmallText className="mt-10 text-right">Rebound</SmallText>
                 </div>
                 <div className="ws-second">
-                  <PageColumns className="mt-8 grid-cols-2">
+                  <PageColumns className="mr-0 mt-8 grid-cols-2 gap-4">
                     <div>
                       <div className="flex flex-col gap-3">
                         <InputMenu
