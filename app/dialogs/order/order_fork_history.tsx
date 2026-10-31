@@ -52,7 +52,7 @@ export default function ForkHistoryDialog({ isOpen, setIsOpen }: Props) {
           </div>
           <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
             <div className="flex gap-12 justify-end mr-4">
-              <Button
+              <Button aria-keyshortcuts="Control+C" type="button"
                 size="sm"
                 onClick={() => {
                   setIsOpen(false);
@@ -60,7 +60,7 @@ export default function ForkHistoryDialog({ isOpen, setIsOpen }: Props) {
               >
                 Close
               </Button>
-              <Button disabled={true} type="submit" size="sm">
+              <Button aria-keyshortcuts="Control+S" disabled={true} type="submit" size="sm">
                 Save
               </Button>
             </div>

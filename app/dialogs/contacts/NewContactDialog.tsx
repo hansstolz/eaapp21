@@ -123,14 +123,14 @@ export default function NewContactDialog(props: Props) {
         </PageColumns>
         <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
           <div className="flex justify-end gap-2">
-            <Button
+            <Button aria-keyshortcuts="Control+C"
               variant="outline"
               type="button"
               onClick={() => setIsOpen(false)}
             >
               Close
             </Button>
-            <Button disabled={!isDirty} variant="destructive" type="submit">
+            <Button aria-keyshortcuts="Control+S" disabled={!isDirty} variant="destructive" type="submit">
               Save
             </Button>
           </div>

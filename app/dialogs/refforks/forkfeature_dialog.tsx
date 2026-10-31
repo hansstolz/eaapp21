@@ -252,14 +252,14 @@ export default function ForkFeatureDialog({
 
         <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
           <div className="flex justify-end gap-2">
-            <Button
+            <Button aria-keyshortcuts="Control+C"
               type="button"
               variant="outline"
               onClick={closeForkFeatureDialog}
             >
               Close
             </Button>
-            <Button disabled={!isDirty} variant="destructive" type="submit">
+            <Button aria-keyshortcuts="Control+S" disabled={!isDirty} variant="destructive" type="submit">
               Save
             </Button>
           </div>

@@ -152,7 +152,7 @@ function useDocumentRequest(props: Context) {
   }
   const errorDialog = error ? <MovableDialog open setOpen={(open) => { if (!open) setError(""); }} title="Dokumentanfrage fehlgeschlagen" className="min-w-md max-w-lg">
     <DialogDescription role="alert">{error}</DialogDescription>
-    <DialogFooter><Button type="button" onClick={() => setError("")}>Schließen</Button></DialogFooter>
+    <DialogFooter><Button aria-keyshortcuts="Control+C" type="button" onClick={() => setError("")}>Schließen</Button></DialogFooter>
   </MovableDialog> : null;
   return { container, busy, submit, errorDialog };
 }
@@ -166,7 +166,7 @@ function PrintDialog(props: Context) {
       <DocumentOptions documentType={props.documentType} language={props.language} />
       {!documentEndpoints[props.documentType] && <p className="text-sm text-muted-foreground">Printing will be available in the next step.</p>}
       <DialogFooter>
-        <Button type="button" variant="outline" disabled={busy} onClick={props.onClose}>Close</Button>
+        <Button aria-keyshortcuts="Control+C" type="button" variant="outline" disabled={busy} onClick={props.onClose}>Close</Button>
         <Button type="button" disabled={busy || (!documentEndpoints[props.documentType]) || !props.documentId} onClick={() => void submit("print")}><FiPrinter /> {busy ? "Creating PDF…" : "Print"}</Button>
       </DialogFooter>
     </div>
@@ -207,7 +207,7 @@ function MailDialog(props: Context) {
       </div>
       {!documentEndpoints[props.documentType] && <p className="text-sm text-muted-foreground">Sending email will be available in the next step.</p>}
       <DialogFooter>
-        <Button type="button" variant="outline" disabled={busy} onClick={props.onClose}>Close</Button>
+        <Button aria-keyshortcuts="Control+C" type="button" variant="outline" disabled={busy} onClick={props.onClose}>Close</Button>
         <Button type="button" disabled={busy || (!documentEndpoints[props.documentType]) || !props.documentId || !recipient.trim() || !subject.trim()} onClick={() => void submit("mail", { to: recipient.trim(), subject, text: message }, eInvoice)}><FiMail /> {busy ? "Sending…" : "Send"}</Button>
       </DialogFooter>
     </div>

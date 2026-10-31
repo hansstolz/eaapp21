@@ -51,8 +51,8 @@ export default function PaymentDialog({ invoice, onClose, onSaved }: {
           {error && <p role="alert" className="text-red-600">{error}</p>}
         </div>
         <DialogFooter className="border-t pt-4">
-          <Button type="button" disabled={busy} onClick={onClose} variant="outline">Cancel</Button>
-          <Button type="submit" disabled={busy || !cents || cents > remaining}>{busy ? "Saving…" : "Save"}</Button>
+          <Button aria-keyshortcuts="Control+C" type="button" disabled={busy} onClick={onClose} variant="outline">Cancel</Button>
+          <Button aria-keyshortcuts="Control+S" type="submit" disabled={busy || !cents || cents > remaining}>{busy ? "Saving…" : "Save"}</Button>
         </DialogFooter>
       </form>
   </MovableDialog>;

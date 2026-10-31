@@ -589,15 +589,15 @@ export default function AddArtDialog({ isOpen, setIsOpen, addArticle }: Props) {
               size="sm"
               type="button"
               data-shortcut="c"
-              aria-keyshortcuts="Control+c"
+              aria-keyshortcuts="Control+C"
               onClick={() => {
                 setIsOpen(false);
               }}
             >
-              Close{controlPressed && " (Ctrl+C)"}
+              Close
             </Button>
-            <Button data-shortcut="s" aria-keyshortcuts="Control+s" disabled={isSubmitting || (!canSave && !isDirty)} type="submit" size="sm">
-              Save{controlPressed && " (Ctrl+S)"}
+            <Button data-shortcut="s" aria-keyshortcuts="Control+S" disabled={isSubmitting || (!canSave && !isDirty)} type="submit" size="sm">
+              Save
             </Button>
             <Button
               title="Add More"

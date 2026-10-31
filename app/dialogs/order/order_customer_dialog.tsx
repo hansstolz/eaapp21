@@ -284,10 +284,11 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen, mode = "edit", 
                 setIsOpen(false);
               }}
               title={"Close"}
+              aria-keyshortcuts="Control+C"
             >
               {mode === "create" ? "Cancel" : "Close"}
             </Button>
-            <Button
+            <Button aria-keyshortcuts="Control+S"
               className="mr-8"
               disabled={!isDirty || isSubmitting}
               type="submit"

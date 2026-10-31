@@ -187,14 +187,14 @@ export default function RefforkDialog({
 
         <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
           <div className="flex justify-end gap-2">
-            <Button
+            <Button aria-keyshortcuts="Control+C"
               type="button"
               variant="outline"
               onClick={closeRefForkDialog}
             >
               Close
             </Button>
-            <Button
+            <Button aria-keyshortcuts="Control+S"
               disabled={!isDirty || isSubmitting}
               variant="destructive"
               type="submit"

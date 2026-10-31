@@ -132,7 +132,7 @@ export default function ConfirmCostDialog({ isOpen, setIsOpen }: Props) {
 
         <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
           <div className="flex gap-12 justify-end mr-4">
-            <Button
+            <Button aria-keyshortcuts="Control+C"
               type="button"
               disabled={isSubmitting}
               size="sm"
@@ -142,7 +142,7 @@ export default function ConfirmCostDialog({ isOpen, setIsOpen }: Props) {
             >
               Close
             </Button>
-            <Button disabled={!costestimate || isSubmitting} type="submit" size="sm" title={"Save"}>
+            <Button aria-keyshortcuts="Control+S" disabled={!costestimate || isSubmitting} type="submit" size="sm" title={"Save"}>
               {isSubmitting ? "Saving…" : "Save"}
             </Button>
           </div>

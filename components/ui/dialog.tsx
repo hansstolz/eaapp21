@@ -3,6 +3,9 @@
 import * as React from "react"
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 
+import { DialogShortcutHintsContext } from "@/components/ui/dialog-shortcut-hint"
+import { useDialogShortcuts } from "@/lib/hooks/dialog-shortcuts"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { XIcon } from "lucide-react"
@@ -43,11 +46,14 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  onKeyDownCapture,
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean
 }) {
+  const { ref: shortcutRef, onKeyDownCapture: handleShortcut, showShortcutHints } = useDialogShortcuts()
   return (
+    <DialogShortcutHintsContext.Provider value={showShortcutHints}>
     <DialogPortal>
       <DialogOverlay />
       <DialogPrimitive.Popup
@@ -57,11 +63,17 @@ function DialogContent({
           className
         )}
         {...props}
+        ref={shortcutRef}
+        onKeyDownCapture={(event) => {
+          onKeyDownCapture?.(event)
+          handleShortcut(event)
+        }}
       >
         {children}
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
+            aria-keyshortcuts="Control+C"
             render={
               <Button
                 variant="ghost"
@@ -77,6 +89,7 @@ function DialogContent({
         )}
       </DialogPrimitive.Popup>
     </DialogPortal>
+    </DialogShortcutHintsContext.Provider>
   )
 }
 
@@ -109,7 +122,7 @@ function DialogFooter({
     >
       {children}
       {showCloseButton && (
-        <DialogPrimitive.Close render={<Button variant="outline" />}>
+        <DialogPrimitive.Close aria-keyshortcuts="Control+C" render={<Button variant="outline" />}>
           Close
         </DialogPrimitive.Close>
       )}

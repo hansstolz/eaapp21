@@ -230,7 +230,7 @@ export default function ForkPartDialog({ isOpen, setIsOpen }: Props) {
 
         <DialogFooter className="h-12 py-2 px-4 bg-gray-200">
           <div className="flex gap-2 justify-end mr-4">
-            <Button
+            <Button aria-keyshortcuts="Control+C"
               size="sm"
               type="button"
               onClick={() => {
@@ -239,7 +239,7 @@ export default function ForkPartDialog({ isOpen, setIsOpen }: Props) {
             >
               Close
             </Button>
-            <Button disabled={!isDirty} type="submit" size="sm">
+            <Button aria-keyshortcuts="Control+S" disabled={!isDirty} type="submit" size="sm">
               {newRec ? "New" : "Save"}
             </Button>
           </div>

@@ -63,7 +63,7 @@ export default function NewMailDialog(props: Props) {
           >
             <Users2 /> Customer/Supplier
           </Button>
-          <Button
+          <Button aria-keyshortcuts="Control+C"
             variant="outline"
             type="button"
             onClick={() => setIsOpen(false)}

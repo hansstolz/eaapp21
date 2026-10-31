@@ -106,7 +106,7 @@ export default function AddTextDialog({
         </div>
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
         <DialogFooter className="mx-0 mb-0 rounded-b-none">
-          <Button
+          <Button aria-keyshortcuts="Control+C"
             type="button"
             variant="outline"
             onClick={() => onOpenChange(false)}

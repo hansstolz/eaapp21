@@ -3,6 +3,9 @@
 import * as React from "react"
 import { AlertDialog as AlertDialogPrimitive } from "@base-ui/react/alert-dialog"
 
+import { DialogShortcutHintsContext } from "@/components/ui/dialog-shortcut-hint"
+import { useDialogShortcuts } from "@/lib/hooks/dialog-shortcuts"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
@@ -41,11 +44,14 @@ function AlertDialogOverlay({
 function AlertDialogContent({
   className,
   size = "default",
+  onKeyDownCapture,
   ...props
 }: AlertDialogPrimitive.Popup.Props & {
   size?: "default" | "sm"
 }) {
+  const { ref: shortcutRef, onKeyDownCapture: handleShortcut, showShortcutHints } = useDialogShortcuts()
   return (
+    <DialogShortcutHintsContext.Provider value={showShortcutHints}>
     <AlertDialogPortal>
       <AlertDialogOverlay />
       <AlertDialogPrimitive.Popup
@@ -56,8 +62,14 @@ function AlertDialogContent({
           className
         )}
         {...props}
+        ref={shortcutRef}
+        onKeyDownCapture={(event) => {
+          onKeyDownCapture?.(event)
+          handleShortcut(event)
+        }}
       />
     </AlertDialogPortal>
+    </DialogShortcutHintsContext.Provider>
   )
 }
 
@@ -164,6 +176,7 @@ function AlertDialogCancel({
   return (
     <AlertDialogPrimitive.Close
       data-slot="alert-dialog-cancel"
+      aria-keyshortcuts="Control+C"
       className={cn(className)}
       render={<Button variant={variant} size={size} />}
       {...props}
