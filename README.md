@@ -6,6 +6,10 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 einer externen Datenbank durch die lokale Datenbank. Konfiguration, Ausführung
 und Wiederherstellung: [Anleitung](scripts/replace-remote-db.md).
 
+## Deployment
+
+GitHub Actions für `srv2120280.hstgr.cloud`: [Einrichtung](deploy/README.md).
+
 ## Getting Started
 
 First, run the development server:
