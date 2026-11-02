@@ -137,4 +137,4 @@ Actions-Dialog ebenfalls für `main` starten. Auf dem Server kann der Start mit
 `sudo journalctl -u eaapp.service -n 100 --no-pager` geprüft werden.
 Die automatische HTTP-Prüfung testet den lokalen Webserver, nicht alle
 Datenbank- und Dokumentenfunktionen. Diese nach dem ersten Deploy im Browser
-prüfen. Der Server benötigt für npm und gegebenenfalls Next.js-Fonts Internetzugang.
+prüfen. Der Server benötigt für npm und gegebenenfalls Next.js-Fonts Internetzugang. 
