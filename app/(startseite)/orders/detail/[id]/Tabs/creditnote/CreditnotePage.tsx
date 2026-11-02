@@ -12,7 +12,7 @@ import { useOrderStore } from "@/app/stores/order/order_store";
 import SubSection from "@/components/app/SubSection";
 import HLine from "@/components/app/hline";
 import { InputDate } from "@/components/app/inputdate";
-import { LabeledInput } from "@/components/app/LabeledInput";
+import { WorksheetInput } from "../worksheet/WorksheetFields";
 import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { Button } from "@/components/ui/button";
 import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
@@ -24,7 +24,7 @@ export default function CreditnotePage() {
   const username = useSessionUsername();
   const { order } = useOrderStore();
   const { positions, texts, isConfirmed, getConfirmedCostestimate, savePosition, addText, deleteText } = useCostestimateStore();
-  const { control, handleSubmit, reset, formState: { isDirty } } = useForm<CreditnoteForm>();
+  const { control, register, handleSubmit, reset, formState: { isDirty, errors } } = useForm<CreditnoteForm>();
   const [loaded, setLoaded] = useState(false);
   const [showAddText, setShowAddText] = useState(false);
 
@@ -62,9 +62,11 @@ export default function CreditnotePage() {
   return (
     <form onSubmit={handleSubmit(submit)}>
       <SubSection icon={FaFileInvoice} title="Creditnote" actions={actions}>
-        <div className="flex justify-end gap-3">
-          <LabeledInput name="worker_creditnote" label="Worker" control={control} />
-          <InputDate name="creditnote_date" control={control} label="Credit date" className="w-44" classLabel="text-xs" />
+        <div className="flex flex-row justify-between">
+          <div className="ml-auto flex flex-row gap-3">
+            <WorksheetInput register={register("worker_creditnote")} label="Worker" error={errors.worker_creditnote?.message} />
+            <InputDate name="creditnote_date" control={control} label="Credit date" className="w-1/2" />
+          </div>
         </div>
         <HLine />
         <div className="max-h-60 overflow-auto">

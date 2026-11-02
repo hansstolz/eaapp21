@@ -20,6 +20,7 @@ import SubSection from "@/components/app/SubSection";
 import HLine from "@/components/app/hline";
 import { InputDate } from "@/components/app/inputdate";
 import { LabeledInput } from "@/components/app/LabeledInput";
+import { WorksheetInput } from "../worksheet/WorksheetFields";
 import { DataTable } from "@/components/app/tanstack_table/data_table";
 import { Button } from "@/components/ui/button";
 import OrderDocumentActions from "@/app/dialogs/orders/OrderDocumentActions";
@@ -44,7 +45,7 @@ export default function WarrantyPage() {
   const { order } = useOrderStore();
   const { warranty, getWarrantyByUidOrder } = useWarrantyStore();
   const { positions, texts, addText, deleteText, costestimate, isConfirmed, getConfirmedCostestimate } = useCostestimateStore();
-  const { control, handleSubmit, reset, trigger, getValues, formState: { isDirty, isSubmitting } } = useForm<WarrantyForm>({
+  const { control, register, handleSubmit, reset, trigger, getValues, formState: { isDirty, isSubmitting, errors } } = useForm<WarrantyForm>({
     resolver: zodResolver(warrantyFormSchema),
   });
 
@@ -95,9 +96,11 @@ export default function WarrantyPage() {
   return (
     <form onSubmit={handleSubmit(submit)}>
       <SubSection icon={FaFileInvoice} title={`Warranty #${warranty.warranty_no ?? ""}`} actions={actions}>
-        <div className="flex justify-end gap-3">
-          <LabeledInput name="worker_warranty" label="Worker" control={control} />
-          <InputDate name="work_warranty_date" control={control} label="Warranty date" className="w-44" classLabel="text-xs" />
+        <div className="flex flex-row justify-between">
+          <div className="ml-auto flex flex-row gap-3">
+            <WorksheetInput register={register("worker_warranty")} label="Worker" error={errors.worker_warranty?.message} />
+            <InputDate name="work_warranty_date" control={control} label="Warranty date" className="w-1/2" />
+          </div>
         </div>
         <HLine />
         <div className="max-h-60 overflow-auto">
