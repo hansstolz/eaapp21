@@ -45,12 +45,14 @@ von `~/.ssh/eaapp_actions.pub` auf dem Server als eigene Zeile in
 Auf dem Server `/srv/eaapp/shared/.env` anlegen:
 
 ```dotenv
+APP_URL="https://srv2120280.hstgr.cloud"
 DATABASE_URL="mysql://eaapp:URL_KODIERTES_PASSWORT@127.0.0.1:3306/ee"
 JWT_SECRET="EIN_LANGES_ZUFAELLIGES_GEHEIMNIS"
 TEMPLATES_API_URL="http://127.0.0.1:3001"
 TEMPLATES_API_KEY="SCHLUESSEL_DES_DOKUMENTENDIENSTES"
 ```
 
+Bei eigener Domain `APP_URL` auf deren öffentliche HTTPS-Adresse setzen.
 JWT-Geheimnis beispielsweise mit `openssl rand -hex 32` erzeugen. Sonderzeichen
 im Datenbankpasswort für die URL kodieren. Das MySQL-Konto muss für lokale
 TCP-Verbindungen und die Datenbank `ee` berechtigt sein. Der Dokumentendienst

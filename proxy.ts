@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { AUTH_COOKIE_NAME, verifyAuthToken } from "@/lib/auth";
+import { getAppOrigin } from "@/lib/app-url";
 
 const PUBLIC_PATHS = new Set(["/login", "/api/auth/login", "/api/auth/logout"]);
 
@@ -52,7 +53,7 @@ export async function proxy(request: NextRequest) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
 
-      return NextResponse.redirect(new URL("/orders", request.url));
+      return NextResponse.redirect(new URL("/orders", getAppOrigin(request.url)));
     }
   } catch (error) {
     console.error(error);
@@ -62,7 +63,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const loginUrl = new URL("/login", request.url);
+  const loginUrl = new URL("/login", getAppOrigin(request.url));
   loginUrl.searchParams.set(
     "next",
     `${request.nextUrl.pathname}${request.nextUrl.search}`,

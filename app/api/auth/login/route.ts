@@ -5,12 +5,15 @@ import {
   createAuthToken,
 } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getAppOrigin } from "@/lib/app-url";
 
 function getSafeRedirectPath(value: FormDataEntryValue | null): string {
   if (
     typeof value !== "string" ||
     !value.startsWith("/") ||
-    value.startsWith("//")
+    value.startsWith("//") ||
+    value.includes("\\") ||
+    /[\u0000-\u0020\u007f]/.test(value)
   ) {
     return "/orders";
   }
@@ -23,7 +26,7 @@ export async function POST(request: Request) {
   const identifier = String(formData.get("identifier") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const nextPath = getSafeRedirectPath(formData.get("next"));
-  const baseUrl = new URL(request.url);
+  const baseUrl = getAppOrigin(request.url);
 
   try {
     const user = await prisma.ea_user.findFirst({
