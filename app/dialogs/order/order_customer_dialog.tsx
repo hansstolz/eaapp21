@@ -5,12 +5,14 @@ import {
 } from "@/app/api/customers/customers_crud";
 import {
   customerSchema,
+  customerAltAddressSchema,
   customerDefault,
   EaCustomerMails,
 } from "@/app/schemas/customer/customer_schema";
 import { useOrderStore } from "@/app/stores/order/order_store";
 import type { EaCustomer } from "@/app/data_types/customer/ea_customer";
 import { ValueTypes } from "@/app/data_types/values/value_types";
+import { CustomerAltAddressDialog } from "@/components/app/CustomerAltAddressDialog";
 import DisabledInput from "@/components/app/DisabledInput";
 import { FormSelect } from "@/components/app/form_select";
 import { FormSwitch } from "@/components/app/form_switch";
@@ -51,10 +53,12 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen, mode = "edit", 
   const [payments, setPayments] = useState<FormSelectOption[]>([]);
 
   const {
+    getValues,
     handleSubmit,
     reset,
+    setValue,
     control,
-    formState: { isDirty, isSubmitting },
+    formState: { dirtyFields, isDirty, isSubmitting },
   } = useForm<EaCustomerMails>({
     resolver: zodResolver(customerSchema),
     defaultValues: mode === "create" ? { ...customerDefault, category_customer: "Private", bank_payment: "COD" } : undefined,
@@ -65,7 +69,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen, mode = "edit", 
 
   useEffect(() => {
     const getCustomer = async () => {
-      if (mode === "edit" && order) {
+      if (isOpen && mode === "edit" && order) {
         const full_customer = await _getCustomerById(order.uid_customer!);
         if (full_customer.customer) reset(full_customer.customer);
       }
@@ -79,7 +83,7 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen, mode = "edit", 
     };
     getCustomer();
     get_payments();
-  }, [mode, order, reset]);
+  }, [isOpen, mode, order, reset]);
 
   const submitCustomer = async (data: EaCustomerMails) => {
     if (mode === "edit" && !order) return;
@@ -92,7 +96,12 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen, mode = "edit", 
         return;
       }
       if (!order) return;
-      const customer = await _updateCustomer({ ...data, uid_order: order.uid_order });
+      const payload = { ...data, uid_order: order.uid_order };
+      for (const field of customerAltAddressSchema.keyof().options) {
+        if (!dirtyFields[field]) delete payload[field];
+      }
+      if (!dirtyFields.delivery_address) delete payload.delivery_address;
+      const customer = await _updateCustomer(payload);
       order.updateCustomer(customer as unknown as EaCustomer);
       updateOrder();
       toast.success("Customer updated");
@@ -296,6 +305,20 @@ export default function OrderCustomerDialog({ isOpen, setIsOpen, mode = "edit", 
             >
               {isSubmitting ? "Saving…" : "Save"}
             </Button>
+            {mode === "edit" && (
+              <CustomerAltAddressDialog
+                disabled={isSubmitting || !order}
+                readAddress={() => getValues()}
+                onApply={(address) => {
+                  for (const field of customerAltAddressSchema.keyof().options) {
+                    const value = address[field]?.trim() || null;
+                    if (value !== (getValues(field) ?? null)) {
+                      setValue(field, value, { shouldDirty: true });
+                    }
+                  }
+                }}
+              />
+            )}
           </DialogFooter>
         </form>
       </MovableDialog>

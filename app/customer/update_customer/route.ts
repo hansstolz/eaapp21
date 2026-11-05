@@ -3,7 +3,7 @@ import { calculatedCustomerFields, CUSTOMER_FIELDS, mailParts } from "@/lib/cust
 import { getAuthSession } from "@/lib/auth-session";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, parsePositiveId, pickDefinedFields, readJsonObject } from "@/lib/route-utils";
-import { customerCountrySchema, customerExemptionSchema } from "@/app/schemas/customer/customer_schema";
+import { customerAltAddressSchema, customerCountrySchema, customerExemptionSchema } from "@/app/schemas/customer/customer_schema";
 
 export async function PUT(request: Request) {
   const session = await getAuthSession();
@@ -14,6 +14,8 @@ export async function PUT(request: Request) {
   if (!country.success) return errorResponse("Country is required.", 400);
   const exemption = customerExemptionSchema.safeParse(body);
   if (!exemption.success) return errorResponse(exemption.error.issues[0]?.message ?? "Ungültige Steuerbefreiung.", 400);
+  const altAddress = customerAltAddressSchema.safeParse(body);
+  if (!altAddress.success) return errorResponse(altAddress.error.issues[0]?.message ?? "Ungültige Rechnungsadresse.", 400);
   const uidCustomer = parsePositiveId(body.uid_customer);
   if (!uidCustomer) return errorResponse("Ungültige Kunden-ID.", 400);
   const uidOrder = body.uid_order === undefined ? null : parsePositiveId(body.uid_order);

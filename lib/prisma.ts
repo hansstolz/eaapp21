@@ -3,7 +3,7 @@ import { Prisma, PrismaClient } from "@/generated/prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
-  prismaSchema?: string;
+  prismaNamespace?: typeof Prisma;
 };
 
 function createPrismaClient(): PrismaClient {
@@ -22,9 +22,8 @@ function createPrismaClient(): PrismaClient {
 }
 
 // Fast Refresh preserves globalThis even after regenerating the Prisma client.
-// Reuse a connection pool only when its generated models still match.
-const schema = JSON.stringify(Prisma.ModelName);
-const cachedPrisma = globalForPrisma.prismaSchema === schema
+// Reuse the pool only while the generated Prisma module is the same.
+const cachedPrisma = globalForPrisma.prismaNamespace === Prisma
   ? globalForPrisma.prisma
   : undefined;
 
@@ -38,5 +37,5 @@ if (globalForPrisma.prisma && globalForPrisma.prisma !== prisma) {
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
-  globalForPrisma.prismaSchema = schema;
+  globalForPrisma.prismaNamespace = Prisma;
 }

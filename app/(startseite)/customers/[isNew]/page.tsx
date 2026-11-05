@@ -1,12 +1,13 @@
 "use client";
 
-import { customerSchema } from "@/app/schemas/customer/customer_schema";
+import { customerAltAddressSchema, customerSchema } from "@/app/schemas/customer/customer_schema";
 import {
   useUpdateCustomerBoundStore,
   useCustomerBoundStore,
 } from "@/app/stores/customer/CustomerStore";
 import ClientPanel from "@/components/app/clients/client_panel";
 import ContactsPanel from "@/components/app/contacts/contact_panel";
+import { CustomerAltAddressDialog } from "@/components/app/CustomerAltAddressDialog";
 import DetailButtons from "@/components/app/DetailButtons";
 import ForksPanel from "@/components/app/forks/fork_panel";
 import { FormSelect } from "@/components/app/form_select";
@@ -53,9 +54,11 @@ export default function CustomerDetailPage() {
 
   const {
     control,
+    getValues,
     handleSubmit,
+    setValue,
     reset,
-    formState: { isDirty },
+    formState: { dirtyFields, isDirty },
   } = useForm<
     z.input<typeof customerSchema>,
     unknown,
@@ -74,20 +77,20 @@ export default function CustomerDetailPage() {
       return;
     }
     data.uid_customer = uid_customer || 0;
-    const result = isNew
-      ? await _createCustomer(data)
-      : await _updateCustomer(data);
-
-    if (result === null) {
-      toast.error(
-        isNew ? "Error creating customer" : "Error updating customer",
-      );
-      return;
+    const payload: Partial<typeof data> = { ...data };
+    for (const field of customerAltAddressSchema.keyof().options) {
+      if (!dirtyFields[field]) delete payload[field];
     }
-    toast.success(isNew ? "Customer created" : "Customer updated");
-    reset(result);
-    setIsNew(false);
-    setUidCustomer(result.uid_customer);
+    if (!isNew && !dirtyFields.delivery_address) delete payload.delivery_address;
+    try {
+      const result = isNew ? await _createCustomer(payload) : await _updateCustomer(payload);
+      toast.success(isNew ? "Customer created" : "Customer updated");
+      reset(result);
+      setIsNew(false);
+      setUidCustomer(result.uid_customer);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Error saving customer");
+    }
   };
 
   return (
@@ -95,6 +98,17 @@ export default function CustomerDetailPage() {
       <form onSubmit={handleSubmit(submit)}>
         <LineLR>
           <DetailButtons isDisabled={!isDirty} overviewPath="/customers" />
+          <CustomerAltAddressDialog
+            readAddress={() => getValues()}
+            onApply={(address) => {
+              for (const field of customerAltAddressSchema.keyof().options) {
+                const value = address[field]?.trim() || null;
+                if (value !== (getValues(field) ?? null)) {
+                  setValue(field, value, { shouldDirty: true });
+                }
+              }
+            }}
+          />
         </LineLR>
         <PageColumns className="grid-cols-2">
           <Card>

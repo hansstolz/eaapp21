@@ -30,6 +30,8 @@ export function LabeledInput(props: LabeledInputProps) {
     ...inputProps
   } = props;
 
+  const inputId = inputProps.id ?? `form-${label.toLowerCase()}`;
+
   const get_text = (type: string) => {
     return (
       <Controller
@@ -39,12 +41,12 @@ export function LabeledInput(props: LabeledInputProps) {
           <Field className="gap-1" data-invalid={fieldState.invalid}>
             <Label
               className={twMerge("text-stone-500", className)}
-              htmlFor={`form-${label.toLowerCase()}`}
+              htmlFor={inputId}
             >
               {label.toLocaleUpperCase()}
             </Label>
             <Input
-              id={`form-${label.toLowerCase()}`}
+              id={inputId}
               className={twMerge(
                 "border-stone-300 bg-stone-50 border rounded-sm text-black",
                 className,
@@ -78,14 +80,14 @@ export function LabeledInput(props: LabeledInputProps) {
             <Field className="gap-1" data-invalid={fieldState.invalid}>
               <Label
                 className="label-text"
-                htmlFor={`form-${label.toLowerCase()}`}
+                htmlFor={inputId}
               >
                 {label.toLocaleUpperCase()}
               </Label>
               <InputGroup>
                 <InputGroupTextarea
                   {...field}
-                  id={`form-${label.toLowerCase()}`}
+                  id={inputId}
                   placeholder={label}
                   rows={rows}
                   className="min-h-9 resize-none border-stone-300 border rounded-sm  input-text bg-stone-50"

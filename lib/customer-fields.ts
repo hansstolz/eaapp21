@@ -12,6 +12,8 @@ export const CUSTOMER_FIELDS = [
   "bank_payment", "phonelist", "fon", "street_address", "bank_id", "bike_no",
   "customerclient_no", "mail_salut", "category_customer", "mail_no",
   "delivery_address", "customer_cannondale_no", "vat_no", "uid_mail",
+  "alt_company", "alt_first_name", "alt_last_name",
+  "alt_street_address", "alt_postal_code", "alt_city",
   "check_email_int", "cal_email_find", "cal_name_vl", "ftsearch",
 ] as const satisfies readonly (
   | keyof ea_customerCreateInput

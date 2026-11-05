@@ -10,6 +10,17 @@ export const customerExemptionSchema = z.object({
   exemption_reason: z.string().max(500, "Exemption reason must not exceed 500 characters.").nullable().optional(),
 });
 
+export const customerAltAddressSchema = z.object({
+  alt_company: z.string().max(100).nullable().optional(),
+  alt_first_name: z.string().max(50).nullable().optional(),
+  alt_last_name: z.string().max(50).nullable().optional(),
+  alt_street_address: z.string().max(100).nullable().optional(),
+  alt_postal_code: z.string().max(20).nullable().optional(),
+  alt_city: z.string().max(50).nullable().optional(),
+});
+
+export type CustomerAltAddress = z.infer<typeof customerAltAddressSchema>;
+
 export const customerSchema = z
   .object({
     uid_customer: z.number().nullable(),
@@ -77,6 +88,7 @@ export const customerSchema = z
     category_customer: z.enum(["Dealer", "Private"]),
 
     delivery_address: z.string().nullable().default(""),
+    ...customerAltAddressSchema.shape,
 
     customer_cannondale_no: z.string().nullable().default(""),
 

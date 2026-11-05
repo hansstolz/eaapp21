@@ -283,6 +283,12 @@ model ea_customer {
   category_customer      String?   @db.VarChar(50)
   mail_no                Int?      @default(0)
   delivery_address       String?   @db.Text
+  alt_company            String?   @db.VarChar(100)
+  alt_first_name         String?   @db.VarChar(50)
+  alt_last_name          String?   @db.VarChar(50)
+  alt_street_address     String?   @db.VarChar(100)
+  alt_postal_code        String?   @db.VarChar(20)
+  alt_city               String?   @db.VarChar(50)
   customer_cannondale_no String?   @db.VarChar(100)
   vat_no                 String?   @db.VarChar(50)
   uid_mail               Int?      @default(0)
